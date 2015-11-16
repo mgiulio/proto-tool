@@ -19817,6 +19817,12 @@ var
    ,KeyboardInput = require('./KeyboardInput')
 ;
 
+var compose = function(f, g) {
+    return function() {
+        return f.call(this, g.apply(this, arguments));
+    };
+};
+
 var App = React.createClass({displayName: "App",
 	
 	getInitialState: function() {
@@ -19913,10 +19919,10 @@ var App = React.createClass({displayName: "App",
 				), 
 				React.createElement(KeyboardInput, {
 					on: {
-						translateUp: function(speed)  { this.translateUp(this.findSpeed(speed)); }.bind(this),
-						translateRight: function(speed)  { this.translateRight(this.findSpeed(speed)); }.bind(this),
-						translateDown: function(speed)  { this.translateDown(this.findSpeed(speed)); }.bind(this),
-						translateLeft: function(speed)  { this.translateLeft(this.findSpeed(speed)); }.bind(this),
+						translateUp: compose(this.translateUp, this.findSpeed),
+						translateRight: compose(this.translateRight, this.findSpeed),
+						translateDown: compose(this.translateDown, this.findSpeed),
+						translateLeft: compose(this.translateDown, this.findSpeed),
 						selectNext: this.selectNext,
 						selectPrev: this.selectPrev,
 						addObject: function()  {var $__0; ($__0 = this).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50]))); }.bind(this)

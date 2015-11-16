@@ -6,6 +6,12 @@ var
    ,KeyboardInput = require('./KeyboardInput')
 ;
 
+var compose = function(f, g) {
+    return function() {
+        return f.call(this, g.apply(this, arguments));
+    };
+};
+
 var App = React.createClass({
 	
 	getInitialState: function() {
@@ -102,10 +108,10 @@ var App = React.createClass({
 				</Canvas>
 				<KeyboardInput 
 					on={{
-						translateUp: (speed) => { this.translateUp(this.findSpeed(speed)); },
-						translateRight: (speed) => { this.translateRight(this.findSpeed(speed)); },
-						translateDown: (speed) => { this.translateDown(this.findSpeed(speed)); },
-						translateLeft: (speed) => { this.translateLeft(this.findSpeed(speed)); },
+						translateUp: compose(this.translateUp, this.findSpeed),
+						translateRight: compose(this.translateRight, this.findSpeed),
+						translateDown: compose(this.translateDown, this.findSpeed),
+						translateLeft: compose(this.translateDown, this.findSpeed),
 						selectNext: this.selectNext,
 						selectPrev: this.selectPrev,
 						addObject: () => { this.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50]))); }
