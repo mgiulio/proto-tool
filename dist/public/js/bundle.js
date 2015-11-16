@@ -19815,13 +19815,8 @@ var
    ,designObjects = require('./DesignObjects')
    ,SVGRectangle = require('./SVGRectangle')
    ,KeyboardInput = require('./KeyboardInput')
+   ,compose = require('./func').compose
 ;
-
-var compose = function(f, g) {
-    return function() {
-        return f.call(this, g.apply(this, arguments));
-    };
-};
 
 var App = React.createClass({displayName: "App",
 	
@@ -19922,7 +19917,7 @@ var App = React.createClass({displayName: "App",
 						translateUp: compose(this.translateUp, this.findSpeed),
 						translateRight: compose(this.translateRight, this.findSpeed),
 						translateDown: compose(this.translateDown, this.findSpeed),
-						translateLeft: compose(this.translateDown, this.findSpeed),
+						translateLeft: compose(this.translateLeft, this.findSpeed),
 						selectNext: this.selectNext,
 						selectPrev: this.selectPrev,
 						addObject: function()  {var $__0; ($__0 = this).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50]))); }.bind(this)
@@ -19967,7 +19962,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./Canvas":158,"./DesignObjects":159,"./KeyboardInput":160,"./SVGRectangle":162,"react":156}],158:[function(require,module,exports){
+},{"./Canvas":158,"./DesignObjects":159,"./KeyboardInput":160,"./SVGRectangle":162,"./func":164,"react":156}],158:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20156,4 +20151,15 @@ function populate() {
 	api.select(r1);
 	api.translate(100, 0);
 }
-},{"./App":157,"react":156}]},{},[163]);
+},{"./App":157,"react":156}],164:[function(require,module,exports){
+var 
+	compose = function(f, g) {
+		return function() {
+			return f.call(this, g.apply(this, arguments));
+    }
+};
+
+module.exports = {
+	compose: compose
+};
+},{}]},{},[163]);

@@ -4,13 +4,8 @@ var
    ,designObjects = require('./DesignObjects')
    ,SVGRectangle = require('./SVGRectangle')
    ,KeyboardInput = require('./KeyboardInput')
+   ,compose = require('./func').compose
 ;
-
-var compose = function(f, g) {
-    return function() {
-        return f.call(this, g.apply(this, arguments));
-    };
-};
 
 var App = React.createClass({
 	
@@ -111,7 +106,7 @@ var App = React.createClass({
 						translateUp: compose(this.translateUp, this.findSpeed),
 						translateRight: compose(this.translateRight, this.findSpeed),
 						translateDown: compose(this.translateDown, this.findSpeed),
-						translateLeft: compose(this.translateDown, this.findSpeed),
+						translateLeft: compose(this.translateLeft, this.findSpeed),
 						selectNext: this.selectNext,
 						selectPrev: this.selectPrev,
 						addObject: () => { this.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50]))); }
