@@ -78,6 +78,18 @@ var App = React.createClass({
 	translateLeft: function(d) { // translateUp.bind(this, 0)
 		this.translate(-d, 0);
 	},
+	
+	findSpeed: function(speed) {
+		var 
+			d = 10,
+			speeds = {
+				'slow': 0.1,
+				'normal': 1,
+				'fast': 10
+			};
+		
+		return d * speeds[speed];
+	},
 
 	render: function() {
 		var objects = this.state.objects.map(this.visualRep);
@@ -89,10 +101,10 @@ var App = React.createClass({
 				</Canvas>
 				<Keyboard 
 					on={{
-						'translateUp': this.translateUp.bind(this, 10),
-						'translateRight': this.translateRight.bind(this, 10),
-						'translateDown': this.translateDown.bind(this, 10),
-						'translateLeft': this.translateLeft.bind(this, 10),
+						translateUp: (speed) => { this.translateUp(this.findSpeed(speed)); },
+						translateRight: (speed) => { this.translateRight(this.findSpeed(speed)); },
+						translateDown: (speed) => { this.translateDown(this.findSpeed(speed)); },
+						translateLeft: (speed) => { this.translateLeft(this.findSpeed(speed)); },
 						selectNext: this.selectNext,
 						selectPrev: this.selectPrev,
 						addObject: () => { this.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50]))); }
