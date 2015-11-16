@@ -3,7 +3,7 @@ var
    ,Canvas = require('./Canvas')
    ,designObjects = require('./DesignObjects')
    ,SVGRectangle = require('./SVGRectangle')
-   ,Keyboard = require('./Keyboard')
+   ,KeyboardInput = require('./KeyboardInput')
 
 var App = React.createClass({
 	
@@ -99,7 +99,7 @@ var App = React.createClass({
 				<Canvas>
 					{objects}
 				</Canvas>
-				<Keyboard 
+				<KeyboardInput 
 					on={{
 						translateUp: (speed) => { this.translateUp(this.findSpeed(speed)); },
 						translateRight: (speed) => { this.translateRight(this.findSpeed(speed)); },

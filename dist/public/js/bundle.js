@@ -19814,7 +19814,7 @@ var
    ,Canvas = require('./Canvas')
    ,designObjects = require('./DesignObjects')
    ,SVGRectangle = require('./SVGRectangle')
-   ,Keyboard = require('./Keyboard')
+   ,KeyboardInput = require('./KeyboardInput')
 
 var App = React.createClass({displayName: "App",
 	
@@ -19910,7 +19910,7 @@ var App = React.createClass({displayName: "App",
 				React.createElement(Canvas, null, 
 					objects
 				), 
-				React.createElement(Keyboard, {
+				React.createElement(KeyboardInput, {
 					on: {
 						translateUp: function(speed)  { this.translateUp(this.findSpeed(speed)); }.bind(this),
 						translateRight: function(speed)  { this.translateRight(this.findSpeed(speed)); }.bind(this),
@@ -19960,7 +19960,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./Canvas":158,"./DesignObjects":159,"./Keyboard":160,"./SVGRectangle":162,"react":156}],158:[function(require,module,exports){
+},{"./Canvas":158,"./DesignObjects":159,"./KeyboardInput":160,"./SVGRectangle":162,"react":156}],158:[function(require,module,exports){
 var
    React = require('react')
 ;
