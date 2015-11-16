@@ -54,14 +54,7 @@ var Keyboard = React.createClass({
 				e.preventDefault();
 				break;
 			case 'U+0041': // a
-				//this.addObject('Rectangle', ...this.getMouseClientPos(), 100, 50);
-				
-				//let [x, y] = this.getMouseClientPos();
-				//this.addObject('Rectangle', x, y, 100, 50);
-				
-				//this.addObject('Rectangle', ...(this.getMouseClientPos().push(100, 50)));
-				
-				this.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50])));
+				this.props.on.addObject();
 				break;
 		}
 	}

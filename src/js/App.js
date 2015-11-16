@@ -152,7 +152,8 @@ var App = React.createClass({
 						'translateDown': this.translateDown.bind(this, 10),
 						'translateLeft': this.translateLeft.bind(this, 10),
 						selectNext: this.selectNext,
-						selectPrev: this.selectPrev
+						selectPrev: this.selectPrev,
+						addObject: () => { this.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50]))); }
 					}}
 				/>
 			</div>

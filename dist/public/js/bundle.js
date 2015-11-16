@@ -19963,7 +19963,8 @@ var App = React.createClass({displayName: "App",
 						'translateDown': this.translateDown.bind(this, 10),
 						'translateLeft': this.translateLeft.bind(this, 10),
 						selectNext: this.selectNext,
-						selectPrev: this.selectPrev
+						selectPrev: this.selectPrev,
+						addObject: function()  {var $__0; ($__0 = this).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50]))); }.bind(this)
 					}}
 				)
 			)
@@ -20049,7 +20050,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 		document.addEventListener('keydown', this.onKeydown, false);
 	},
 	
-	onKeydown: function(e) {var $__0;
+	onKeydown: function(e) {
 		//e.stopPropagation();
 		//e.preventDefault();
 		
@@ -20091,14 +20092,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 				e.preventDefault();
 				break;
 			case 'U+0041': // a
-				//this.addObject('Rectangle', ...this.getMouseClientPos(), 100, 50);
-				
-				//let [x, y] = this.getMouseClientPos();
-				//this.addObject('Rectangle', x, y, 100, 50);
-				
-				//this.addObject('Rectangle', ...(this.getMouseClientPos().push(100, 50)));
-				
-				($__0 = this).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50])));
+				this.props.on.addObject();
 				break;
 		}
 	}
