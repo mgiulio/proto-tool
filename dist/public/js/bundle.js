@@ -19815,6 +19815,7 @@ var
    ,designObjects = require('./DesignObjects')
    ,SVGRectangle = require('./SVGRectangle')
    ,KeyboardInput = require('./KeyboardInput')
+;
 
 var App = React.createClass({displayName: "App",
 	
