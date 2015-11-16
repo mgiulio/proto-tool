@@ -1,0 +1,16 @@
+@import 'normalize-lite';
+
+.canvas {
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	
+	background: #f6f6f6;
+	
+	fill: #e0e0e0;
+}
+
+.object {
+	cursor: pointer;
+}
+
