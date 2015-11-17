@@ -19811,11 +19811,12 @@ module.exports = require('./lib/React');
 },{"./lib/React":29}],157:[function(require,module,exports){
 var
    React = require('react')
-   ,Canvas = require('./Canvas')
+   ,compose2 = require('./func').compose2
+   ,compose = require('./func').compose
    ,designObjects = require('./DesignObjects')
+   ,Canvas = require('./Canvas')
    ,SVGRectangle = require('./SVGRectangle')
    ,KeyboardInput = require('./KeyboardInput')
-   ,compose = require('./func').compose
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20153,13 +20154,31 @@ function populate() {
 }
 },{"./App":157,"react":156}],164:[function(require,module,exports){
 var 
-	compose = function(f, g) {
+	compose2 = function(f, g) {
 		return function() {
 			return f.call(this, g.apply(this, arguments));
-    }
-};
+		}
+    },
+	compose3 = function(f, g, h) {
+		return function() {
+			return f.call(this, g.call(this, h.apply(this, arguments)));
+		}
+    },
+	compose = function() { // From Underscore.js
+		var args = arguments;
+		var start = args.length - 1;
+		return function() {
+			var i = start;
+			var result = args[start].apply(this, arguments);
+			while (i--) result = args[i].call(this, result);
+			return result;
+		}
+	}
+;
 
 module.exports = {
-	compose: compose
+	compose: compose,
+	compose2: compose2,
+	compose3: compose3
 };
 },{}]},{},[163]);
