@@ -1,6 +1,6 @@
 var
    React = require('react')
-   ,compose2 = require('./func').compose2
+   ,compose = require('./func').compose
    ,designObjects = require('./DesignObjects')
    ,Canvas = require('./Canvas')
    ,SVGRectangle = require('./SVGRectangle')
@@ -103,10 +103,10 @@ var App = React.createClass({
 				</Canvas>
 				<KeyboardInput 
 					on={{
-						translateUp: compose2(this.translateUp, this.findSpeed),
-						translateRight: compose2(this.translateRight, this.findSpeed),
-						translateDown: compose2(this.translateDown, this.findSpeed),
-						translateLeft: compose2(this.translateLeft, this.findSpeed),
+						translateUp: compose(this.translateUp, this.findSpeed),
+						translateRight: compose(this.translateRight, this.findSpeed),
+						translateDown: compose(this.translateDown, this.findSpeed),
+						translateLeft: compose(this.translateLeft, this.findSpeed),
 						selectNext: this.selectNext,
 						selectPrev: this.selectPrev,
 						addObject: () => { this.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50]))); }
