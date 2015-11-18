@@ -1,7 +1,3 @@
-var
-   React = require('react')
-  ;
-
 function Rectangle(x, y, w, h) {
 	this.type = 'Rectangle';
 	

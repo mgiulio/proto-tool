@@ -1,5 +1,6 @@
 var
    React = require('react')
+   ,AppActions = require('../actions/AppActions')
 ;
 
 var SVGRectangle = React.createClass({
@@ -18,7 +19,7 @@ var SVGRectangle = React.createClass({
 	onClick: function(e) {
 		e.stopPropagation();
 		
-		this.props.on.select(this.props.id);
+		AppActions.selectObject(this.props.id);
 	},
 	
 	onMouseDown: function(e) {
@@ -30,7 +31,7 @@ var SVGRectangle = React.createClass({
 		document.addEventListener('mousemove', this.onMouseMove, false);
 		document.addEventListener('mouseup', this.onMouseUp, false);
 		
-		this.props.on.dragStart(this.props.id);
+		AppActions.selectObject(this.props.id);
 	},
 	
 	onMouseMove: function(e) {
@@ -41,7 +42,7 @@ var SVGRectangle = React.createClass({
 		this.mouseX = e.clientX;
 		this.mouseY = e.clientY;
 		
-		this.props.on.drag(dx, dy);
+		AppActions.translate(dx, dy);
 	},
 	
 	onMouseUp: function(e) {

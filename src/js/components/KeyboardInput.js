@@ -1,5 +1,6 @@
 var
    React = require('react')
+   ,AppActions = require('../actions/AppActions')
 ;
 
 var Keyboard = React.createClass({
@@ -16,8 +17,8 @@ var Keyboard = React.createClass({
 		//e.stopPropagation();
 		//e.preventDefault();
 		
-		console.log(e.keyIdentifier);
-		console.log(e);
+		//console.log(e.keyIdentifier);
+		//console.log(e);
 		
 		var speed;
 		if (e.shiftKey)
@@ -29,30 +30,34 @@ var Keyboard = React.createClass({
 		
 		switch (e.keyIdentifier) {
 			case 'Up':
-				this.props.on.translateUp(speed);
+				AppActions.translateUp(speed);
 				break;
 			case 'Right':
-				this.props.on.translateRight(speed);
+				AppActions.translateRight(speed);
 				break;
 			case 'Down':
-				this.props.on.translateDown(speed);
+				AppActions.translateDown(speed);
 				break;
 			case 'Left':
-				this.props.on.translateLeft(speed);
+				AppActions.translateLeft(speed);
 				break;
 			case 'U+0009':
 				if (e.shiftKey)
-					this.props.on.selectPrev();
+					AppActions.selectNext();
 				else
-					this.props.on.selectNext();
+					AppActions.selectPrev();
 				e.preventDefault();
 				break;
 			case 'U+0041': // a
-				this.props.on.addObject();
+				AppActions.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50])))
 				break;
 		}
+	},
+	
+	getMouseClientPos: function() {
+		return [800, 250];
 	}
-
+	
 });
 
 module.exports = Keyboard;
