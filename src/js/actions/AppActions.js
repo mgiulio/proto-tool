@@ -1,6 +1,7 @@
 var 
 	AppDispatcher = require('../dispatcher/AppDispatcher')
 	,AppConstants = require('../constants/AppConstants')
+	,compose = require('../lib/func').compose
 ;
 
 function offset(speed) {
@@ -14,6 +15,25 @@ function offset(speed) {
 	
 	return d * speeds[speed];
 }
+
+function neg(x) {
+	return - x;
+}
+
+function translate(dx, dy) {
+	AppDispatcher.dispatch({
+		actionType: AppConstants.TRANSLATE,
+		dx: dx,
+		dy: dy
+	});
+}
+	
+/*
+translateUp: function(speed) {
+	this.translate(0,  - offset(speed));
+},
+*/
+
 
 var AppActions = {
 	
@@ -47,28 +67,18 @@ var AppActions = {
 		});
 	},
 	
-	translate: function(dx, dy) {
-		AppDispatcher.dispatch({
-			actionType: AppConstants.TRANSLATE,
-			dx: dx,
-			dy: dy
-		});
-	},
+	translate: translate,
 	
-	translateUp: function(speed) {
-		this.translate(0,  - offset(speed));
-	},
+	translateUp: compose(translate.bind(null, 0), neg, offset),
 	
-	translateDown: function(speed) {
-		this.translate(0,  offset(speed));
-	},
+	translateDown: compose(translate.bind(null, 0), offset),
 	
-	translateRight: function(speed) {
-		this.translate(offset(speed), 0);
+	translateRight: function(speed) { //translateRight: compose(translate.bind(null, _, 0), offset),
+		translate(offset(speed), 0);
 	},
 	
 	translateLeft: function(speed) {
-		this.translate(- offset(speed), 0);
+		translate(- offset(speed), 0);
 	}
 
 };

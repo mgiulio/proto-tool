@@ -20509,6 +20509,7 @@ module.exports = require('./lib/React');
 var 
 	AppDispatcher = require('../dispatcher/AppDispatcher')
 	,AppConstants = require('../constants/AppConstants')
+	,compose = require('../lib/func').compose
 ;
 
 function offset(speed) {
@@ -20522,6 +20523,25 @@ function offset(speed) {
 	
 	return d * speeds[speed];
 }
+
+function neg(x) {
+	return - x;
+}
+
+function translate(dx, dy) {
+	AppDispatcher.dispatch({
+		actionType: AppConstants.TRANSLATE,
+		dx: dx,
+		dy: dy
+	});
+}
+	
+/*
+translateUp: function(speed) {
+	this.translate(0,  - offset(speed));
+},
+*/
+
 
 var AppActions = {
 	
@@ -20555,35 +20575,25 @@ var AppActions = {
 		});
 	},
 	
-	translate: function(dx, dy) {
-		AppDispatcher.dispatch({
-			actionType: AppConstants.TRANSLATE,
-			dx: dx,
-			dy: dy
-		});
-	},
+	translate: translate,
 	
-	translateUp: function(speed) {
-		this.translate(0,  - offset(speed));
-	},
+	translateUp: compose(translate.bind(null, 0), neg, offset),
 	
-	translateDown: function(speed) {
-		this.translate(0,  offset(speed));
-	},
+	translateDown: compose(translate.bind(null, 0), offset),
 	
-	translateRight: function(speed) {
-		this.translate(offset(speed), 0);
+	translateRight: function(speed) { //translateRight: compose(translate.bind(null, _, 0), offset),
+		translate(offset(speed), 0);
 	},
 	
 	translateLeft: function(speed) {
-		this.translate(- offset(speed), 0);
+		translate(- offset(speed), 0);
 	}
 
 };
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170}],164:[function(require,module,exports){
+},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"../lib/func":171}],164:[function(require,module,exports){
 var
    React = require('react')
    ,App = require('./components/App')
@@ -20609,7 +20619,7 @@ function populate() {
 	AppActions.select(r0);
 	//...
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":172,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":173,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20677,7 +20687,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../stores/designObjectStore":172,"./Canvas":166,"./KeyboardInput":167,"./SVGRectangle":168,"react":162}],166:[function(require,module,exports){
+},{"../stores/designObjectStore":173,"./Canvas":166,"./KeyboardInput":167,"./SVGRectangle":168,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20850,6 +20860,36 @@ var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 
 },{"flux":3}],171:[function(require,module,exports){
+var 
+	compose = function(f, g, h) {  // Adapted from Underscore.js
+		var 
+			args = arguments,
+			start = args.length - 1,
+			out
+		;
+		
+		if (start === 1)
+			out = function() { return f.call(this, g.apply(this, arguments)); }
+		else if (start === 2)
+			out = function() { return f.call(this, g.call(this, h.apply(this, arguments))); }
+		else 
+			out = function() {
+				var 
+					i = start,
+					result = args[start].apply(this, arguments)
+				;
+				while (i--) result = args[i].call(this, result);
+				return result;
+			}
+		
+		return out;
+	}
+;
+
+module.exports = {
+	compose: compose
+};
+},{}],172:[function(require,module,exports){
 function Rectangle(x, y, w, h) {
 	this.type = 'Rectangle';
 	
@@ -20871,7 +20911,7 @@ Rectangle.prototype.translate = function(x, y) {
 
 module.exports = Rectangle;
 
-},{}],172:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -20972,4 +21012,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"./Rectangle":171,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"./Rectangle":172,"events":1,"object-assign":7}]},{},[164]);
