@@ -20593,7 +20593,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"../lib/func":171}],164:[function(require,module,exports){
+},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"../lib/func":172}],164:[function(require,module,exports){
 var
    React = require('react')
    ,App = require('./components/App')
@@ -20619,13 +20619,13 @@ function populate() {
 	AppActions.select(r0);
 	//...
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":173,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":174,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
+	,KeyboardInput = require('./KeyboardInput')
    ,Canvas = require('./Canvas')
-   ,SVGRectangle = require('./SVGRectangle')
-   ,KeyboardInput = require('./KeyboardInput')
+   ,doRender = require('../doRender')
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20653,7 +20653,7 @@ var App = React.createClass({displayName: "App",
 	},
 	
 	render: function() {
-		var designObjectsRep = this.state.designObjects.map(this.visualRep);
+		var designObjectsRep = this.state.designObjects.map(doRender);
 		
 		return (
 			React.createElement("div", {className: "app"}, 
@@ -20663,31 +20663,13 @@ var App = React.createClass({displayName: "App",
 				React.createElement(KeyboardInput, null)
 			)
 		);
-	},
-	
-	visualRep: function(om, i) {
-		var compo;
-		
-		switch (om.type) {
-			case 'Rectangle':
-				compo = React.createElement(SVGRectangle, {
-					id: i, 
-					x: om.x, y: om.y, width: om.w, height: om.h, 
-					key: i}
-				);
-				break;
-			default:
-				console.log(om);
-		}
-		
-		return compo;
 	}
 	
 });
 
 module.exports = App;
 
-},{"../stores/designObjectStore":173,"./Canvas":166,"./KeyboardInput":167,"./SVGRectangle":168,"react":162}],166:[function(require,module,exports){
+},{"../doRender":171,"../stores/designObjectStore":174,"./Canvas":166,"./KeyboardInput":167,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20860,6 +20842,32 @@ var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 
 },{"flux":3}],171:[function(require,module,exports){
+var
+	React = require('react')
+	,SVGRectangle = require('./components/SVGRectangle')
+;
+
+function svgRender(om, i) {
+	var compo;
+	
+	switch (om.type) {
+		case 'Rectangle':
+			compo = React.createElement(SVGRectangle, {
+				id: i, 
+				x: om.x, y: om.y, width: om.w, height: om.h, 
+				key: i}
+			);
+			break;
+		default:
+			console.log(om);
+	}
+	
+	return compo;
+}
+	
+module.exports = svgRender;
+
+},{"./components/SVGRectangle":168,"react":162}],172:[function(require,module,exports){
 var 
 	compose = function(f, g, h) {  // Adapted from Underscore.js
 		var 
@@ -20889,7 +20897,7 @@ var
 module.exports = {
 	compose: compose
 };
-},{}],172:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 function Rectangle(x, y, w, h) {
 	this.type = 'Rectangle';
 	
@@ -20911,7 +20919,7 @@ Rectangle.prototype.translate = function(x, y) {
 
 module.exports = Rectangle;
 
-},{}],173:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21012,4 +21020,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"./Rectangle":172,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"./Rectangle":173,"events":1,"object-assign":7}]},{},[164]);
