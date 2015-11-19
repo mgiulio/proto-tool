@@ -1,11 +1,11 @@
 var
    React = require('react')
-   ,App = require('./components/App')
+   ,AppController = require('./components/AppController')
    ,AppActions = require('./actions/AppActions')
    ,designObjectStore = require('./stores/designObjectStore')
 ;
 
-React.render(<App />, document.body/*, populate*/);
+React.render(<AppController />, document.body/*, populate*/);
 
 function populate() {
 	/*

@@ -20593,15 +20593,15 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"../lib/func":172}],164:[function(require,module,exports){
+},{"../constants/AppConstants":170,"../dispatcher/AppDispatcher":171,"../lib/func":173}],164:[function(require,module,exports){
 var
    React = require('react')
-   ,App = require('./components/App')
+   ,AppController = require('./components/AppController')
    ,AppActions = require('./actions/AppActions')
    ,designObjectStore = require('./stores/designObjectStore')
 ;
 
-React.render(React.createElement(App, null), document.body/*, populate*/);
+React.render(React.createElement(AppController, null), document.body/*, populate*/);
 
 function populate() {
 	/*
@@ -20619,16 +20619,41 @@ function populate() {
 	AppActions.select(r0);
 	//...
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":174,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":175,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
-	,doStore = require('../stores/designObjectStore')
 	,KeyboardInput = require('./KeyboardInput')
    ,Canvas = require('./Canvas')
-   ,doRender = require('../doRender')
 ;
 
 var App = React.createClass({displayName: "App",
+	
+	render: function() {
+		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
+		
+		return (
+			React.createElement("div", {className: "app"}, 
+				React.createElement(Canvas, null, 
+					designObjectsRep
+				), 
+				React.createElement(KeyboardInput, null)
+			)
+		);
+	}
+	
+});
+
+module.exports = App;
+
+},{"./Canvas":167,"./KeyboardInput":168,"react":162}],166:[function(require,module,exports){
+var
+   React = require('react')
+	,doStore = require('../stores/designObjectStore')
+   ,doRender = require('../doRender')
+   ,App = require('./App')
+;
+
+var AppController = React.createClass({displayName: "AppController",
 	
 	getAppState: function() {
 		return {
@@ -20653,23 +20678,16 @@ var App = React.createClass({displayName: "App",
 	},
 	
 	render: function() {
-		var designObjectsRep = this.state.designObjects.map(doRender);
-		
 		return (
-			React.createElement("div", {className: "app"}, 
-				React.createElement(Canvas, null, 
-					designObjectsRep
-				), 
-				React.createElement(KeyboardInput, null)
-			)
+			React.createElement(App, {designObjects: this.state.designObjects, doRender: doRender})
 		);
 	}
 	
 });
 
-module.exports = App;
+module.exports = AppController;
 
-},{"../doRender":171,"../stores/designObjectStore":174,"./Canvas":166,"./KeyboardInput":167,"react":162}],166:[function(require,module,exports){
+},{"../doRender":172,"../stores/designObjectStore":175,"./App":165,"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20688,7 +20706,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 
 module.exports = Canvas;
 
-},{"react":162}],167:[function(require,module,exports){
+},{"react":162}],168:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -20753,7 +20771,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 
 module.exports = Keyboard;
 
-},{"../actions/AppActions":163,"react":162}],168:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -20812,7 +20830,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],169:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -20823,7 +20841,7 @@ module.exports = keyMirror({
   TRANSLATE: null
 });
 
-},{"keymirror":6}],170:[function(require,module,exports){
+},{"keymirror":6}],171:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -20841,7 +20859,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],171:[function(require,module,exports){
+},{"flux":3}],172:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -20867,7 +20885,7 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":168,"react":162}],172:[function(require,module,exports){
+},{"./components/SVGRectangle":169,"react":162}],173:[function(require,module,exports){
 var 
 	compose = function(f, g, h) {  // Adapted from Underscore.js
 		var 
@@ -20897,7 +20915,7 @@ var
 module.exports = {
 	compose: compose
 };
-},{}],173:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 function Rectangle(x, y, w, h) {
 	this.type = 'Rectangle';
 	
@@ -20919,7 +20937,7 @@ Rectangle.prototype.translate = function(x, y) {
 
 module.exports = Rectangle;
 
-},{}],174:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21020,4 +21038,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/AppConstants":169,"../dispatcher/AppDispatcher":170,"./Rectangle":173,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/AppConstants":170,"../dispatcher/AppDispatcher":171,"./Rectangle":174,"events":1,"object-assign":7}]},{},[164]);
