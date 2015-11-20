@@ -17,7 +17,7 @@ Rectangle.prototype.translate = function(x, y) {
 	this.y += y;
 };
 
-Rectangle.prototype.pullSide = function(side, amount) {
+Rectangle.prototype.resizeSide = function(side, amount) {
 	switch (side) {
 		case 'top':
 			this.y -= amount;

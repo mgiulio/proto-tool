@@ -20585,9 +20585,9 @@ var AppActions = {
 		translate(- offset(speed), 0);
 	},
 	
-	pullSide: function(side, amount) {
+	resizeSide: function(side, amount) {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.PULL_SIDE,
+			actionType: AppConstants.RESIZE_SIDE,
 			side: side,
 			amount: amount
 		});
@@ -20915,7 +20915,7 @@ module.exports = keyMirror({
   SELECT_NEXT: null,
   SELECT_PREV: null,
   TRANSLATE: null,
-  PULL_SIDE: null
+  RESIZE_SIDE: null
 });
 
 },{"keymirror":6}],172:[function(require,module,exports){
@@ -21030,7 +21030,7 @@ Rectangle.prototype.translate = function(x, y) {
 	this.y += y;
 };
 
-Rectangle.prototype.pullSide = function(side, amount) {
+Rectangle.prototype.resizeSide = function(side, amount) {
 	switch (side) {
 		case 'top':
 			this.y -= amount;
@@ -21092,8 +21092,8 @@ function translate(x, y) {
 	objects[selected].translate(x, y);
 }
 
-function pullSide(side, amount) {
-	objects[selected].pullSide(side, amount);
+function resizeSide(side, amount) {
+	objects[selected].resizeSide(side, amount);
 }
 
 
@@ -21152,8 +21152,8 @@ AppDispatcher.register(function(action) {
 			translate(action.dx, action.dy);
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.PULL_SIDE:
-			pullSide(action.side, action.amount);
+		case AppConstants.RESIZE_SIDE:
+			resizeSide(action.side, action.amount);
 			designObjectStore.emitChange();
 			break;
 		default:

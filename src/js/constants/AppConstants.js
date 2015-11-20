@@ -6,5 +6,5 @@ module.exports = keyMirror({
   SELECT_NEXT: null,
   SELECT_PREV: null,
   TRANSLATE: null,
-  PULL_SIDE: null
+  RESIZE_SIDE: null
 });

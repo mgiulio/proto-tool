@@ -36,8 +36,8 @@ function translate(x, y) {
 	objects[selected].translate(x, y);
 }
 
-function pullSide(side, amount) {
-	objects[selected].pullSide(side, amount);
+function resizeSide(side, amount) {
+	objects[selected].resizeSide(side, amount);
 }
 
 
@@ -96,8 +96,8 @@ AppDispatcher.register(function(action) {
 			translate(action.dx, action.dy);
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.PULL_SIDE:
-			pullSide(action.side, action.amount);
+		case AppConstants.RESIZE_SIDE:
+			resizeSide(action.side, action.amount);
 			designObjectStore.emitChange();
 			break;
 		default:

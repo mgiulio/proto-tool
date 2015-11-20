@@ -77,9 +77,9 @@ var AppActions = {
 		translate(- offset(speed), 0);
 	},
 	
-	pullSide: function(side, amount) {
+	resizeSide: function(side, amount) {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.PULL_SIDE,
+			actionType: AppConstants.RESIZE_SIDE,
 			side: side,
 			amount: amount
 		});
