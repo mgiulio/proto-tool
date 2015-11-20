@@ -20867,7 +20867,8 @@ module.exports = SVGRectangle;
 },{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
 var
    React = require('react')
-   ,AppActions = require('../actions/AppActions')
+   ,appActions = require('../actions/AppActions')
+   ,appConstants = require('../constants/appConstants')
 ;
 
 var SelectionBox = React.createClass({displayName: "SelectionBox",
@@ -20883,7 +20884,13 @@ var SelectionBox = React.createClass({displayName: "SelectionBox",
 				[hw, h], // bottom
 				[0 , hh], // left
 			],
-			handles = mp.map(function(mp)  {return React.createElement(Handle, {x: mp[0], y: mp[1]});});
+			onDragHandle = [
+				this.onDragHandle.bind(this, appConstants.TOP),
+				this.onDragHandle.bind(this, appConstants.RIGHT),
+				this.onDragHandle.bind(this, appConstants.BOTTOM),
+				this.onDragHandle.bind(this, appConstants.LEFT)
+			],
+			handles = mp.map(function(mp, i)  {return React.createElement(Handle, {x: mp[0], y: mp[1], onDrag: onDragHandle[i], key: i});});
 		;
 		
 		return (
@@ -20892,6 +20899,24 @@ var SelectionBox = React.createClass({displayName: "SelectionBox",
 				handles
 			)
 		);
+	},
+	
+	onDragHandle: function(side, dx, dy) {
+		switch (side) {
+			case appConstants.TOP:
+				appActions.resizeTop(-dy);
+				break;
+			case appConstants.RIGHT:
+				appActions.resizeRight(dx);
+				break;
+			case appConstants.BOTTOM:
+				appActions.resizeBottom(dy);
+				break;
+			case appConstants.LEFT:
+				appActions.resizeLeft(-dx);
+				break;
+			default:
+		}
 	}
 
 });
@@ -20906,15 +20931,47 @@ var Handle = React.createClass({displayName: "Handle",
 		;
 		
 		return (
-			React.createElement("rect", {className: "handle", x: x - hs, y: y - hs, width: size, height: size})
+			React.createElement("rect", {
+				className: "handle", 
+				x: x - hs, y: y - hs, width: size, height: size, 
+				onMouseDown: this.onMouseDown}
+			)
 		);
+	},
+	
+	onMouseDown: function(e) {
+		e.stopPropagation();
+		
+		this.mouseX = e.clientX;
+		this.mouseY = e.clientY;
+		
+		document.addEventListener('mousemove', this.onMouseMove, false);
+		document.addEventListener('mouseup', this.onMouseUp, false);
+	},
+	
+	onMouseMove: function(e) {
+		e.stopPropagation();
+		
+		var dx = e.clientX - this.mouseX;
+		var dy = e.clientY - this.mouseY;
+		this.mouseX = e.clientX;
+		this.mouseY = e.clientY;
+		
+		this.props.onDrag(dx, dy);
+	},
+	
+	onMouseUp: function(e) {
+		e.stopPropagation();
+		
+		document.removeEventListener('mousemove', this.onMouseMove, false);
+		document.removeEventListener('mouseup', this.onMouseUp, false);
 	}
 	
 });
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":171,"react":162}],171:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
