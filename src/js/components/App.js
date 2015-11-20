@@ -2,7 +2,7 @@ var
    React = require('react')
 	,KeyboardInput = require('./KeyboardInput')
    ,Canvas = require('./Canvas')
-   ,SVGBrowser = require('./SVGBrowser')
+   //,SVGBrowser = require('./SVGBrowser')
 ;
 
 var App = React.createClass({
@@ -14,9 +14,6 @@ var App = React.createClass({
 			<div className="app">
 				<Canvas>
 					{designObjectsRep}
-					<SVGBrowser
-						x={10} y={10} width={600} height={300}
-					/>
 				</Canvas>
 				<KeyboardInput />
 			</div>

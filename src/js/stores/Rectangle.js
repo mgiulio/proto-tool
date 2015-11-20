@@ -11,6 +11,8 @@ function Rectangle(x, y, w, h) {
 	this.h = h;
 }
 
+Rectangle.minSize = 5;
+
 Rectangle.prototype.setPos = function(x, y) {
 	this.x = x;
 	this.y = y;
@@ -39,6 +41,11 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 			break;
 		default:
 	}
+	
+	if (this.w < Rectangle.minSize)
+		this.w = Rectangle.minSize;
+	if (this.h < Rectangle.minSize)
+		this.h = Rectangle.minSize;
 };
 
 module.exports = Rectangle;

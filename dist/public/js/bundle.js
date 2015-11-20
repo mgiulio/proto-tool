@@ -20603,7 +20603,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"../lib/func":174}],164:[function(require,module,exports){
+},{"../constants/appConstants":170,"../dispatcher/AppDispatcher":171,"../lib/func":173}],164:[function(require,module,exports){
 var
    React = require('react')
    ,AppController = require('./components/AppController')
@@ -20633,12 +20633,12 @@ function populate() {
 	AppActions.select(r0);
 	//...
 }
-},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":176,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":175,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,KeyboardInput = require('./KeyboardInput')
    ,Canvas = require('./Canvas')
-   ,SVGBrowser = require('./SVGBrowser')
+   //,SVGBrowser = require('./SVGBrowser')
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20649,10 +20649,7 @@ var App = React.createClass({displayName: "App",
 		return (
 			React.createElement("div", {className: "app"}, 
 				React.createElement(Canvas, null, 
-					designObjectsRep, 
-					React.createElement(SVGBrowser, {
-						x: 10, y: 10, width: 600, height: 300}
-					)
+					designObjectsRep
 				), 
 				React.createElement(KeyboardInput, null)
 			)
@@ -20663,7 +20660,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./Canvas":167,"./KeyboardInput":168,"./SVGBrowser":169,"react":162}],166:[function(require,module,exports){
+},{"./Canvas":167,"./KeyboardInput":168,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20705,7 +20702,7 @@ var AppController = React.createClass({displayName: "AppController",
 
 module.exports = AppController;
 
-},{"../doRender":173,"../stores/designObjectStore":176,"./App":165,"react":162}],167:[function(require,module,exports){
+},{"../doRender":172,"../stores/designObjectStore":175,"./App":165,"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20798,72 +20795,6 @@ var
 var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	
 	render: function() {
-		var
-			osWidth= 600,
-			osHeight = 300,
-			headerHeight = 60, // use %?
-			statusBarHeight = 25,
-			$__0=         this.props,x=$__0.x,y=$__0.y,w=$__0.width,h=$__0.height
-		;
-		
-		return (
-			React.createElement("g", {id: this.props.id, className: "object browser", transform: ("translate(" + x + ", " + y + ")")}, 
-				React.createElement("rect", {x: "0", y: "0", width: osWidth, height: osHeight}), 
-				React.createElement("rect", {x: "0", y: "0", width: osWidth, height: headerHeight}), 
-				React.createElement("rect", {x: "0", y: osHeight - statusBarHeight, width: osWidth, height: statusBarHeight})
-			)
-		);
-	},
-	
-	onClick: function(e) {
-		e.stopPropagation();
-		
-		AppActions.selectObject(this.props.id);
-	},
-	
-	onMouseDown: function(e) {
-		e.stopPropagation();
-		
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		document.addEventListener('mousemove', this.onMouseMove, false);
-		document.addEventListener('mouseup', this.onMouseUp, false);
-		
-		AppActions.selectObject(this.props.id);
-	},
-	
-	onMouseMove: function(e) {
-		e.stopPropagation();
-		
-		var dx = e.clientX - this.mouseX;
-		var dy = e.clientY - this.mouseY;
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		AppActions.translate(dx, dy);
-	},
-	
-	onMouseUp: function(e) {
-		e.stopPropagation();
-		
-		document.removeEventListener('mousemove', this.onMouseMove, false);
-		document.removeEventListener('mouseup', this.onMouseUp, false);
-	}
-
-});
-
-module.exports = SVGRectangle;
-
-},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
-var
-   React = require('react')
-   ,AppActions = require('../actions/AppActions')
-;
-
-var SVGRectangle = React.createClass({displayName: "SVGRectangle",
-	
-	render: function() {
 		return (
 			React.createElement("rect", {
 				id: this.props.id, className: "object", 
@@ -20914,7 +20845,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -20930,7 +20861,7 @@ module.exports = keyMirror({
   LEFT: null
 });
 
-},{"keymirror":6}],172:[function(require,module,exports){
+},{"keymirror":6}],171:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -20948,7 +20879,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],173:[function(require,module,exports){
+},{"flux":3}],172:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -20974,7 +20905,7 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":170,"react":162}],174:[function(require,module,exports){
+},{"./components/SVGRectangle":169,"react":162}],173:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21022,7 +20953,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],175:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 var
 	appConstants = require('../constants/appConstants')
 ;
@@ -21035,6 +20966,8 @@ function Rectangle(x, y, w, h) {
 	this.w = w;
 	this.h = h;
 }
+
+Rectangle.minSize = 5;
 
 Rectangle.prototype.setPos = function(x, y) {
 	this.x = x;
@@ -21064,11 +20997,16 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 			break;
 		default:
 	}
+	
+	if (this.w < Rectangle.minSize)
+		this.w = Rectangle.minSize;
+	if (this.h < Rectangle.minSize)
+		this.h = Rectangle.minSize;
 };
 
 module.exports = Rectangle;
 
-},{"../constants/appConstants":171}],176:[function(require,module,exports){
+},{"../constants/appConstants":170}],175:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21177,4 +21115,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"./Rectangle":175,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/appConstants":170,"../dispatcher/AppDispatcher":171,"./Rectangle":174,"events":1,"object-assign":7}]},{},[164]);
