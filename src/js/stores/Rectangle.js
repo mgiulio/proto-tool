@@ -17,4 +17,25 @@ Rectangle.prototype.translate = function(x, y) {
 	this.y += y;
 };
 
+Rectangle.prototype.pullSide = function(side, amount) {
+	switch (side) {
+		case 'top':
+			this.y -= amount;
+			this.h += amount;
+			break;
+		case 'right':
+			this.w += amount;
+			break;
+		case 'bottom':
+			this.h += amount;
+			break;
+		case 'left':
+			this.x -= amount;
+			this.w += amount;
+			break;
+		default:
+			// throw?
+	}
+};
+
 module.exports = Rectangle;

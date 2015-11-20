@@ -20576,30 +20576,36 @@ var AppActions = {
 	},
 	
 	translate: translate,
-	
 	translateUp: compose(translate.bind(null, 0), neg, offset),
-	
 	translateDown: compose(translate.bind(null, 0), offset),
-	
 	translateRight: function(speed) { //translateRight: compose(translate.bind(null, _, 0), offset),
 		translate(offset(speed), 0);
 	},
-	
 	translateLeft: function(speed) {
 		translate(- offset(speed), 0);
+	},
+	
+	pullSide: function(side, amount) {
+		AppDispatcher.dispatch({
+			actionType: AppConstants.PULL_SIDE,
+			side: side,
+			amount: amount
+		});
 	}
 
 };
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":170,"../dispatcher/AppDispatcher":171,"../lib/func":173}],164:[function(require,module,exports){
+},{"../constants/AppConstants":171,"../dispatcher/AppDispatcher":172,"../lib/func":174}],164:[function(require,module,exports){
 var
    React = require('react')
    ,AppController = require('./components/AppController')
    ,AppActions = require('./actions/AppActions')
    ,designObjectStore = require('./stores/designObjectStore')
 ;
+
+window.appActions = AppActions;
 
 React.render(React.createElement(AppController, null), document.body/*, populate*/);
 
@@ -20619,11 +20625,12 @@ function populate() {
 	AppActions.select(r0);
 	//...
 }
-},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":175,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":176,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,KeyboardInput = require('./KeyboardInput')
    ,Canvas = require('./Canvas')
+   ,SVGBrowser = require('./SVGBrowser')
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20634,7 +20641,10 @@ var App = React.createClass({displayName: "App",
 		return (
 			React.createElement("div", {className: "app"}, 
 				React.createElement(Canvas, null, 
-					designObjectsRep
+					designObjectsRep, 
+					React.createElement(SVGBrowser, {
+						x: 10, y: 10, width: 600, height: 300}
+					)
 				), 
 				React.createElement(KeyboardInput, null)
 			)
@@ -20645,7 +20655,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./Canvas":167,"./KeyboardInput":168,"react":162}],166:[function(require,module,exports){
+},{"./Canvas":167,"./KeyboardInput":168,"./SVGBrowser":169,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20687,7 +20697,7 @@ var AppController = React.createClass({displayName: "AppController",
 
 module.exports = AppController;
 
-},{"../doRender":172,"../stores/designObjectStore":175,"./App":165,"react":162}],167:[function(require,module,exports){
+},{"../doRender":173,"../stores/designObjectStore":176,"./App":165,"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20780,6 +20790,72 @@ var
 var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	
 	render: function() {
+		var
+			osWidth= 600,
+			osHeight = 300,
+			headerHeight = 60, // use %?
+			statusBarHeight = 25,
+			$__0=         this.props,x=$__0.x,y=$__0.y,w=$__0.width,h=$__0.height
+		;
+		
+		return (
+			React.createElement("g", {id: this.props.id, className: "object browser", transform: ("translate(" + x + ", " + y + ")")}, 
+				React.createElement("rect", {x: "0", y: "0", width: osWidth, height: osHeight}), 
+				React.createElement("rect", {x: "0", y: "0", width: osWidth, height: headerHeight}), 
+				React.createElement("rect", {x: "0", y: osHeight - statusBarHeight, width: osWidth, height: statusBarHeight})
+			)
+		);
+	},
+	
+	onClick: function(e) {
+		e.stopPropagation();
+		
+		AppActions.selectObject(this.props.id);
+	},
+	
+	onMouseDown: function(e) {
+		e.stopPropagation();
+		
+		this.mouseX = e.clientX;
+		this.mouseY = e.clientY;
+		
+		document.addEventListener('mousemove', this.onMouseMove, false);
+		document.addEventListener('mouseup', this.onMouseUp, false);
+		
+		AppActions.selectObject(this.props.id);
+	},
+	
+	onMouseMove: function(e) {
+		e.stopPropagation();
+		
+		var dx = e.clientX - this.mouseX;
+		var dy = e.clientY - this.mouseY;
+		this.mouseX = e.clientX;
+		this.mouseY = e.clientY;
+		
+		AppActions.translate(dx, dy);
+	},
+	
+	onMouseUp: function(e) {
+		e.stopPropagation();
+		
+		document.removeEventListener('mousemove', this.onMouseMove, false);
+		document.removeEventListener('mouseup', this.onMouseUp, false);
+	}
+
+});
+
+module.exports = SVGRectangle;
+
+},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+var
+   React = require('react')
+   ,AppActions = require('../actions/AppActions')
+;
+
+var SVGRectangle = React.createClass({displayName: "SVGRectangle",
+	
+	render: function() {
 		return (
 			React.createElement("rect", {
 				id: this.props.id, className: "object", 
@@ -20830,7 +20906,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -20838,10 +20914,11 @@ module.exports = keyMirror({
   SELECT_OBJECT: null,
   SELECT_NEXT: null,
   SELECT_PREV: null,
-  TRANSLATE: null
+  TRANSLATE: null,
+  PULL_SIDE: null
 });
 
-},{"keymirror":6}],171:[function(require,module,exports){
+},{"keymirror":6}],172:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -20859,7 +20936,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],172:[function(require,module,exports){
+},{"flux":3}],173:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -20885,8 +20962,9 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":169,"react":162}],173:[function(require,module,exports){
-var 
+},{"./components/SVGRectangle":170,"react":162}],174:[function(require,module,exports){
+var
+	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
 		var 
 			args = arguments,
@@ -20909,13 +20987,30 @@ var
 			}
 		
 		return out;
+	},
+	partial = function(f ) {for (var boundArgs=[],$__0=1,$__1=arguments.length;$__0<$__1;$__0++) boundArgs.push(arguments[$__0]);
+		return function() {
+			var 
+				position = 0, 
+				length = boundArgs.length,
+				args = Array(length)
+			;
+			
+			for (var i = 0; i < length; i++)
+				args[i] = boundArgs[i] === placeholder ? arguments[position++] : boundArgs[i];
+			
+			while (position < arguments.length) args.push(arguments[position++]);
+			
+			return f.apply(this, args);
+		};
 	}
 ;
 
 module.exports = {
-	compose: compose
+	compose: compose,
+	partial: partial
 };
-},{}],174:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 function Rectangle(x, y, w, h) {
 	this.type = 'Rectangle';
 	
@@ -20935,9 +21030,30 @@ Rectangle.prototype.translate = function(x, y) {
 	this.y += y;
 };
 
+Rectangle.prototype.pullSide = function(side, amount) {
+	switch (side) {
+		case 'top':
+			this.y -= amount;
+			this.h += amount;
+			break;
+		case 'right':
+			this.w += amount;
+			break;
+		case 'bottom':
+			this.h += amount;
+			break;
+		case 'left':
+			this.x -= amount;
+			this.w += amount;
+			break;
+		default:
+			// throw?
+	}
+};
+
 module.exports = Rectangle;
 
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -20974,6 +21090,10 @@ function setPos(x, y) {
 
 function translate(x, y) {
 	objects[selected].translate(x, y);
+}
+
+function pullSide(side, amount) {
+	objects[selected].pullSide(side, amount);
 }
 
 
@@ -21032,10 +21152,14 @@ AppDispatcher.register(function(action) {
 			translate(action.dx, action.dy);
 			designObjectStore.emitChange();
 			break;
+		case AppConstants.PULL_SIDE:
+			pullSide(action.side, action.amount);
+			designObjectStore.emitChange();
+			break;
 		default:
 	}
 });
 
 module.exports = designObjectStore;
 
-},{"../constants/AppConstants":170,"../dispatcher/AppDispatcher":171,"./Rectangle":174,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/AppConstants":171,"../dispatcher/AppDispatcher":172,"./Rectangle":175,"events":1,"object-assign":7}]},{},[164]);

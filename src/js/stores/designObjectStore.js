@@ -36,6 +36,10 @@ function translate(x, y) {
 	objects[selected].translate(x, y);
 }
 
+function pullSide(side, amount) {
+	objects[selected].pullSide(side, amount);
+}
+
 
 
 var 
@@ -90,6 +94,10 @@ AppDispatcher.register(function(action) {
 			break;
 		case AppConstants.TRANSLATE:
 			translate(action.dx, action.dy);
+			designObjectStore.emitChange();
+			break;
+		case AppConstants.PULL_SIDE:
+			pullSide(action.side, action.amount);
 			designObjectStore.emitChange();
 			break;
 		default:

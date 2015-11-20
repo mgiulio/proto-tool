@@ -68,17 +68,21 @@ var AppActions = {
 	},
 	
 	translate: translate,
-	
 	translateUp: compose(translate.bind(null, 0), neg, offset),
-	
 	translateDown: compose(translate.bind(null, 0), offset),
-	
 	translateRight: function(speed) { //translateRight: compose(translate.bind(null, _, 0), offset),
 		translate(offset(speed), 0);
 	},
-	
 	translateLeft: function(speed) {
 		translate(- offset(speed), 0);
+	},
+	
+	pullSide: function(side, amount) {
+		AppDispatcher.dispatch({
+			actionType: AppConstants.PULL_SIDE,
+			side: side,
+			amount: amount
+		});
 	}
 
 };

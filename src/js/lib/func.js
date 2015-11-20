@@ -1,4 +1,5 @@
-var 
+var
+	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
 		var 
 			args = arguments,
@@ -21,9 +22,26 @@ var
 			}
 		
 		return out;
+	},
+	partial = function(f, ...boundArgs) {
+		return function() {
+			var 
+				position = 0, 
+				length = boundArgs.length,
+				args = Array(length)
+			;
+			
+			for (var i = 0; i < length; i++)
+				args[i] = boundArgs[i] === placeholder ? arguments[position++] : boundArgs[i];
+			
+			while (position < arguments.length) args.push(arguments[position++]);
+			
+			return f.apply(this, args);
+		};
 	}
 ;
 
 module.exports = {
-	compose: compose
+	compose: compose,
+	partial: partial
 };

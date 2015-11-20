@@ -5,6 +5,8 @@ var
    ,designObjectStore = require('./stores/designObjectStore')
 ;
 
+window.appActions = AppActions;
+
 React.render(<AppController />, document.body/*, populate*/);
 
 function populate() {
