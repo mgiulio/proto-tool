@@ -20873,14 +20873,43 @@ var
 var SelectionBox = React.createClass({displayName: "SelectionBox",
 	
 	render: function() {
+		var
+			$__0=         this.props,x=$__0.x,y=$__0.y,w=$__0.w,h=$__0.h,
+			hw = w / 2,
+			hh = h / 2,
+			mp = [ // handle midpoints
+				[hw, 0], // top edge
+				[w , hh], // right
+				[hw, h], // bottom
+				[0 , hh], // left
+			],
+			handles = mp.map(function(mp)  {return React.createElement(Handle, {x: mp[0], y: mp[1]});});
+		;
+		
 		return (
-			React.createElement("rect", {
-				className: "selection-box", 
-				x: this.props.x, y: this.props.y, width: this.props.w, height: this.props.h}
+			React.createElement("g", {className: "selection-box", transform: ("translate(" + x + ", " + y + ")")}, 
+				React.createElement("rect", {x: "0", y: "0", width: w, height: h}), 
+				handles
 			)
 		);
 	}
 
+});
+
+var Handle = React.createClass({displayName: "Handle",
+	
+	render: function() {
+		var
+			size = 5,
+			hs = size / 2,
+			$__0=     this.props,x=$__0.x,y=$__0.y
+		;
+		
+		return (
+			React.createElement("rect", {className: "handle", x: x - hs, y: y - hs, width: size, height: size})
+		);
+	}
+	
 });
 
 module.exports = SelectionBox;
