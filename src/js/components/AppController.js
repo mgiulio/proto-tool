@@ -9,7 +9,8 @@ var AppController = React.createClass({
 	
 	getAppState: function() {
 		return {
-			designObjects: doStore.getObjects()
+			designObjects: doStore.getObjects(),
+			selectedObject: doStore.getSelectedObject()
 		};
 	},
 	
@@ -31,7 +32,11 @@ var AppController = React.createClass({
 	
 	render: function() {
 		return (
-			<App designObjects={this.state.designObjects} doRender={doRender} />
+			<App 
+				designObjects={this.state.designObjects} 
+				selectedObject={this.state.selectedObject}
+				doRender={doRender} 
+			/>
 		);
 	}
 	

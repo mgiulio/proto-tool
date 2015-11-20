@@ -13,6 +13,15 @@ function Rectangle(x, y, w, h) {
 
 Rectangle.minSize = 5;
 
+Rectangle.prototype.getAABB = function() {
+	return {
+		x: this.x,
+		y: this.y,
+		w: this.w,
+		h: this.h
+	};
+};
+
 Rectangle.prototype.setPos = function(x, y) {
 	this.x = x;
 	this.y = y;

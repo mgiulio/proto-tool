@@ -20603,19 +20603,19 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":170,"../dispatcher/AppDispatcher":171,"../lib/func":173}],164:[function(require,module,exports){
+},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"../lib/func":174}],164:[function(require,module,exports){
 var
    React = require('react')
    ,AppController = require('./components/AppController')
-   ,AppActions = require('./actions/AppActions')
+   ,appActions = require('./actions/AppActions')
    //,appConstants = require('./constants/appConstants')
    ,designObjectStore = require('./stores/designObjectStore')
 ;
 
-window.appActions = AppActions;
+window.appActions = appActions;
 //window.appConstants = appConstants;
 
-React.render(React.createElement(AppController, null), document.body/*, populate*/);
+React.render(React.createElement(AppController, null), document.body, populate);
 
 function populate() {
 	/*
@@ -20627,18 +20627,25 @@ function populate() {
 	api.translate(100, 0);
 	*/
 	
-	AppActions.addObject('Rectangle', 10, 10, 100, 50);
+	/*
+	appActions.addObject('Rectangle', 10, 10, 100, 50);
 	var r0 = designObjectStore.getSelectedObject();
-	AppActions.addObject('Rectangle', 10, 100, 50, 100);
-	AppActions.select(r0);
+	appActions.addObject('Rectangle', 10, 100, 50, 100);
+	appActions\.select(r0);
 	//...
+	*/
+	
+	appActions.addObject('Rectangle', 10, 10, 100, 50);
+	appActions.addObject('Rectangle', 120, 10, 100, 50);
+	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":175,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":176,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,KeyboardInput = require('./KeyboardInput')
    ,Canvas = require('./Canvas')
    //,SVGBrowser = require('./SVGBrowser')
+   ,SelectionBox = require('./SelectionBox')
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20646,10 +20653,17 @@ var App = React.createClass({displayName: "App",
 	render: function() {
 		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
 		
+		var selectionBox;
+		if (this.props.selectedObject) {
+			var aabb = this.props.selectedObject.getAABB();
+			selectionBox = React.createElement(SelectionBox, {x: aabb.x, y: aabb.y, w: aabb.w, h: aabb.h});
+		}
+		
 		return (
 			React.createElement("div", {className: "app"}, 
 				React.createElement(Canvas, null, 
-					designObjectsRep
+					designObjectsRep, 
+					selectionBox
 				), 
 				React.createElement(KeyboardInput, null)
 			)
@@ -20660,7 +20674,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./Canvas":167,"./KeyboardInput":168,"react":162}],166:[function(require,module,exports){
+},{"./Canvas":167,"./KeyboardInput":168,"./SelectionBox":170,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20672,7 +20686,8 @@ var AppController = React.createClass({displayName: "AppController",
 	
 	getAppState: function() {
 		return {
-			designObjects: doStore.getObjects()
+			designObjects: doStore.getObjects(),
+			selectedObject: doStore.getSelectedObject()
 		};
 	},
 	
@@ -20694,7 +20709,11 @@ var AppController = React.createClass({displayName: "AppController",
 	
 	render: function() {
 		return (
-			React.createElement(App, {designObjects: this.state.designObjects, doRender: doRender})
+			React.createElement(App, {
+				designObjects: this.state.designObjects, 
+				selectedObject: this.state.selectedObject, 
+				doRender: doRender}
+			)
 		);
 	}
 	
@@ -20702,7 +20721,7 @@ var AppController = React.createClass({displayName: "AppController",
 
 module.exports = AppController;
 
-},{"../doRender":172,"../stores/designObjectStore":175,"./App":165,"react":162}],167:[function(require,module,exports){
+},{"../doRender":173,"../stores/designObjectStore":176,"./App":165,"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20846,6 +20865,27 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 module.exports = SVGRectangle;
 
 },{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+var
+   React = require('react')
+   ,AppActions = require('../actions/AppActions')
+;
+
+var SelectionBox = React.createClass({displayName: "SelectionBox",
+	
+	render: function() {
+		return (
+			React.createElement("rect", {
+				className: "selection-box", 
+				x: this.props.x, y: this.props.y, width: this.props.w, height: this.props.h}
+			)
+		);
+	}
+
+});
+
+module.exports = SelectionBox;
+
+},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -20861,7 +20901,7 @@ module.exports = keyMirror({
   LEFT: null
 });
 
-},{"keymirror":6}],171:[function(require,module,exports){
+},{"keymirror":6}],172:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -20879,7 +20919,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],172:[function(require,module,exports){
+},{"flux":3}],173:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -20905,7 +20945,7 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":169,"react":162}],173:[function(require,module,exports){
+},{"./components/SVGRectangle":169,"react":162}],174:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -20953,7 +20993,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],174:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 var
 	appConstants = require('../constants/appConstants')
 ;
@@ -20968,6 +21008,15 @@ function Rectangle(x, y, w, h) {
 }
 
 Rectangle.minSize = 5;
+
+Rectangle.prototype.getAABB = function() {
+	return {
+		x: this.x,
+		y: this.y,
+		w: this.w,
+		h: this.h
+	};
+};
 
 Rectangle.prototype.setPos = function(x, y) {
 	this.x = x;
@@ -21006,7 +21055,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../constants/appConstants":170}],175:[function(require,module,exports){
+},{"../constants/appConstants":171}],176:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21073,6 +21122,10 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	
 	getObjects: function() {
 		return objects;
+	},
+	
+	getSelectedObject: function() {
+		return objects[selected];
 	}
   
 });
@@ -21115,4 +21168,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":170,"../dispatcher/AppDispatcher":171,"./Rectangle":174,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"./Rectangle":175,"events":1,"object-assign":7}]},{},[164]);

@@ -64,6 +64,10 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	
 	getObjects: function() {
 		return objects;
+	},
+	
+	getSelectedObject: function() {
+		return objects[selected];
 	}
   
 });
