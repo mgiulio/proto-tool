@@ -70,33 +70,33 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 var 
 	AppDispatcher = require('../dispatcher/AppDispatcher')
-	,AppConstants = require('../constants/AppConstants')
+	,appConstants = require('../constants/appConstants')
 ;
 
 AppDispatcher.register(function(action) {
 	switch (action.actionType) {
-		case AppConstants.ADD_OBJECT:
+		case appConstants.ADD_OBJECT:
 			addObject(action.type, action.x, action.y, action.w, action.h);
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.SELECT_OBJECT:
+		case appConstants.SELECT_OBJECT:
 			select(action.index);
 			designObjectStore.emitChange();
 			break;
 		break;
-		case AppConstants.SELECT_NEXT:
+		case appConstants.SELECT_NEXT:
 			selectNext();
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.SELECT_PREV:
+		case appConstants.SELECT_PREV:
 			selectPrev();
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.TRANSLATE:
+		case appConstants.TRANSLATE:
 			translate(action.dx, action.dy);
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.RESIZE_SIDE:
+		case appConstants.RESIZE_SIDE:
 			resizeSide(action.side, action.amount);
 			designObjectStore.emitChange();
 			break;

@@ -1,3 +1,7 @@
+var
+	appConstants = require('../constants/appConstants')
+;
+
 function Rectangle(x, y, w, h) {
 	this.type = 'Rectangle';
 	
@@ -19,22 +23,21 @@ Rectangle.prototype.translate = function(x, y) {
 
 Rectangle.prototype.resizeSide = function(side, amount) {
 	switch (side) {
-		case 'top':
+		case appConstants.TOP:
 			this.y -= amount;
 			this.h += amount;
 			break;
-		case 'right':
+		case appConstants.RIGHT:
 			this.w += amount;
 			break;
-		case 'bottom':
+		case appConstants.BOTTOM:
 			this.h += amount;
 			break;
-		case 'left':
+		case appConstants.LEFT:
 			this.x -= amount;
 			this.w += amount;
 			break;
 		default:
-			// throw?
 	}
 };
 

@@ -20508,7 +20508,7 @@ module.exports = require('./lib/React');
 },{"./lib/React":35}],163:[function(require,module,exports){
 var 
 	AppDispatcher = require('../dispatcher/AppDispatcher')
-	,AppConstants = require('../constants/AppConstants')
+	,appConstants = require('../constants/appConstants')
 	,compose = require('../lib/func').compose
 ;
 
@@ -20530,9 +20530,17 @@ function neg(x) {
 
 function translate(dx, dy) {
 	AppDispatcher.dispatch({
-		actionType: AppConstants.TRANSLATE,
+		actionType: appConstants.TRANSLATE,
 		dx: dx,
 		dy: dy
+	});
+}
+
+function resizeSide(side, amount) {
+	AppDispatcher.dispatch({
+		actionType: appConstants.RESIZE_SIDE,
+		side: side,
+		amount: amount
 	});
 }
 	
@@ -20547,7 +20555,7 @@ var AppActions = {
 	
 	addObject: function(type, x, y, w, h) {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.ADD_OBJECT,
+			actionType: appConstants.ADD_OBJECT,
 			type: type,
 			x: x,
 			y: y,
@@ -20558,20 +20566,20 @@ var AppActions = {
 	
 	selectObject: function(i) {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.SELECT_OBJECT,
+			actionType: appConstants.SELECT_OBJECT,
 			index: i
 		});
 	},
 	
 	selectNext: function() {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.SELECT_NEXT
+			actionType: appConstants.SELECT_NEXT
 		});
 	},
 	
 	selectPrev: function() {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.SELECT_PREV
+			actionType: appConstants.SELECT_PREV
 		});
 	},
 	
@@ -20585,27 +20593,27 @@ var AppActions = {
 		translate(- offset(speed), 0);
 	},
 	
-	resizeSide: function(side, amount) {
-		AppDispatcher.dispatch({
-			actionType: AppConstants.RESIZE_SIDE,
-			side: side,
-			amount: amount
-		});
-	}
+	resizeSide: resizeSide,
+	resizeTop: resizeSide.bind(null, appConstants.TOP),
+	resizeRight: resizeSide.bind(null, appConstants.RIGHT),
+	resizeBottom: resizeSide.bind(null, appConstants.BOTTOM),
+	resizeLeft: resizeSide.bind(null, appConstants.LEFT),
 
 };
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":171,"../dispatcher/AppDispatcher":172,"../lib/func":174}],164:[function(require,module,exports){
+},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"../lib/func":174}],164:[function(require,module,exports){
 var
    React = require('react')
    ,AppController = require('./components/AppController')
    ,AppActions = require('./actions/AppActions')
+   //,appConstants = require('./constants/appConstants')
    ,designObjectStore = require('./stores/designObjectStore')
 ;
 
 window.appActions = AppActions;
+//window.appConstants = appConstants;
 
 React.render(React.createElement(AppController, null), document.body/*, populate*/);
 
@@ -20915,7 +20923,11 @@ module.exports = keyMirror({
   SELECT_NEXT: null,
   SELECT_PREV: null,
   TRANSLATE: null,
-  RESIZE_SIDE: null
+  RESIZE_SIDE: null,
+  TOP: null,
+  RIGHT: null,
+  BOTTOM: null,
+  LEFT: null
 });
 
 },{"keymirror":6}],172:[function(require,module,exports){
@@ -21011,6 +21023,10 @@ module.exports = {
 	partial: partial
 };
 },{}],175:[function(require,module,exports){
+var
+	appConstants = require('../constants/appConstants')
+;
+
 function Rectangle(x, y, w, h) {
 	this.type = 'Rectangle';
 	
@@ -21032,28 +21048,27 @@ Rectangle.prototype.translate = function(x, y) {
 
 Rectangle.prototype.resizeSide = function(side, amount) {
 	switch (side) {
-		case 'top':
+		case appConstants.TOP:
 			this.y -= amount;
 			this.h += amount;
 			break;
-		case 'right':
+		case appConstants.RIGHT:
 			this.w += amount;
 			break;
-		case 'bottom':
+		case appConstants.BOTTOM:
 			this.h += amount;
 			break;
-		case 'left':
+		case appConstants.LEFT:
 			this.x -= amount;
 			this.w += amount;
 			break;
 		default:
-			// throw?
 	}
 };
 
 module.exports = Rectangle;
 
-},{}],176:[function(require,module,exports){
+},{"../constants/appConstants":171}],176:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21126,33 +21141,33 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 var 
 	AppDispatcher = require('../dispatcher/AppDispatcher')
-	,AppConstants = require('../constants/AppConstants')
+	,appConstants = require('../constants/appConstants')
 ;
 
 AppDispatcher.register(function(action) {
 	switch (action.actionType) {
-		case AppConstants.ADD_OBJECT:
+		case appConstants.ADD_OBJECT:
 			addObject(action.type, action.x, action.y, action.w, action.h);
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.SELECT_OBJECT:
+		case appConstants.SELECT_OBJECT:
 			select(action.index);
 			designObjectStore.emitChange();
 			break;
 		break;
-		case AppConstants.SELECT_NEXT:
+		case appConstants.SELECT_NEXT:
 			selectNext();
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.SELECT_PREV:
+		case appConstants.SELECT_PREV:
 			selectPrev();
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.TRANSLATE:
+		case appConstants.TRANSLATE:
 			translate(action.dx, action.dy);
 			designObjectStore.emitChange();
 			break;
-		case AppConstants.RESIZE_SIDE:
+		case appConstants.RESIZE_SIDE:
 			resizeSide(action.side, action.amount);
 			designObjectStore.emitChange();
 			break;
@@ -21162,4 +21177,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/AppConstants":171,"../dispatcher/AppDispatcher":172,"./Rectangle":175,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"./Rectangle":175,"events":1,"object-assign":7}]},{},[164]);

@@ -2,10 +2,12 @@ var
    React = require('react')
    ,AppController = require('./components/AppController')
    ,AppActions = require('./actions/AppActions')
+   //,appConstants = require('./constants/appConstants')
    ,designObjectStore = require('./stores/designObjectStore')
 ;
 
 window.appActions = AppActions;
+//window.appConstants = appConstants;
 
 React.render(<AppController />, document.body/*, populate*/);
 

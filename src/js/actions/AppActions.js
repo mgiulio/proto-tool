@@ -1,6 +1,6 @@
 var 
 	AppDispatcher = require('../dispatcher/AppDispatcher')
-	,AppConstants = require('../constants/AppConstants')
+	,appConstants = require('../constants/appConstants')
 	,compose = require('../lib/func').compose
 ;
 
@@ -22,9 +22,17 @@ function neg(x) {
 
 function translate(dx, dy) {
 	AppDispatcher.dispatch({
-		actionType: AppConstants.TRANSLATE,
+		actionType: appConstants.TRANSLATE,
 		dx: dx,
 		dy: dy
+	});
+}
+
+function resizeSide(side, amount) {
+	AppDispatcher.dispatch({
+		actionType: appConstants.RESIZE_SIDE,
+		side: side,
+		amount: amount
 	});
 }
 	
@@ -39,7 +47,7 @@ var AppActions = {
 	
 	addObject: function(type, x, y, w, h) {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.ADD_OBJECT,
+			actionType: appConstants.ADD_OBJECT,
 			type: type,
 			x: x,
 			y: y,
@@ -50,20 +58,20 @@ var AppActions = {
 	
 	selectObject: function(i) {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.SELECT_OBJECT,
+			actionType: appConstants.SELECT_OBJECT,
 			index: i
 		});
 	},
 	
 	selectNext: function() {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.SELECT_NEXT
+			actionType: appConstants.SELECT_NEXT
 		});
 	},
 	
 	selectPrev: function() {
 		AppDispatcher.dispatch({
-			actionType: AppConstants.SELECT_PREV
+			actionType: appConstants.SELECT_PREV
 		});
 	},
 	
@@ -77,13 +85,11 @@ var AppActions = {
 		translate(- offset(speed), 0);
 	},
 	
-	resizeSide: function(side, amount) {
-		AppDispatcher.dispatch({
-			actionType: AppConstants.RESIZE_SIDE,
-			side: side,
-			amount: amount
-		});
-	}
+	resizeSide: resizeSide,
+	resizeTop: resizeSide.bind(null, appConstants.TOP),
+	resizeRight: resizeSide.bind(null, appConstants.RIGHT),
+	resizeBottom: resizeSide.bind(null, appConstants.BOTTOM),
+	resizeLeft: resizeSide.bind(null, appConstants.LEFT),
 
 };
 
