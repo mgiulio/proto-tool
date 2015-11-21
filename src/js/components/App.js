@@ -6,9 +6,7 @@ var
    ,SelectionBox = require('./SelectionBox')
 	,AppDispatcher = require('../dispatcher/AppDispatcher')
 	,appConstants = require('../constants/appConstants')
-	,Panel = require('./Panel')
-	,Inspector = require('./Inspector')
-	,Settings = require('./Settings')
+	,SidePanelContainer = require('./SidePanelContainer')
 ;
 
 var App = React.createClass({
@@ -32,9 +30,17 @@ var App = React.createClass({
 	render: function() {
 		var classes = ['app'];
 
-		var sidePanelContainer = this.renderSidePanelContainer();
-		if (sidePanelContainer)
+		var sidePanel;
+		if (this.isSidePanelVisible()) {
 			classes.push('sidepanel-visible');
+			
+			sidePanel = <SidePanelContainer 
+				inspector={this.state.inspectorPanel} 
+				settings={this.state.settingsPanel} 
+				panelOnTop={this.state.panelOnTop} 
+				selectedObject={this.props.selectedObject}
+			/>
+		}
 		
 		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
 		
@@ -50,36 +56,16 @@ var App = React.createClass({
 					{designObjectsRep}
 					{selectionBox}
 				</Canvas>
-				{sidePanelContainer}
+				{sidePanel}
 				<KeyboardInput />
 			</div>
 		);
 	},
 	
-	renderSidePanelContainer: function() {
-		var 
-			panels = []
-		;
-		
-		if (this.state.inspectorPanel) {
-			panels.push(
-				<Panel onTop={this.state.panelOnTop === 'INSPECTOR'} key={1} >
-					<Inspector selectedObject={this.props.selectedObject} />
-				</Panel>
-			);
-		}
-		
-		if (this.state.settingsPanel) {
-			panels.push(
-				<Panel onTop={this.state.panelOnTop === 'SETTINGS'} key={2} >
-					<Settings />
-				</Panel>
-			);
-		}
-		
-		return panels.length > 0 ? <div className="sidepanel-container">{panels}</div> : null;
+	isSidePanelVisible: function() {
+		return this.state.inspectorPanel || this.state.settingsPanel;
 	},
-	
+		
 	handlePanelActions: function(action) {
 		switch (action.actionType) {
 			case appConstants.SHOW_INSPECTOR:

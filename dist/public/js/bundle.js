@@ -20627,7 +20627,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":174,"../dispatcher/AppDispatcher":175,"../lib/func":177}],164:[function(require,module,exports){
+},{"../constants/appConstants":175,"../dispatcher/AppDispatcher":176,"../lib/func":178}],164:[function(require,module,exports){
 var
    React = require('react')
    ,AppController = require('./components/AppController')
@@ -20663,7 +20663,7 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":179,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":180,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,KeyboardInput = require('./KeyboardInput')
@@ -20672,9 +20672,7 @@ var
    ,SelectionBox = require('./SelectionBox')
 	,AppDispatcher = require('../dispatcher/AppDispatcher')
 	,appConstants = require('../constants/appConstants')
-	,Panel = require('./Panel')
-	,Inspector = require('./Inspector')
-	,Settings = require('./Settings')
+	,SidePanelContainer = require('./SidePanelContainer')
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20698,9 +20696,17 @@ var App = React.createClass({displayName: "App",
 	render: function() {
 		var classes = ['app'];
 
-		var sidePanelContainer = this.renderSidePanelContainer();
-		if (sidePanelContainer)
+		var sidePanel;
+		if (this.isSidePanelVisible()) {
 			classes.push('sidepanel-visible');
+			
+			sidePanel = React.createElement(SidePanelContainer, {
+				inspector: this.state.inspectorPanel, 
+				settings: this.state.settingsPanel, 
+				panelOnTop: this.state.panelOnTop, 
+				selectedObject: this.props.selectedObject}
+			)
+		}
 		
 		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
 		
@@ -20716,36 +20722,16 @@ var App = React.createClass({displayName: "App",
 					designObjectsRep, 
 					selectionBox
 				), 
-				sidePanelContainer, 
+				sidePanel, 
 				React.createElement(KeyboardInput, null)
 			)
 		);
 	},
 	
-	renderSidePanelContainer: function() {
-		var 
-			panels = []
-		;
-		
-		if (this.state.inspectorPanel) {
-			panels.push(
-				React.createElement(Panel, {onTop: this.state.panelOnTop === 'INSPECTOR', key: 1}, 
-					React.createElement(Inspector, {selectedObject: this.props.selectedObject})
-				)
-			);
-		}
-		
-		if (this.state.settingsPanel) {
-			panels.push(
-				React.createElement(Panel, {onTop: this.state.panelOnTop === 'SETTINGS', key: 2}, 
-					React.createElement(Settings, null)
-				)
-			);
-		}
-		
-		return panels.length > 0 ? React.createElement("div", {className: "sidepanel-container"}, panels) : null;
+	isSidePanelVisible: function() {
+		return this.state.inspectorPanel || this.state.settingsPanel;
 	},
-	
+		
 	handlePanelActions: function(action) {
 		switch (action.actionType) {
 			case appConstants.SHOW_INSPECTOR:
@@ -20767,7 +20753,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../constants/appConstants":174,"../dispatcher/AppDispatcher":175,"./Canvas":167,"./Inspector":168,"./KeyboardInput":169,"./Panel":170,"./SelectionBox":172,"./Settings":173,"react":162}],166:[function(require,module,exports){
+},{"../constants/appConstants":175,"../dispatcher/AppDispatcher":176,"./Canvas":167,"./KeyboardInput":169,"./SelectionBox":172,"./SidePanelContainer":174,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20814,7 +20800,7 @@ var AppController = React.createClass({displayName: "AppController",
 
 module.exports = AppController;
 
-},{"../doRender":176,"../stores/designObjectStore":179,"./App":165,"react":162}],167:[function(require,module,exports){
+},{"../doRender":177,"../stores/designObjectStore":180,"./App":165,"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20848,7 +20834,6 @@ var Inspector = React.createClass({displayName: "Inspector",
 		else
 			content = React.createElement("div", null, "no selected object");
 		
-		console.log(content);
 		return (
 			React.createElement("div", null, 
 				content
@@ -21140,7 +21125,7 @@ var Handle = React.createClass({displayName: "Handle",
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"../constants/appConstants":174,"react":162}],173:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":175,"react":162}],173:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -21158,6 +21143,41 @@ var Settings = React.createClass({displayName: "Settings",
 module.exports = Settings;
 
 },{"react":162}],174:[function(require,module,exports){
+var
+	React = require('react')
+	,Panel = require('./Panel')
+	,Inspector = require('./Inspector')
+	,Settings = require('./Settings')
+;
+
+var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
+	
+	render: function() {
+		var 
+			panels = []
+		;
+	
+		if (this.props.inspector)
+			panels.push(
+				React.createElement(Panel, {onTop: this.props.panelOnTop === 'INSPECTOR', key: 1}, 
+					React.createElement(Inspector, {selectedObject: this.props.selectedObject})
+				)
+			);
+	
+		if (this.props.settings)
+			panels.push(
+				React.createElement(Panel, {onTop: this.props.panelOnTop === 'SETTINGS', key: 2}, 
+					React.createElement(Settings, null)
+				)
+			);
+	
+		return panels.length > 0 ? React.createElement("div", {className: "sidepanel-container"}, panels) : null;
+	}
+
+});
+
+module.exports = SidePanelContainer;
+},{"./Inspector":168,"./Panel":170,"./Settings":173,"react":162}],175:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -21179,7 +21199,7 @@ module.exports = keyMirror({
 	HIDE_SETTINGS: null
 });
 
-},{"keymirror":6}],175:[function(require,module,exports){
+},{"keymirror":6}],176:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -21197,7 +21217,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],176:[function(require,module,exports){
+},{"flux":3}],177:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -21223,7 +21243,7 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":171,"react":162}],177:[function(require,module,exports){
+},{"./components/SVGRectangle":171,"react":162}],178:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21271,7 +21291,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],178:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 var
 	appConstants = require('../constants/appConstants')
 ;
@@ -21344,7 +21364,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../constants/appConstants":174}],179:[function(require,module,exports){
+},{"../constants/appConstants":175}],180:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21457,4 +21477,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":174,"../dispatcher/AppDispatcher":175,"./Rectangle":178,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/appConstants":175,"../dispatcher/AppDispatcher":176,"./Rectangle":179,"events":1,"object-assign":7}]},{},[164]);
