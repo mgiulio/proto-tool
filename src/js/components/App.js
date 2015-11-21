@@ -6,6 +6,9 @@ var
    ,SelectionBox = require('./SelectionBox')
 	,AppDispatcher = require('../dispatcher/AppDispatcher')
 	,appConstants = require('../constants/appConstants')
+	,Panel = require('./Panel')
+	,Inspector = require('./Inspector')
+	,Settings = require('./Settings')
 ;
 
 var App = React.createClass({
@@ -55,33 +58,22 @@ var App = React.createClass({
 	
 	renderSidePanelContainer: function() {
 		var 
-			classes, 
 			panels = []
 		;
 		
 		if (this.state.inspectorPanel) {
-			classes = ['panel', 'inspector'];
-			
-			if (this.state.panelOnTop === 'INSPECTOR')
-				classes.push('ontop');
-
 			panels.push(
-				<div className={classes.join(' ')} key={1}>
-					<p>inspector</p>
-				</div>
+				<Panel onTop={this.state.panelOnTop === 'INSPECTOR'} key={1} >
+					<Inspector selectedObject={this.props.selectedObject} />
+				</Panel>
 			);
 		}
 		
 		if (this.state.settingsPanel) {
-			classes = ['panel', 'settings'];
-			
-			if (this.state.panelOnTop === 'SETTINGS')
-				classes.push('ontop');
-
 			panels.push(
-				<div className={classes.join(' ')} key={2}>
-					<p>settings</p>
-				</div>
+				<Panel onTop={this.state.panelOnTop === 'SETTINGS'} key={2} >
+					<Settings />
+				</Panel>
 			);
 		}
 		

@@ -20627,7 +20627,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"../lib/func":174}],164:[function(require,module,exports){
+},{"../constants/appConstants":174,"../dispatcher/AppDispatcher":175,"../lib/func":177}],164:[function(require,module,exports){
 var
    React = require('react')
    ,AppController = require('./components/AppController')
@@ -20663,7 +20663,7 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":176,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":179,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,KeyboardInput = require('./KeyboardInput')
@@ -20672,6 +20672,9 @@ var
    ,SelectionBox = require('./SelectionBox')
 	,AppDispatcher = require('../dispatcher/AppDispatcher')
 	,appConstants = require('../constants/appConstants')
+	,Panel = require('./Panel')
+	,Inspector = require('./Inspector')
+	,Settings = require('./Settings')
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20721,32 +20724,21 @@ var App = React.createClass({displayName: "App",
 	
 	renderSidePanelContainer: function() {
 		var 
-			classes, 
 			panels = []
 		;
 		
 		if (this.state.inspectorPanel) {
-			classes = ['panel', 'inspector'];
-			
-			if (this.state.panelOnTop === 'INSPECTOR')
-				classes.push('ontop');
-
 			panels.push(
-				React.createElement("div", {className: classes.join(' '), key: 1}, 
-					React.createElement("p", null, "inspector")
+				React.createElement(Panel, {onTop: this.state.panelOnTop === 'INSPECTOR', key: 1}, 
+					React.createElement(Inspector, {selectedObject: this.props.selectedObject})
 				)
 			);
 		}
 		
 		if (this.state.settingsPanel) {
-			classes = ['panel', 'settings'];
-			
-			if (this.state.panelOnTop === 'SETTINGS')
-				classes.push('ontop');
-
 			panels.push(
-				React.createElement("div", {className: classes.join(' '), key: 2}, 
-					React.createElement("p", null, "settings")
+				React.createElement(Panel, {onTop: this.state.panelOnTop === 'SETTINGS', key: 2}, 
+					React.createElement(Settings, null)
 				)
 			);
 		}
@@ -20775,7 +20767,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"./Canvas":167,"./KeyboardInput":168,"./SelectionBox":170,"react":162}],166:[function(require,module,exports){
+},{"../constants/appConstants":174,"../dispatcher/AppDispatcher":175,"./Canvas":167,"./Inspector":168,"./KeyboardInput":169,"./Panel":170,"./SelectionBox":172,"./Settings":173,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20822,7 +20814,7 @@ var AppController = React.createClass({displayName: "AppController",
 
 module.exports = AppController;
 
-},{"../doRender":173,"../stores/designObjectStore":176,"./App":165,"react":162}],167:[function(require,module,exports){
+},{"../doRender":176,"../stores/designObjectStore":179,"./App":165,"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20842,6 +20834,34 @@ var Canvas = React.createClass({displayName: "Canvas",
 module.exports = Canvas;
 
 },{"react":162}],168:[function(require,module,exports){
+var
+   React = require('react')
+;
+
+var Inspector = React.createClass({displayName: "Inspector",
+	
+	render: function() {
+		var content;
+		
+		if (this.props.selectedObject)
+			content = React.createElement("div", null, "there is a selected object");
+		else
+			content = React.createElement("div", null, "no selected object");
+		
+		console.log(content);
+		return (
+			React.createElement("div", null, 
+				content
+			)
+			
+		);
+	}
+
+});
+
+module.exports = Inspector;
+
+},{"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -20906,7 +20926,31 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 
 module.exports = Keyboard;
 
-},{"../actions/AppActions":163,"react":162}],169:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+var
+   React = require('react')
+;
+
+var Panel = React.createClass({displayName: "Panel",
+	
+	render: function() {
+		var classes = ['panel'];
+		
+		if (this.props.onTop)
+			classes.push('ontop');
+		
+		return (
+			React.createElement("div", {className: classes.join(' ')}, 
+				this.props.children
+			)
+		);
+	}
+
+});
+
+module.exports = Panel;
+
+},{"react":162}],171:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -20965,7 +21009,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],172:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('../actions/AppActions')
@@ -21096,7 +21140,24 @@ var Handle = React.createClass({displayName: "Handle",
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"../constants/appConstants":171,"react":162}],171:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":174,"react":162}],173:[function(require,module,exports){
+var
+   React = require('react')
+;
+
+var Settings = React.createClass({displayName: "Settings",
+	
+	render: function() {
+		return (
+			React.createElement("p", null, "Settings")
+		);
+	}
+
+});
+
+module.exports = Settings;
+
+},{"react":162}],174:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -21118,7 +21179,7 @@ module.exports = keyMirror({
 	HIDE_SETTINGS: null
 });
 
-},{"keymirror":6}],172:[function(require,module,exports){
+},{"keymirror":6}],175:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -21136,7 +21197,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],173:[function(require,module,exports){
+},{"flux":3}],176:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -21162,7 +21223,7 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":169,"react":162}],174:[function(require,module,exports){
+},{"./components/SVGRectangle":171,"react":162}],177:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21210,7 +21271,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],175:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 var
 	appConstants = require('../constants/appConstants')
 ;
@@ -21283,7 +21344,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../constants/appConstants":171}],176:[function(require,module,exports){
+},{"../constants/appConstants":174}],179:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21396,4 +21457,4 @@ AppDispatcher.register(function(action) {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"./Rectangle":175,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/appConstants":174,"../dispatcher/AppDispatcher":175,"./Rectangle":178,"events":1,"object-assign":7}]},{},[164]);
