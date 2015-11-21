@@ -90,6 +90,30 @@ var AppActions = {
 	resizeRight: resizeSide.bind(null, appConstants.RIGHT),
 	resizeBottom: resizeSide.bind(null, appConstants.BOTTOM),
 	resizeLeft: resizeSide.bind(null, appConstants.LEFT),
+	
+	showInspector: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SHOW_INSPECTOR
+		});
+	},
+	
+	hideInspector: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.HIDE_INSPECTOR
+		});
+	},
+	
+	showSettings: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SHOW_SETTINGS
+		});
+	},
+	
+	hideSettings: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.HIDE_SETTINGS
+		});
+	},
 
 };
 

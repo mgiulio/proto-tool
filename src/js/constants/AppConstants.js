@@ -7,8 +7,14 @@ module.exports = keyMirror({
   SELECT_PREV: null,
   TRANSLATE: null,
   RESIZE_SIDE: null,
+  
   TOP: null,
   RIGHT: null,
   BOTTOM: null,
-  LEFT: null
+  LEFT: null,
+  
+	SHOW_INSPECTOR: null,
+	HIDE_INSPECTOR: null,
+	SHOW_SETTINGS: null,
+	HIDE_SETTINGS: null
 });

@@ -4,11 +4,35 @@ var
    ,Canvas = require('./Canvas')
    //,SVGBrowser = require('./SVGBrowser')
    ,SelectionBox = require('./SelectionBox')
+	,AppDispatcher = require('../dispatcher/AppDispatcher')
+	,appConstants = require('../constants/appConstants')
 ;
 
 var App = React.createClass({
 	
+	getInitialState: function() {
+		return {
+			inspectorPanel: false,
+			settingsPanel: false,
+			panelOnTop: 'inspector'
+		};
+	},
+	
+	componentDidMount: function() {
+		this.dispatcherCbId = AppDispatcher.register(this.handlePanelActions);
+	},
+	
+	componentWillUnmount: function() {
+		AppDispatcher.unregister(this.dispatcherCbId);
+	},
+	
 	render: function() {
+		var classes = ['app'];
+
+		var sidePanelContainer = this.renderSidePanelContainer();
+		if (sidePanelContainer)
+			classes.push('sidepanel-visible');
+		
 		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
 		
 		var selectionBox;
@@ -18,14 +42,67 @@ var App = React.createClass({
 		}
 		
 		return (
-			<div className="app">
+			<div className={classes.join(' ')}>
 				<Canvas>
 					{designObjectsRep}
 					{selectionBox}
 				</Canvas>
+				{sidePanelContainer}
 				<KeyboardInput />
 			</div>
 		);
+	},
+	
+	renderSidePanelContainer: function() {
+		var 
+			classes, 
+			panels = []
+		;
+		
+		if (this.state.inspectorPanel) {
+			classes = ['panel', 'inspector'];
+			
+			if (this.state.panelOnTop === 'INSPECTOR')
+				classes.push('ontop');
+
+			panels.push(
+				<div className={classes.join(' ')} key={1}>
+					<p>inspector</p>
+				</div>
+			);
+		}
+		
+		if (this.state.settingsPanel) {
+			classes = ['panel', 'settings'];
+			
+			if (this.state.panelOnTop === 'SETTINGS')
+				classes.push('ontop');
+
+			panels.push(
+				<div className={classes.join(' ')} key={2}>
+					<p>settings</p>
+				</div>
+			);
+		}
+		
+		return panels.length > 0 ? <div className="sidepanel-container">{panels}</div> : null;
+	},
+	
+	handlePanelActions: function(action) {
+		switch (action.actionType) {
+			case appConstants.SHOW_INSPECTOR:
+				this.setState({inspectorPanel: true, panelOnTop: 'INSPECTOR'});
+				break;
+			case appConstants.HIDE_INSPECTOR:
+				this.setState({inspectorPanel: false});
+				break;
+			case appConstants.SHOW_SETTINGS:
+				this.setState({settingsPanel: true, panelOnTop: 'SETTINGS'});
+				break;
+			case appConstants.HIDE_SETTINGS:
+				this.setState({settingsPanel: false});
+				break;
+		}
 	}
 	
 });

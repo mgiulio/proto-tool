@@ -20598,6 +20598,30 @@ var AppActions = {
 	resizeRight: resizeSide.bind(null, appConstants.RIGHT),
 	resizeBottom: resizeSide.bind(null, appConstants.BOTTOM),
 	resizeLeft: resizeSide.bind(null, appConstants.LEFT),
+	
+	showInspector: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SHOW_INSPECTOR
+		});
+	},
+	
+	hideInspector: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.HIDE_INSPECTOR
+		});
+	},
+	
+	showSettings: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SHOW_SETTINGS
+		});
+	},
+	
+	hideSettings: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.HIDE_SETTINGS
+		});
+	},
 
 };
 
@@ -20646,11 +20670,35 @@ var
    ,Canvas = require('./Canvas')
    //,SVGBrowser = require('./SVGBrowser')
    ,SelectionBox = require('./SelectionBox')
+	,AppDispatcher = require('../dispatcher/AppDispatcher')
+	,appConstants = require('../constants/appConstants')
 ;
 
 var App = React.createClass({displayName: "App",
 	
+	getInitialState: function() {
+		return {
+			inspectorPanel: false,
+			settingsPanel: false,
+			panelOnTop: 'inspector'
+		};
+	},
+	
+	componentDidMount: function() {
+		this.dispatcherCbId = AppDispatcher.register(this.handlePanelActions);
+	},
+	
+	componentWillUnmount: function() {
+		AppDispatcher.unregister(this.dispatcherCbId);
+	},
+	
 	render: function() {
+		var classes = ['app'];
+
+		var sidePanelContainer = this.renderSidePanelContainer();
+		if (sidePanelContainer)
+			classes.push('sidepanel-visible');
+		
 		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
 		
 		var selectionBox;
@@ -20660,21 +20708,74 @@ var App = React.createClass({displayName: "App",
 		}
 		
 		return (
-			React.createElement("div", {className: "app"}, 
+			React.createElement("div", {className: classes.join(' ')}, 
 				React.createElement(Canvas, null, 
 					designObjectsRep, 
 					selectionBox
 				), 
+				sidePanelContainer, 
 				React.createElement(KeyboardInput, null)
 			)
 		);
+	},
+	
+	renderSidePanelContainer: function() {
+		var 
+			classes, 
+			panels = []
+		;
+		
+		if (this.state.inspectorPanel) {
+			classes = ['panel', 'inspector'];
+			
+			if (this.state.panelOnTop === 'INSPECTOR')
+				classes.push('ontop');
+
+			panels.push(
+				React.createElement("div", {className: classes.join(' '), key: 1}, 
+					React.createElement("p", null, "inspector")
+				)
+			);
+		}
+		
+		if (this.state.settingsPanel) {
+			classes = ['panel', 'settings'];
+			
+			if (this.state.panelOnTop === 'SETTINGS')
+				classes.push('ontop');
+
+			panels.push(
+				React.createElement("div", {className: classes.join(' '), key: 2}, 
+					React.createElement("p", null, "settings")
+				)
+			);
+		}
+		
+		return panels.length > 0 ? React.createElement("div", {className: "sidepanel-container"}, panels) : null;
+	},
+	
+	handlePanelActions: function(action) {
+		switch (action.actionType) {
+			case appConstants.SHOW_INSPECTOR:
+				this.setState({inspectorPanel: true, panelOnTop: 'INSPECTOR'});
+				break;
+			case appConstants.HIDE_INSPECTOR:
+				this.setState({inspectorPanel: false});
+				break;
+			case appConstants.SHOW_SETTINGS:
+				this.setState({settingsPanel: true, panelOnTop: 'SETTINGS'});
+				break;
+			case appConstants.HIDE_SETTINGS:
+				this.setState({settingsPanel: false});
+				break;
+		}
 	}
 	
 });
 
 module.exports = App;
 
-},{"./Canvas":167,"./KeyboardInput":168,"./SelectionBox":170,"react":162}],166:[function(require,module,exports){
+},{"../constants/appConstants":171,"../dispatcher/AppDispatcher":172,"./Canvas":167,"./KeyboardInput":168,"./SelectionBox":170,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -21005,10 +21106,16 @@ module.exports = keyMirror({
   SELECT_PREV: null,
   TRANSLATE: null,
   RESIZE_SIDE: null,
+  
   TOP: null,
   RIGHT: null,
   BOTTOM: null,
-  LEFT: null
+  LEFT: null,
+  
+	SHOW_INSPECTOR: null,
+	HIDE_INSPECTOR: null,
+	SHOW_SETTINGS: null,
+	HIDE_SETTINGS: null
 });
 
 },{"keymirror":6}],172:[function(require,module,exports){
