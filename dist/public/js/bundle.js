@@ -20878,19 +20878,12 @@ var SelectionBox = React.createClass({displayName: "SelectionBox",
 			$__0=         this.props,x=$__0.x,y=$__0.y,w=$__0.w,h=$__0.h,
 			hw = w / 2,
 			hh = h / 2,
-			mp = [ // handle midpoints
-				[hw, 0], // top edge
-				[w , hh], // right
-				[hw, h], // bottom
-				[0 , hh], // left
-			],
-			onDragHandle = [
-				this.onDragHandle.bind(this, appConstants.TOP),
-				this.onDragHandle.bind(this, appConstants.RIGHT),
-				this.onDragHandle.bind(this, appConstants.BOTTOM),
-				this.onDragHandle.bind(this, appConstants.LEFT)
-			],
-			handles = mp.map(function(mp, i)  {return React.createElement(Handle, {x: mp[0], y: mp[1], onDrag: onDragHandle[i], key: i});});
+			handles = [
+				React.createElement(Handle, {className: "top", x: hw, y: 0, onDrag: this.onDragHandle.bind(this, appConstants.TOP), key: 0}),
+				React.createElement(Handle, {className: "right", x: w, y: hh, onDrag: this.onDragHandle.bind(this, appConstants.RIGHT), key: 1}),
+				React.createElement(Handle, {className: "bottom", x: hw, y: h, onDrag: this.onDragHandle.bind(this, appConstants.BOTTOM), key: 2}),
+				React.createElement(Handle, {className: "left", x: 0, y: hh, onDrag: this.onDragHandle.bind(this, appConstants.LEFT), key: 3}),
+			]
 		;
 		
 		return (
@@ -20963,7 +20956,7 @@ var Handle = React.createClass({displayName: "Handle",
 		
 		return (
 			React.createElement("rect", {
-				className: "handle", 
+				className: ("handle " + this.props.className), 
 				x: x - hs, y: y - hs, width: size, height: size, 
 				onMouseDown: this.onMouseDown}
 			)

@@ -11,19 +11,12 @@ var SelectionBox = React.createClass({
 			{x: x, y: y, w: w, h: h} = this.props,
 			hw = w / 2,
 			hh = h / 2,
-			mp = [ // handle midpoints
-				[hw, 0], // top edge
-				[w , hh], // right
-				[hw, h], // bottom
-				[0 , hh], // left
-			],
-			onDragHandle = [
-				this.onDragHandle.bind(this, appConstants.TOP),
-				this.onDragHandle.bind(this, appConstants.RIGHT),
-				this.onDragHandle.bind(this, appConstants.BOTTOM),
-				this.onDragHandle.bind(this, appConstants.LEFT)
-			],
-			handles = mp.map((mp, i) => <Handle x={mp[0]} y={mp[1]} onDrag={onDragHandle[i]} key={i} />);
+			handles = [
+				<Handle className="top"    x={hw} y={0}  onDrag={this.onDragHandle.bind(this, appConstants.TOP)}    key={0} />,
+				<Handle className="right"  x={w}  y={hh} onDrag={this.onDragHandle.bind(this, appConstants.RIGHT)}  key={1} />,
+				<Handle className="bottom" x={hw} y={h}  onDrag={this.onDragHandle.bind(this, appConstants.BOTTOM)} key={2} />,
+				<Handle className="left"   x={0}  y={hh} onDrag={this.onDragHandle.bind(this, appConstants.LEFT)}   key={3} />,
+			]
 		;
 		
 		return (
@@ -96,7 +89,7 @@ var Handle = React.createClass({
 		
 		return (
 			<rect 
-				className="handle" 
+				className={`handle ${this.props.className}`} 
 				x={x - hs} y={y - hs} width={size} height={size} 
 				onMouseDown={this.onMouseDown}
 			/>
