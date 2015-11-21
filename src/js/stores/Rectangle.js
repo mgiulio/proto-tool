@@ -35,26 +35,37 @@ Rectangle.prototype.translate = function(x, y) {
 Rectangle.prototype.resizeSide = function(side, amount) {
 	switch (side) {
 		case appConstants.TOP:
-			this.y -= amount;
-			this.h += amount;
+			if (amount < 0 && (this.h + amount) < Rectangle.minSize) {
+				this.y -= Rectangle.minSize - this.h;
+				this.h = Rectangle.minSize;
+			}
+			else {
+				this.y -= amount;
+				this.h += amount;
+			}
 			break;
 		case appConstants.RIGHT:
 			this.w += amount;
+			if (this.w < Rectangle.minSize)
+				this.w = Rectangle.minSize;
 			break;
 		case appConstants.BOTTOM:
 			this.h += amount;
+			if (this.h < Rectangle.minSize)
+				this.h = Rectangle.minSize;
 			break;
 		case appConstants.LEFT:
-			this.x -= amount;
-			this.w += amount;
+			if (amount < 0 && (this.w + amount) < Rectangle.minSize) {
+				this.x -= Rectangle.minSize - this.w;
+				this.w = Rectangle.minSize;
+			}
+			else {
+				this.x -= amount;
+				this.w += amount;
+			}
 			break;
 		default:
 	}
-	
-	if (this.w < Rectangle.minSize)
-		this.w = Rectangle.minSize;
-	if (this.h < Rectangle.minSize)
-		this.h = Rectangle.minSize;
 };
 
 module.exports = Rectangle;
