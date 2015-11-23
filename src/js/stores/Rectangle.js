@@ -22,7 +22,7 @@ Rectangle.prototype.getAABB = function() {
 	};
 };
 
-Rectangle.prototype.setPos = function(x, y) {
+Rectangle.prototype.setPosition = function(x, y) {
 	this.x = x;
 	this.y = y;
 };

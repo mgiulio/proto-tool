@@ -28,8 +28,8 @@ function selectPrev() {
 		selected = objects.length - 1;
 }
 	
-function setPos(x, y) {
-	objects[selected].setPos(x, y);
+function setPosition(x, y) {
+	objects[selected].setPosition(x, y);
 }
 
 function translate(x, y) {
@@ -94,6 +94,10 @@ AppDispatcher.register(function(action) {
 			break;
 		case appConstants.SELECT_PREV:
 			selectPrev();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_POSITION:
+			setPosition(action.x, action.y);
 			designObjectStore.emitChange();
 			break;
 		case appConstants.TRANSLATE:

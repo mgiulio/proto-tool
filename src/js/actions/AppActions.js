@@ -85,6 +85,14 @@ var AppActions = {
 		translate(- offset(speed), 0);
 	},
 	
+	setPosition: function(x, y) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_POSITION,
+			x: x,
+			y: y
+		});
+	},
+	
 	resizeSide: resizeSide,
 	resizeTop: resizeSide.bind(null, appConstants.TOP),
 	resizeRight: resizeSide.bind(null, appConstants.RIGHT),

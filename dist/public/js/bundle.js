@@ -20593,6 +20593,14 @@ var AppActions = {
 		translate(- offset(speed), 0);
 	},
 	
+	setPosition: function(x, y) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_POSITION,
+			x: x,
+			y: y
+		});
+	},
+	
 	resizeSide: resizeSide,
 	resizeTop: resizeSide.bind(null, appConstants.TOP),
 	resizeRight: resizeSide.bind(null, appConstants.RIGHT),
@@ -20884,20 +20892,54 @@ var
 
 var Inspector = React.createClass({displayName: "Inspector",
 	
+	getInitialState: function() {
+		return this.getObjectInfo(this.props.selectedObject);
+	},
+	
+	componentWillReceiveProps: function(nextProps) {
+		this.setState(this.getObjectInfo(nextProps.selectedObject));
+	},
+	
+	getObjectInfo: function(o) {
+		return {
+			x: o.x
+		};
+	},
+	
 	render: function() {
-		var content;
+		var 
+			so = this.props.selectedObject,
+			content
+		;
 		
-		if (this.props.selectedObject)
-			content = React.createElement("div", null, "there is a selected object");
-		else
-			content = React.createElement("div", null, "no selected object");
+		if (!so)
+			content = React.createElement("p", null, "no selected object");
+		else {
+			content = 
+				React.createElement("form", {onSubmit: this.onSubmit}, 
+					React.createElement("input", {type: "text", value: this.state.x, onChange: this.onChangeX})
+				)
+			;
+		}
 		
 		return (
-			React.createElement("div", null, 
+			React.createElement("div", {className: "inspector"}, 
 				content
 			)
-			
 		);
+	},
+	
+	onChangeX: function(e) {
+		e.stopPropagation();
+		
+		this.setState({x: e.target.value});
+	},
+	
+	onSubmit: function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		
+		appActions.setPosition(this.state.x, this.props.selectedObject.y);
 	}
 
 });
@@ -21244,6 +21286,7 @@ module.exports = keyMirror({
   SELECT_NEXT: null,
   SELECT_PREV: null,
   TRANSLATE: null,
+  SET_POSITION: null,
   RESIZE_SIDE: null,
   
   TOP: null,
@@ -21376,7 +21419,7 @@ Rectangle.prototype.getAABB = function() {
 	};
 };
 
-Rectangle.prototype.setPos = function(x, y) {
+Rectangle.prototype.setPosition = function(x, y) {
 	this.x = x;
 	this.y = y;
 };
@@ -21455,8 +21498,8 @@ function selectPrev() {
 		selected = objects.length - 1;
 }
 	
-function setPos(x, y) {
-	objects[selected].setPos(x, y);
+function setPosition(x, y) {
+	objects[selected].setPosition(x, y);
 }
 
 function translate(x, y) {
@@ -21521,6 +21564,10 @@ AppDispatcher.register(function(action) {
 			break;
 		case appConstants.SELECT_PREV:
 			selectPrev();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_POSITION:
+			setPosition(action.x, action.y);
 			designObjectStore.emitChange();
 			break;
 		case appConstants.TRANSLATE:
