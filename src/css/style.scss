@@ -1,5 +1,6 @@
 @import 'normalize-lite';
 
+$toolbar-app-height: 40px;
 $sidepanel-width: 300px;
 
 .app {
@@ -7,10 +8,20 @@ $sidepanel-width: 300px;
 	height: 100vh;
 }
 
+.toolbar-app {
+	width: 100%;
+	height: $toolbar-app-height;
+	
+	overflow: hidden;
+	
+	background-color: #bdbaba;
+}
+
 .canvas {
 	display: block;
 	width: 100%;
-	height: 100%;
+	height: calc(100% - #{$toolbar-app-height});
+	
 	margin: 0;
 	
 	background: #e0e0e0;
@@ -26,8 +37,8 @@ $sidepanel-width: 300px;
 
 .sidepanel-container {
 	display: block;
-	height: 100%;
 	width: $sidepanel-width;
+	height: calc(100% - #{$toolbar-app-height});
 	float: right;
 	
 	background-color: #333;
@@ -67,5 +78,25 @@ $sidepanel-width: 300px;
 		fill-opacity: 1.0;
 		
 		cursor: pointer;
+	}
+}
+
+.toolbar-app {
+	.logo {
+		float: left;
+		height: 100%;
+		margin: 0;
+	}
+	
+	.panels {
+		display: inline-block;
+		float: right;
+		height: 100%;
+	}
+	
+	.about {
+		float: right;
+		height: 100%;
+		margin-left: 40px;
 	}
 }

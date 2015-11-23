@@ -7,6 +7,7 @@ var
 	,AppDispatcher = require('../dispatcher/AppDispatcher')
 	,appConstants = require('../constants/appConstants')
 	,SidePanelContainer = require('./SidePanelContainer')
+	,AppToolbar = require('./AppToolbar')
 ;
 
 var App = React.createClass({
@@ -52,6 +53,7 @@ var App = React.createClass({
 		
 		return (
 			<div className={classes.join(' ')}>
+				<AppToolbar />
 				<Canvas>
 					{designObjectsRep}
 					{selectionBox}
