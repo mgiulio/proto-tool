@@ -20818,12 +20818,32 @@ var AppToolbar = React.createClass({displayName: "AppToolbar",
 				
 				React.createElement("div", {className: "panels"}, 
 					React.createElement("label", {htmlFor: "inspector"}, "Inspector"), 
-					React.createElement("input", {id: "inspector", type: "checkbox"}), 
+					React.createElement("input", {id: "inspector", type: "checkbox", onChange: this.toggleInspectorPanel}), 
 					React.createElement("label", {htmlFor: "settings"}, "Settings"), 
-					React.createElement("input", {id: "settings", type: "checkbox"})
+					React.createElement("input", {id: "settings", type: "checkbox", onChange: this.toggleSettingsPanel})
 				)
 			)
 		);
+	},
+	
+	toggleInspectorPanel: function(e) {
+		e.stopPropagation();
+		
+		//console.log(e.target, e.target.checked, e.target.value);
+		
+		if (e.target.checked)
+			appActions.showInspector();
+		else
+			appActions.hideInspector();
+	},
+	
+	toggleSettingsPanel: function(e) {
+		e.stopPropagation();
+		
+		if (e.target.checked)
+			appActions.showSettings();
+		else
+			appActions.hideSettings();
 	}
 
 });
