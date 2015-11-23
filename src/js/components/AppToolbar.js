@@ -13,34 +13,14 @@ var AppToolbar = React.createClass({
 				
 				<div className="panels">
 					<label htmlFor="inspector">Inspector</label>
-					<input id="inspector" type="checkbox" onChange={this.toggleInspectorPanel} />
+					<input id="inspector" type="checkbox" onChange={e => { e.stopPropagation(); appActions.toggleInspector(); }} />
 					<label htmlFor="settings">Settings</label>
-					<input id="settings" type="checkbox" onChange={this.toggleSettingsPanel} />
+					<input id="settings" type="checkbox" onChange={e => { e.stopPropagation(); appActions.toggleSettings(); }} />
 				</div>
 			</div>
 		);
-	},
-	
-	toggleInspectorPanel: function(e) {
-		e.stopPropagation();
-		
-		//console.log(e.target, e.target.checked, e.target.value);
-		
-		if (e.target.checked)
-			appActions.showInspector();
-		else
-			appActions.hideInspector();
-	},
-	
-	toggleSettingsPanel: function(e) {
-		e.stopPropagation();
-		
-		if (e.target.checked)
-			appActions.showSettings();
-		else
-			appActions.hideSettings();
 	}
-
+	
 });
 
 module.exports = AppToolbar;

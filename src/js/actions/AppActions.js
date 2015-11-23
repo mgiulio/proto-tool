@@ -103,6 +103,12 @@ var AppActions = {
 		});
 	},
 	
+	toggleInspector: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.TOGGLE_INSPECTOR
+		});
+	},
+	
 	showSettings: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SHOW_SETTINGS
@@ -112,6 +118,12 @@ var AppActions = {
 	hideSettings: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.HIDE_SETTINGS
+		});
+	},
+	
+	toggleSettings: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.TOGGLE_SETTINGS
 		});
 	},
 

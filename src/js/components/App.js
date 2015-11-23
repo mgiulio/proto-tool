@@ -76,11 +76,17 @@ var App = React.createClass({
 			case appConstants.HIDE_INSPECTOR:
 				this.setState({inspectorPanel: false});
 				break;
+			case appConstants.TOGGLE_INSPECTOR:
+				this.setState({inspectorPanel: !this.state.inspectorPanel});
+				break;
 			case appConstants.SHOW_SETTINGS:
 				this.setState({settingsPanel: true, panelOnTop: 'SETTINGS'});
 				break;
 			case appConstants.HIDE_SETTINGS:
 				this.setState({settingsPanel: false});
+				break;
+			case appConstants.TOGGLE_SETTINGS:
+				this.setState({settingsPanel: !this.state.settingsPanel});
 				break;
 		}
 	}

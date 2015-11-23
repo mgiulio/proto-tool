@@ -20611,6 +20611,12 @@ var AppActions = {
 		});
 	},
 	
+	toggleInspector: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.TOGGLE_INSPECTOR
+		});
+	},
+	
 	showSettings: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SHOW_SETTINGS
@@ -20620,6 +20626,12 @@ var AppActions = {
 	hideSettings: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.HIDE_SETTINGS
+		});
+	},
+	
+	toggleSettings: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.TOGGLE_SETTINGS
 		});
 	},
 
@@ -20742,11 +20754,17 @@ var App = React.createClass({displayName: "App",
 			case appConstants.HIDE_INSPECTOR:
 				this.setState({inspectorPanel: false});
 				break;
+			case appConstants.TOGGLE_INSPECTOR:
+				this.setState({inspectorPanel: !this.state.inspectorPanel});
+				break;
 			case appConstants.SHOW_SETTINGS:
 				this.setState({settingsPanel: true, panelOnTop: 'SETTINGS'});
 				break;
 			case appConstants.HIDE_SETTINGS:
 				this.setState({settingsPanel: false});
+				break;
+			case appConstants.TOGGLE_SETTINGS:
+				this.setState({settingsPanel: !this.state.settingsPanel});
 				break;
 		}
 	}
@@ -20818,34 +20836,14 @@ var AppToolbar = React.createClass({displayName: "AppToolbar",
 				
 				React.createElement("div", {className: "panels"}, 
 					React.createElement("label", {htmlFor: "inspector"}, "Inspector"), 
-					React.createElement("input", {id: "inspector", type: "checkbox", onChange: this.toggleInspectorPanel}), 
+					React.createElement("input", {id: "inspector", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleInspector(); }}), 
 					React.createElement("label", {htmlFor: "settings"}, "Settings"), 
-					React.createElement("input", {id: "settings", type: "checkbox", onChange: this.toggleSettingsPanel})
+					React.createElement("input", {id: "settings", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleSettings(); }})
 				)
 			)
 		);
-	},
-	
-	toggleInspectorPanel: function(e) {
-		e.stopPropagation();
-		
-		//console.log(e.target, e.target.checked, e.target.value);
-		
-		if (e.target.checked)
-			appActions.showInspector();
-		else
-			appActions.hideInspector();
-	},
-	
-	toggleSettingsPanel: function(e) {
-		e.stopPropagation();
-		
-		if (e.target.checked)
-			appActions.showSettings();
-		else
-			appActions.hideSettings();
 	}
-
+	
 });
 
 module.exports = AppToolbar;
@@ -21245,8 +21243,10 @@ module.exports = keyMirror({
   
 	SHOW_INSPECTOR: null,
 	HIDE_INSPECTOR: null,
+	TOGGLE_INSPECTOR: null,
 	SHOW_SETTINGS: null,
-	HIDE_SETTINGS: null
+	HIDE_SETTINGS: null,
+	TOGGLE_SETTINGS: null,
 });
 
 },{"keymirror":6}],177:[function(require,module,exports){

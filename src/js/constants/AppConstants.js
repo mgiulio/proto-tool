@@ -15,6 +15,8 @@ module.exports = keyMirror({
   
 	SHOW_INSPECTOR: null,
 	HIDE_INSPECTOR: null,
+	TOGGLE_INSPECTOR: null,
 	SHOW_SETTINGS: null,
-	HIDE_SETTINGS: null
+	HIDE_SETTINGS: null,
+	TOGGLE_SETTINGS: null,
 });
