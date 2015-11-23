@@ -20834,16 +20834,26 @@ var AppToolbar = React.createClass({displayName: "AppToolbar",
 				
 				React.createElement("a", {className: "about", href: "#"}, "About"), 
 				
-				React.createElement("div", {className: "panels"}, 
-					React.createElement("label", {htmlFor: "inspector"}, "Inspector"), 
-					React.createElement("input", {id: "inspector", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleInspector(); }}), 
-					React.createElement("label", {htmlFor: "settings"}, "Settings"), 
-					React.createElement("input", {id: "settings", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleSettings(); }})
-				)
+				React.createElement(SidePanelButtons, null)
 			)
 		);
 	}
 	
+});
+
+var SidePanelButtons = React.createClass({displayName: "SidePanelButtons",
+
+	render: function() {
+		return (
+			React.createElement("div", {className: "panels"}, 
+				React.createElement("label", {htmlFor: "inspector"}, "Inspector"), 
+				React.createElement("input", {id: "inspector", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleInspector(); }}), 
+				React.createElement("label", {htmlFor: "settings"}, "Settings"), 
+				React.createElement("input", {id: "settings", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleSettings(); }})
+			)
+		);
+	}
+
 });
 
 module.exports = AppToolbar;
