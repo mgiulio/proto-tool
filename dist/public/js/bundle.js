@@ -20895,9 +20895,16 @@ var Inspector = React.createClass({displayName: "Inspector",
 	
 	render: function() {
 		var content = this.props.selectedObject ?
-			React.createElement(NumericControl, {
-				value: this.props.selectedObject.x, 
-				onChange: this.onChangeX}
+			React.createElement("div", {className: "geometry"}, 
+				React.createElement("h2", null, "Geometry"), 
+				React.createElement(NumericControl, {
+					value: this.props.selectedObject.x, 
+					onChange: this.onChangeX}
+				), 
+				React.createElement(NumericControl, {
+					value: this.props.selectedObject.y, 
+					onChange: this.onChangeY}
+				)
 			)
 		:
 			React.createElement("p", null, "no selected object")
@@ -20912,6 +20919,10 @@ var Inspector = React.createClass({displayName: "Inspector",
 	
 	onChangeX: function(newValue) {
 		appActions.setPosition(newValue, this.props.selectedObject.y);
+	},
+	
+	onChangeY: function(newValue) {
+		appActions.setPosition(this.props.selectedObject.x, newValue);
 	}
 	
 });
