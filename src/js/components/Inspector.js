@@ -1,5 +1,6 @@
 var
    React = require('react')
+   ,ENTER_KEY_CODE = 13
 ;
 
 var Inspector = React.createClass({
@@ -26,11 +27,15 @@ var Inspector = React.createClass({
 		
 		if (!so)
 			content = <p>no selected object</p>;
+		
 		else {
 			content = 
-				<form onSubmit={this.onSubmit} >
-					<input type="text" value={this.state.x} onChange={this.onChangeX} />
-				</form>
+				<input 
+					type="text" 
+					value={this.state.x === null ? '' : String(this.state.x)} 
+					onChange={this.onChangeX} 
+					onKeyDown={this.onKeyDown}
+				/>
 			;
 		}
 		
@@ -44,16 +49,20 @@ var Inspector = React.createClass({
 	onChangeX: function(e) {
 		e.stopPropagation();
 		
-		this.setState({x: e.target.value});
+		var 
+			npv = e.target.value // // newProposedValue
+		;
+		
+		this.setState({x: npv === '' ? null: parseInt(npv)});
 	},
 	
-	onSubmit: function(e) {
+	onKeyDown: function(e) {
 		e.stopPropagation();
-		e.preventDefault();
 		
-		appActions.setPosition(this.state.x, this.props.selectedObject.y);
+		if (e.keyCode === ENTER_KEY_CODE)
+			appActions.setPosition(this.state.x, this.props.selectedObject.y);
 	}
-
+	
 });
 
 module.exports = Inspector;

@@ -20888,6 +20888,7 @@ module.exports = Canvas;
 },{"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
+   ,ENTER_KEY_CODE = 13
 ;
 
 var Inspector = React.createClass({displayName: "Inspector",
@@ -20914,10 +20915,14 @@ var Inspector = React.createClass({displayName: "Inspector",
 		
 		if (!so)
 			content = React.createElement("p", null, "no selected object");
+		
 		else {
 			content = 
-				React.createElement("form", {onSubmit: this.onSubmit}, 
-					React.createElement("input", {type: "text", value: this.state.x, onChange: this.onChangeX})
+				React.createElement("input", {
+					type: "text", 
+					value: this.state.x === null ? '' : String(this.state.x), 
+					onChange: this.onChangeX, 
+					onKeyDown: this.onKeyDown}
 				)
 			;
 		}
@@ -20932,16 +20937,20 @@ var Inspector = React.createClass({displayName: "Inspector",
 	onChangeX: function(e) {
 		e.stopPropagation();
 		
-		this.setState({x: e.target.value});
+		var 
+			npv = e.target.value // // newProposedValue
+		;
+		
+		this.setState({x: npv === '' ? null: parseInt(npv)});
 	},
 	
-	onSubmit: function(e) {
+	onKeyDown: function(e) {
 		e.stopPropagation();
-		e.preventDefault();
 		
-		appActions.setPosition(this.state.x, this.props.selectedObject.y);
+		if (e.keyCode === ENTER_KEY_CODE)
+			appActions.setPosition(this.state.x, this.props.selectedObject.y);
 	}
-
+	
 });
 
 module.exports = Inspector;
