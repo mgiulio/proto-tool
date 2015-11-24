@@ -14,30 +14,24 @@ var Inspector = React.createClass({
 	},
 	
 	getObjectInfo: function(o) {
-		return {
+		return o ? {
 			x: o.x
-		};
+		} 
+			: {}
+		;
 	},
 	
 	render: function() {
-		var 
-			so = this.props.selectedObject,
-			content
+		var content = this.props.selectedObject ?
+			<input 
+				type="text" 
+				value={this.state.x === null ? '' : String(this.state.x)} 
+				onChange={this.onChangeX} 
+				onKeyDown={this.onKeyDown}
+			/>
+		:
+			<p>no selected object</p>
 		;
-		
-		if (!so)
-			content = <p>no selected object</p>;
-		
-		else {
-			content = 
-				<input 
-					type="text" 
-					value={this.state.x === null ? '' : String(this.state.x)} 
-					onChange={this.onChangeX} 
-					onKeyDown={this.onKeyDown}
-				/>
-			;
-		}
 		
 		return (
 			<div className="inspector">

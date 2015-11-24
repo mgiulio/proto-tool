@@ -20700,7 +20700,7 @@ var App = React.createClass({displayName: "App",
 	
 	getInitialState: function() {
 		return {
-			inspectorPanel: false,
+			inspectorPanel: true,
 			settingsPanel: false,
 			panelOnTop: 'inspector'
 		};
@@ -20902,30 +20902,24 @@ var Inspector = React.createClass({displayName: "Inspector",
 	},
 	
 	getObjectInfo: function(o) {
-		return {
+		return o ? {
 			x: o.x
-		};
+		} 
+			: {}
+		;
 	},
 	
 	render: function() {
-		var 
-			so = this.props.selectedObject,
-			content
+		var content = this.props.selectedObject ?
+			React.createElement("input", {
+				type: "text", 
+				value: this.state.x === null ? '' : String(this.state.x), 
+				onChange: this.onChangeX, 
+				onKeyDown: this.onKeyDown}
+			)
+		:
+			React.createElement("p", null, "no selected object")
 		;
-		
-		if (!so)
-			content = React.createElement("p", null, "no selected object");
-		
-		else {
-			content = 
-				React.createElement("input", {
-					type: "text", 
-					value: this.state.x === null ? '' : String(this.state.x), 
-					onChange: this.onChangeX, 
-					onKeyDown: this.onKeyDown}
-				)
-			;
-		}
 		
 		return (
 			React.createElement("div", {className: "inspector"}, 
