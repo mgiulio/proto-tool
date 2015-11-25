@@ -13,6 +13,10 @@ function Rectangle(x, y, w, h) {
 
 Rectangle.minSize = 5;
 
+Rectangle.prototype.getType = function() {
+	return this.type;
+};
+
 Rectangle.prototype.getAABB = function() {
 	return {
 		x: this.x,

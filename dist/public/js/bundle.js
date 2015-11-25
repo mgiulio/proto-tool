@@ -20921,11 +20921,7 @@ var Inspector = React.createClass({displayName: "Inspector",
 var Header = React.createClass({displayName: "Header",
 
 	render: function() {
-		var title;
-		if (this.props.selectedObject)
-			title = 'An object is selected';
-		else
-			title = 'no object selected';
+		var title = this.props.selectedObject ? this.props.selectedObject.getType() : 'no object selected';
 		
 		return (
 			React.createElement("h1", {className: "inspector-header"}, title)
@@ -21492,6 +21488,10 @@ function Rectangle(x, y, w, h) {
 }
 
 Rectangle.minSize = 5;
+
+Rectangle.prototype.getType = function() {
+	return this.type;
+};
 
 Rectangle.prototype.getAABB = function() {
 	return {

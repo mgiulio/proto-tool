@@ -19,11 +19,7 @@ var Inspector = React.createClass({
 var Header = React.createClass({
 
 	render: function() {
-		var title;
-		if (this.props.selectedObject)
-			title = 'An object is selected';
-		else
-			title = 'no object selected';
+		var title = this.props.selectedObject ? this.props.selectedObject.getType() : 'no object selected';
 		
 		return (
 			<h1 className="inspector-header">{title}</h1>
