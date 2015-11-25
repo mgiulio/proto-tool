@@ -6,9 +6,49 @@ var
 var Inspector = React.createClass({
 	
 	render: function() {
-		var content = this.props.selectedObject ?
-			<div className="geometry">
-				<h2>Geometry</h2>
+		return (
+			<div className="inspector">
+				<Header selectedObject={this.props.selectedObject} />
+				<Body selectedObject={this.props.selectedObject} />
+			</div>
+		);
+	}
+	
+});
+
+var Header = React.createClass({
+
+	render: function() {
+		var title;
+		if (this.props.selectedObject)
+			title = 'An object is selected';
+		else
+			title = 'no object selected';
+		
+		return (
+			<h1 className="inspector-header">{title}</h1>
+		);
+	}
+
+});
+
+var Body = React.createClass({
+
+	render: function() {
+		return (
+			<div className="inspector-body">
+				<Geometry selectedObject={this.props.selectedObject} />
+			</div>
+		);
+	}
+	
+});
+
+var Geometry = React.createClass({
+
+	render: function() {
+		return (
+			<div className="inspector-section inspector-geometry">
 				<NumericControl
 					value={this.props.selectedObject.x} 
 					onChange={this.onChangeX} 
@@ -26,21 +66,13 @@ var Inspector = React.createClass({
 					onChange={appActions.setHeight.bind(appActions)} 
 				/>
 			</div>
-		:
-			<p>no selected object</p>
-		;
-		
-		return (
-			<div className="inspector">
-				{content}
-			</div>
 		);
 	},
 	
 	onChangeX: function(newValue) {
 		appActions.setPosition(newValue, this.props.selectedObject.y);
 	}
-	
+
 });
 
 module.exports = Inspector;

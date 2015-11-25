@@ -20908,9 +20908,49 @@ var
 var Inspector = React.createClass({displayName: "Inspector",
 	
 	render: function() {
-		var content = this.props.selectedObject ?
-			React.createElement("div", {className: "geometry"}, 
-				React.createElement("h2", null, "Geometry"), 
+		return (
+			React.createElement("div", {className: "inspector"}, 
+				React.createElement(Header, {selectedObject: this.props.selectedObject}), 
+				React.createElement(Body, {selectedObject: this.props.selectedObject})
+			)
+		);
+	}
+	
+});
+
+var Header = React.createClass({displayName: "Header",
+
+	render: function() {
+		var title;
+		if (this.props.selectedObject)
+			title = 'An object is selected';
+		else
+			title = 'no object selected';
+		
+		return (
+			React.createElement("h1", {className: "inspector-header"}, title)
+		);
+	}
+
+});
+
+var Body = React.createClass({displayName: "Body",
+
+	render: function() {
+		return (
+			React.createElement("div", {className: "inspector-body"}, 
+				React.createElement(Geometry, {selectedObject: this.props.selectedObject})
+			)
+		);
+	}
+	
+});
+
+var Geometry = React.createClass({displayName: "Geometry",
+
+	render: function() {
+		return (
+			React.createElement("div", {className: "inspector-section inspector-geometry"}, 
 				React.createElement(NumericControl, {
 					value: this.props.selectedObject.x, 
 					onChange: this.onChangeX}
@@ -20928,21 +20968,13 @@ var Inspector = React.createClass({displayName: "Inspector",
 					onChange: appActions.setHeight.bind(appActions)}
 				)
 			)
-		:
-			React.createElement("p", null, "no selected object")
-		;
-		
-		return (
-			React.createElement("div", {className: "inspector"}, 
-				content
-			)
 		);
 	},
 	
 	onChangeX: function(newValue) {
 		appActions.setPosition(newValue, this.props.selectedObject.y);
 	}
-	
+
 });
 
 module.exports = Inspector;
