@@ -1,7 +1,6 @@
 $inspector-side-padding: 10px;
 
 .inspector {
-	color: #aaa;
 }
 
 .inspector-header {
@@ -14,8 +13,10 @@ $inspector-side-padding: 10px;
 	text-transform: uppercase;
 	font-size: 16px;
 	
-	background-color: #aaa;
-	color: #666;
+	background-color: #cd6565;
+	color: #efefef;
+	
+	box-shadow: 0 1px 1px 1px rgba(0,0,0, 0.5);
 }
 
 .inspector-body {
@@ -24,13 +25,14 @@ $inspector-side-padding: 10px;
 
 .inspector-section {
 	padding: $inspector-side-padding;
-	border-bottom: 1px solid #f0f0f0;
+	border-bottom: 1px solid #181818;
 }
 
 .inspector-geometry {
 	span {
 		display: inline-block;
 		width: 100px;
+		
 	}
 	input {
 		display: inline-block;
@@ -43,4 +45,10 @@ $inspector-side-padding: 10px;
 		
 		font-family: monospace;
 	}
+}
+
+.inspector input {
+	background: #252525;
+	color: #ccc;
+	padding: 5px;
 }

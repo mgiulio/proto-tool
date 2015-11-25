@@ -55,8 +55,11 @@ $sidepanel-width: 300px;
 	
 	z-index: 1;
 	
-	background-color: #666;
-	color: #f0f0f0;
+	background-color: #333;
+	color: #999;
+	
+	font-family: lato, sans-serif;
+	font-size: 14px;
 	
 	&.ontop {
 		z-index: 2;
