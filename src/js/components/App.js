@@ -14,7 +14,7 @@ var App = React.createClass({
 	
 	getInitialState: function() {
 		return {
-			inspectorPanel: false,
+			inspectorPanel: true,
 			settingsPanel: false,
 			panelOnTop: 'inspector'
 		};

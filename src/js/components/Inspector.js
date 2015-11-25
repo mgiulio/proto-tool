@@ -43,24 +43,33 @@ var Body = React.createClass({
 var Geometry = React.createClass({
 
 	render: function() {
+		if (!this.props.selectedObject)
+			return null;
+		
 		return (
 			<div className="inspector-section inspector-geometry">
-				<NumericControl
-					value={this.props.selectedObject.x} 
-					onChange={this.onChangeX} 
-				/>
-				<NumericControl
-					value={this.props.selectedObject.y} 
-					onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} 
-				/>
-				<NumericControl
-					value={this.props.selectedObject.w} 
-					onChange={appActions.setWidth.bind(appActions)} 
-				/>
-				<NumericControl
-					value={this.props.selectedObject.h} 
-					onChange={appActions.setHeight.bind(appActions)} 
-				/>
+				<p>
+					<span>Position</span>
+					<NumericControl
+						value={this.props.selectedObject.x} 
+						onChange={this.onChangeX} 
+					/>
+					<NumericControl
+						value={this.props.selectedObject.y} 
+						onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} 
+					/>
+				</p>
+				<p>
+					<span>Size</span>
+					<NumericControl
+						value={this.props.selectedObject.w} 
+						onChange={appActions.setWidth.bind(appActions)} 
+					/>
+					<NumericControl
+						value={this.props.selectedObject.h} 
+						onChange={appActions.setHeight.bind(appActions)} 
+					/>
+				</p>
 			</div>
 		);
 	},

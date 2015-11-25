@@ -20714,7 +20714,7 @@ var App = React.createClass({displayName: "App",
 	
 	getInitialState: function() {
 		return {
-			inspectorPanel: false,
+			inspectorPanel: true,
 			settingsPanel: false,
 			panelOnTop: 'inspector'
 		};
@@ -20945,23 +20945,32 @@ var Body = React.createClass({displayName: "Body",
 var Geometry = React.createClass({displayName: "Geometry",
 
 	render: function() {
+		if (!this.props.selectedObject)
+			return null;
+		
 		return (
 			React.createElement("div", {className: "inspector-section inspector-geometry"}, 
-				React.createElement(NumericControl, {
-					value: this.props.selectedObject.x, 
-					onChange: this.onChangeX}
+				React.createElement("p", null, 
+					React.createElement("span", null, "Position"), 
+					React.createElement(NumericControl, {
+						value: this.props.selectedObject.x, 
+						onChange: this.onChangeX}
+					), 
+					React.createElement(NumericControl, {
+						value: this.props.selectedObject.y, 
+						onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)}
+					)
 				), 
-				React.createElement(NumericControl, {
-					value: this.props.selectedObject.y, 
-					onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)}
-				), 
-				React.createElement(NumericControl, {
-					value: this.props.selectedObject.w, 
-					onChange: appActions.setWidth.bind(appActions)}
-				), 
-				React.createElement(NumericControl, {
-					value: this.props.selectedObject.h, 
-					onChange: appActions.setHeight.bind(appActions)}
+				React.createElement("p", null, 
+					React.createElement("span", null, "Size"), 
+					React.createElement(NumericControl, {
+						value: this.props.selectedObject.w, 
+						onChange: appActions.setWidth.bind(appActions)}
+					), 
+					React.createElement(NumericControl, {
+						value: this.props.selectedObject.h, 
+						onChange: appActions.setHeight.bind(appActions)}
+					)
 				)
 			)
 		);

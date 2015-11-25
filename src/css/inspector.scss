@@ -26,3 +26,21 @@ $inspector-side-padding: 10px;
 	padding: $inspector-side-padding;
 	border-bottom: 1px solid #f0f0f0;
 }
+
+.inspector-geometry {
+	span {
+		display: inline-block;
+		width: 100px;
+	}
+	input {
+		display: inline-block;
+		width: 50px;
+		margin-right: 10px;
+		text-align: center;
+		
+		border: none;
+		border-radius: 3px;
+		
+		font-family: monospace;
+	}
+}
