@@ -20607,6 +20607,20 @@ var AppActions = {
 	resizeBottom: resizeSide.bind(null, appConstants.BOTTOM),
 	resizeLeft: resizeSide.bind(null, appConstants.LEFT),
 	
+	setWidth: function(w) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_WIDTH,
+			w: w
+		});
+	},
+	
+	setHeight: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_HEIGHT,
+			h: h
+		});
+	},
+	
 	showInspector: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SHOW_INSPECTOR
@@ -20903,7 +20917,15 @@ var Inspector = React.createClass({displayName: "Inspector",
 				), 
 				React.createElement(NumericControl, {
 					value: this.props.selectedObject.y, 
-					onChange: this.onChangeY}
+					onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)}
+				), 
+				React.createElement(NumericControl, {
+					value: this.props.selectedObject.w, 
+					onChange: appActions.setWidth.bind(appActions)}
+				), 
+				React.createElement(NumericControl, {
+					value: this.props.selectedObject.h, 
+					onChange: appActions.setHeight.bind(appActions)}
 				)
 			)
 		:
@@ -20919,10 +20941,6 @@ var Inspector = React.createClass({displayName: "Inspector",
 	
 	onChangeX: function(newValue) {
 		appActions.setPosition(newValue, this.props.selectedObject.y);
-	},
-	
-	onChangeY: function(newValue) {
-		appActions.setPosition(this.props.selectedObject.x, newValue);
 	}
 	
 });
@@ -21319,6 +21337,8 @@ module.exports = keyMirror({
   TRANSLATE: null,
   SET_POSITION: null,
   RESIZE_SIDE: null,
+  SET_WIDTH: null,
+  SET_HEIGHT: null,
   
   TOP: null,
   RIGHT: null,
@@ -21455,6 +21475,20 @@ Rectangle.prototype.setPosition = function(x, y) {
 	this.y = y;
 };
 
+Rectangle.prototype.setWidth = function(w) {
+	this.w = w;
+	
+	if (this.w < Rectangle.minSize)
+		this.w = Rectangle.minSize;
+};
+
+Rectangle.prototype.setHeight = function(h) {
+	this.h = h;
+	
+	if (this.h < Rectangle.minSize)
+		this.h = Rectangle.minSize;
+};
+
 Rectangle.prototype.translate = function(x, y) {
 	this.x += x;
 	this.y += y;
@@ -21533,6 +21567,14 @@ function setPosition(x, y) {
 	objects[selected].setPosition(x, y);
 }
 
+function setWidth(w) {
+	objects[selected].setWidth(w);
+}
+
+function setHeight(h) {
+	objects[selected].setHeight(h);
+}
+
 function translate(x, y) {
 	objects[selected].translate(x, y);
 }
@@ -21607,6 +21649,14 @@ AppDispatcher.register(function(action) {
 			break;
 		case appConstants.RESIZE_SIDE:
 			resizeSide(action.side, action.amount);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_WIDTH:
+			setWidth(action.w);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_HEIGHT:
+			setHeight(action.h);
 			designObjectStore.emitChange();
 			break;
 		default:

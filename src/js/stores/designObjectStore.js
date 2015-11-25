@@ -32,6 +32,14 @@ function setPosition(x, y) {
 	objects[selected].setPosition(x, y);
 }
 
+function setWidth(w) {
+	objects[selected].setWidth(w);
+}
+
+function setHeight(h) {
+	objects[selected].setHeight(h);
+}
+
 function translate(x, y) {
 	objects[selected].translate(x, y);
 }
@@ -106,6 +114,14 @@ AppDispatcher.register(function(action) {
 			break;
 		case appConstants.RESIZE_SIDE:
 			resizeSide(action.side, action.amount);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_WIDTH:
+			setWidth(action.w);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_HEIGHT:
+			setHeight(action.h);
 			designObjectStore.emitChange();
 			break;
 		default:

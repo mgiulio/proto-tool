@@ -8,6 +8,8 @@ module.exports = keyMirror({
   TRANSLATE: null,
   SET_POSITION: null,
   RESIZE_SIDE: null,
+  SET_WIDTH: null,
+  SET_HEIGHT: null,
   
   TOP: null,
   RIGHT: null,

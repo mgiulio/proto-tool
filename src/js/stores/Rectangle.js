@@ -27,6 +27,20 @@ Rectangle.prototype.setPosition = function(x, y) {
 	this.y = y;
 };
 
+Rectangle.prototype.setWidth = function(w) {
+	this.w = w;
+	
+	if (this.w < Rectangle.minSize)
+		this.w = Rectangle.minSize;
+};
+
+Rectangle.prototype.setHeight = function(h) {
+	this.h = h;
+	
+	if (this.h < Rectangle.minSize)
+		this.h = Rectangle.minSize;
+};
+
 Rectangle.prototype.translate = function(x, y) {
 	this.x += x;
 	this.y += y;

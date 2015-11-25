@@ -15,7 +15,15 @@ var Inspector = React.createClass({
 				/>
 				<NumericControl
 					value={this.props.selectedObject.y} 
-					onChange={this.onChangeY} 
+					onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} 
+				/>
+				<NumericControl
+					value={this.props.selectedObject.w} 
+					onChange={appActions.setWidth.bind(appActions)} 
+				/>
+				<NumericControl
+					value={this.props.selectedObject.h} 
+					onChange={appActions.setHeight.bind(appActions)} 
 				/>
 			</div>
 		:
@@ -31,10 +39,6 @@ var Inspector = React.createClass({
 	
 	onChangeX: function(newValue) {
 		appActions.setPosition(newValue, this.props.selectedObject.y);
-	},
-	
-	onChangeY: function(newValue) {
-		appActions.setPosition(this.props.selectedObject.x, newValue);
 	}
 	
 });

@@ -99,6 +99,20 @@ var AppActions = {
 	resizeBottom: resizeSide.bind(null, appConstants.BOTTOM),
 	resizeLeft: resizeSide.bind(null, appConstants.LEFT),
 	
+	setWidth: function(w) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_WIDTH,
+			w: w
+		});
+	},
+	
+	setHeight: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_HEIGHT,
+			h: h
+		});
+	},
+	
 	showInspector: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SHOW_INSPECTOR
