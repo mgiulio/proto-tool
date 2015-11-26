@@ -1,55 +1,55 @@
 var
-	objects = [],
-	selected = null,
-	Rectangle = require('./Rectangle'),
-	designObjects = {
-		'Rectangle': Rectangle
-	}
+	dos = require('./design-objects/design-objects')
 ;
+
+var 
+	AppDispatcher = require('../dispatcher/AppDispatcher')
+	,appConstants = require('../constants/appConstants')
+;
+
+AppDispatcher.register(function(action) {
+	switch (action.actionType) {
+		case appConstants.ADD_OBJECT:
+			dos.addObject(action.type, action.x, action.y, action.w, action.h);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SELECT_OBJECT:
+			dos.select(action.index);
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.SELECT_NEXT:
+			dos.selectNext();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SELECT_PREV:
+			dos.selectPrev();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_POSITION:
+			dos.setPosition(action.x, action.y);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.TRANSLATE:
+			dos.translate(action.dx, action.dy);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.RESIZE_SIDE:
+			dos.resizeSide(action.side, action.amount);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_WIDTH:
+			dos.setWidth(action.w);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_HEIGHT:
+			dos.setHeight(action.h);
+			designObjectStore.emitChange();
+			break;
+		default:
+	}
+});
 		
-function addObject(type, x, y, w, h) {
-	var o = new designObjects[type](x, y, w, h); 
-	
-	objects.push(o);
-	selected = objects.length - 1;
-}
-	
-function select(i) {
-	selected = i;
-}
-	
-function selectNext() {
-	selected = (selected + 1) % objects.length;
-}
-
-function selectPrev() {
-	selected--;
-	if (selected < 0)
-		selected = objects.length - 1;
-}
-	
-function setPosition(x, y) {
-	objects[selected].setPosition(x, y);
-}
-
-function setWidth(w) {
-	objects[selected].setWidth(w);
-}
-
-function setHeight(h) {
-	objects[selected].setHeight(h);
-}
-
-function translate(x, y) {
-	objects[selected].translate(x, y);
-}
-
-function resizeSide(side, amount) {
-	objects[selected].resizeSide(side, amount);
-}
-
-
-
 var 
 	EventEmitter = require('events').EventEmitter,
 	CHANGE_EVENT = 'change',
@@ -71,61 +71,13 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	},
 	
 	getObjects: function() {
-		return objects;
+		return dos.getObjects();
 	},
 	
 	getSelectedObject: function() {
-		return objects[selected];
+		return dos.getSelectedObject();
 	}
   
-});
-
-var 
-	AppDispatcher = require('../dispatcher/AppDispatcher')
-	,appConstants = require('../constants/appConstants')
-;
-
-AppDispatcher.register(function(action) {
-	switch (action.actionType) {
-		case appConstants.ADD_OBJECT:
-			addObject(action.type, action.x, action.y, action.w, action.h);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SELECT_OBJECT:
-			select(action.index);
-			designObjectStore.emitChange();
-			break;
-		break;
-		case appConstants.SELECT_NEXT:
-			selectNext();
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SELECT_PREV:
-			selectPrev();
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SET_POSITION:
-			setPosition(action.x, action.y);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.TRANSLATE:
-			translate(action.dx, action.dy);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.RESIZE_SIDE:
-			resizeSide(action.side, action.amount);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SET_WIDTH:
-			setWidth(action.w);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SET_HEIGHT:
-			setHeight(action.h);
-			designObjectStore.emitChange();
-			break;
-		default:
-	}
 });
 
 module.exports = designObjectStore;

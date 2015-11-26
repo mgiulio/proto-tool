@@ -1,5 +1,5 @@
 var
-	appConstants = require('../constants/appConstants')
+	appConstants = require('../../constants/appConstants')
 ;
 
 function Rectangle(x, y, w, h) {

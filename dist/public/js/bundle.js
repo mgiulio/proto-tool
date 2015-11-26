@@ -20697,7 +20697,7 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":182,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":183,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,KeyboardInput = require('./KeyboardInput')
@@ -20842,7 +20842,7 @@ var AppController = React.createClass({displayName: "AppController",
 
 module.exports = AppController;
 
-},{"../doRender":179,"../stores/designObjectStore":182,"./App":165,"react":162}],167:[function(require,module,exports){
+},{"../doRender":179,"../stores/designObjectStore":183,"./App":165,"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -21484,7 +21484,7 @@ module.exports = {
 };
 },{}],181:[function(require,module,exports){
 var
-	appConstants = require('../constants/appConstants')
+	appConstants = require('../../constants/appConstants')
 ;
 
 function Rectangle(x, y, w, h) {
@@ -21573,7 +21573,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../constants/appConstants":177}],182:[function(require,module,exports){
+},{"../../constants/appConstants":177}],182:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21582,7 +21582,7 @@ var
 		'Rectangle': Rectangle
 	}
 ;
-		
+
 function addObject(type, x, y, w, h) {
 	var o = new designObjects[type](x, y, w, h); 
 	
@@ -21624,8 +21624,80 @@ function resizeSide(side, amount) {
 	objects[selected].resizeSide(side, amount);
 }
 
+function getObjects() {
+	return objects;
+}
+	
+function getSelectedObject() {
+	return objects[selected];
+}
 
+module.exports = {
+	addObject: addObject,
+	select: select,
+	selectNext: selectNext,
+	selectPrev: selectPrev,
+	setPosition: setPosition,
+	translate: translate,
+	resizeSide: resizeSide,
+	setWidth: setWidth,
+	setHeight: setHeight,
+	getObjects: getObjects,
+	getSelectedObject: getSelectedObject
+};
+},{"./Rectangle":181}],183:[function(require,module,exports){
+var
+	dos = require('./design-objects/design-objects')
+;
 
+var 
+	AppDispatcher = require('../dispatcher/AppDispatcher')
+	,appConstants = require('../constants/appConstants')
+;
+
+AppDispatcher.register(function(action) {
+	switch (action.actionType) {
+		case appConstants.ADD_OBJECT:
+			dos.addObject(action.type, action.x, action.y, action.w, action.h);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SELECT_OBJECT:
+			dos.select(action.index);
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.SELECT_NEXT:
+			dos.selectNext();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SELECT_PREV:
+			dos.selectPrev();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_POSITION:
+			dos.setPosition(action.x, action.y);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.TRANSLATE:
+			dos.translate(action.dx, action.dy);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.RESIZE_SIDE:
+			dos.resizeSide(action.side, action.amount);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_WIDTH:
+			dos.setWidth(action.w);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_HEIGHT:
+			dos.setHeight(action.h);
+			designObjectStore.emitChange();
+			break;
+		default:
+	}
+});
+		
 var 
 	EventEmitter = require('events').EventEmitter,
 	CHANGE_EVENT = 'change',
@@ -21647,63 +21719,15 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	},
 	
 	getObjects: function() {
-		return objects;
+		return dos.getObjects();
 	},
 	
 	getSelectedObject: function() {
-		return objects[selected];
+		return dos.getSelectedObject();
 	}
   
 });
 
-var 
-	AppDispatcher = require('../dispatcher/AppDispatcher')
-	,appConstants = require('../constants/appConstants')
-;
-
-AppDispatcher.register(function(action) {
-	switch (action.actionType) {
-		case appConstants.ADD_OBJECT:
-			addObject(action.type, action.x, action.y, action.w, action.h);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SELECT_OBJECT:
-			select(action.index);
-			designObjectStore.emitChange();
-			break;
-		break;
-		case appConstants.SELECT_NEXT:
-			selectNext();
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SELECT_PREV:
-			selectPrev();
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SET_POSITION:
-			setPosition(action.x, action.y);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.TRANSLATE:
-			translate(action.dx, action.dy);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.RESIZE_SIDE:
-			resizeSide(action.side, action.amount);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SET_WIDTH:
-			setWidth(action.w);
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SET_HEIGHT:
-			setHeight(action.h);
-			designObjectStore.emitChange();
-			break;
-		default:
-	}
-});
-
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./Rectangle":181,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./design-objects/design-objects":182,"events":1,"object-assign":7}]},{},[164]);
