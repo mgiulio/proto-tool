@@ -13,12 +13,13 @@ var Keyboard = React.createClass({
 		document.addEventListener('keydown', this.onKeydown, false);
 	},
 	
+	componentWillMount: function() {
+		document.removeEventListener('keydown', this.onKeydown, false);
+	},
+	
 	onKeydown: function(e) {
 		//e.stopPropagation();
 		//e.preventDefault();
-		
-		//console.log(e.keyIdentifier);
-		//console.log(e);
 		
 		var speed;
 		if (e.shiftKey)

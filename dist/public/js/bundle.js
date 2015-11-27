@@ -20915,12 +20915,13 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 		document.addEventListener('keydown', this.onKeydown, false);
 	},
 	
+	componentWillMount: function() {
+		document.removeEventListener('keydown', this.onKeydown, false);
+	},
+	
 	onKeydown: function(e) {var $__0;
 		//e.stopPropagation();
 		//e.preventDefault();
-		
-		//console.log(e.keyIdentifier);
-		//console.log(e);
 		
 		var speed;
 		if (e.shiftKey)
