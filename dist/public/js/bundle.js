@@ -20752,7 +20752,7 @@ var App = React.createClass({displayName: "App",
 		}
 		
 		return (
-			React.createElement("div", {className: classes.join(' ')}, 
+			React.createElement("div", {className: classes.join(' '), onKeyDown: this.onKeyDown}, 
 				React.createElement(AppToolbar, null), 
 				React.createElement(Canvas, null, 
 					designObjectsRep, 
@@ -21088,6 +21088,7 @@ var NumericControl = React.createClass({displayName: "NumericControl",
 	
 	onKeyDown: function(e) {
 		e.stopPropagation();
+		e.nativeEvent.stopImmediatePropagation();
 		
 		if (e.keyCode === ENTER_KEY_CODE)
 			this.props.onChange(this.state.value);

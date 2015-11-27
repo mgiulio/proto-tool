@@ -36,6 +36,7 @@ var NumericControl = React.createClass({
 	
 	onKeyDown: function(e) {
 		e.stopPropagation();
+		e.nativeEvent.stopImmediatePropagation();
 		
 		if (e.keyCode === ENTER_KEY_CODE)
 			this.props.onChange(this.state.value);
