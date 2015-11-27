@@ -1,6 +1,6 @@
 var
    React = require('react')
-	,KeyboardInput = require('./KeyboardInput')
+	,HotKeys = require('./HotKeys')
    ,Canvas = require('./Canvas')
    //,SVGBrowser = require('./SVGBrowser')
    ,SelectionBox = require('./SelectionBox')
@@ -59,7 +59,7 @@ var App = React.createClass({
 					{selectionBox}
 				</Canvas>
 				{sidePanel}
-				<KeyboardInput />
+				<HotKeys />
 			</div>
 		);
 	},

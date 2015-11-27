@@ -20700,7 +20700,7 @@ function populate() {
 },{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":183,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
-	,KeyboardInput = require('./KeyboardInput')
+	,HotKeys = require('./HotKeys')
    ,Canvas = require('./Canvas')
    //,SVGBrowser = require('./SVGBrowser')
    ,SelectionBox = require('./SelectionBox')
@@ -20752,14 +20752,14 @@ var App = React.createClass({displayName: "App",
 		}
 		
 		return (
-			React.createElement("div", {className: classes.join(' '), onKeyDown: this.onKeyDown}, 
+			React.createElement("div", {className: classes.join(' ')}, 
 				React.createElement(AppToolbar, null), 
 				React.createElement(Canvas, null, 
 					designObjectsRep, 
 					selectionBox
 				), 
 				sidePanel, 
-				React.createElement(KeyboardInput, null)
+				React.createElement(HotKeys, null)
 			)
 		);
 	},
@@ -20795,7 +20795,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./AppToolbar":167,"./Canvas":168,"./KeyboardInput":170,"./SelectionBox":174,"./SidePanelContainer":176,"react":162}],166:[function(require,module,exports){
+},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./AppToolbar":167,"./Canvas":168,"./HotKeys":169,"./SelectionBox":174,"./SidePanelContainer":176,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20902,6 +20902,71 @@ module.exports = Canvas;
 },{"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
+   ,AppActions = require('../actions/AppActions')
+;
+
+var Keyboard = React.createClass({displayName: "Keyboard",
+	
+	render: function() {
+		return null;
+	},
+	
+	componentDidMount: function() {
+		document.addEventListener('keydown', this.onKeydown, false);
+	},
+	
+	onKeydown: function(e) {var $__0;
+		//e.stopPropagation();
+		//e.preventDefault();
+		
+		//console.log(e.keyIdentifier);
+		//console.log(e);
+		
+		var speed;
+		if (e.shiftKey)
+			speed = 'fast';
+		else if (e.ctrlKey)
+			speed = 'slow';
+		else
+			speed = 'normal';
+		
+		switch (e.keyIdentifier) {
+			case 'Up':
+				AppActions.translateUp(speed);
+				break;
+			case 'Right':
+				AppActions.translateRight(speed);
+				break;
+			case 'Down':
+				AppActions.translateDown(speed);
+				break;
+			case 'Left':
+				AppActions.translateLeft(speed);
+				break;
+			case 'U+0009':
+				if (e.shiftKey)
+					AppActions.selectNext();
+				else
+					AppActions.selectPrev();
+				e.preventDefault();
+				break;
+			case 'U+0041': // a
+				($__0 = AppActions).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50])))
+				break;
+		}
+	},
+	
+	getMouseClientPos: function() {
+		return [800, 250];
+	}
+	
+});
+
+module.exports = Keyboard;
+
+},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+var
+   React = require('react')
    NumericControl = require('./NumericControl')
 ;
 
@@ -20984,72 +21049,7 @@ var Geometry = React.createClass({displayName: "Geometry",
 
 module.exports = Inspector;
 
-},{"./NumericControl":171,"react":162}],170:[function(require,module,exports){
-var
-   React = require('react')
-   ,AppActions = require('../actions/AppActions')
-;
-
-var Keyboard = React.createClass({displayName: "Keyboard",
-	
-	render: function() {
-		return null;
-	},
-	
-	componentDidMount: function() {
-		document.addEventListener('keydown', this.onKeydown, false);
-	},
-	
-	onKeydown: function(e) {var $__0;
-		//e.stopPropagation();
-		//e.preventDefault();
-		
-		//console.log(e.keyIdentifier);
-		//console.log(e);
-		
-		var speed;
-		if (e.shiftKey)
-			speed = 'fast';
-		else if (e.ctrlKey)
-			speed = 'slow';
-		else
-			speed = 'normal';
-		
-		switch (e.keyIdentifier) {
-			case 'Up':
-				AppActions.translateUp(speed);
-				break;
-			case 'Right':
-				AppActions.translateRight(speed);
-				break;
-			case 'Down':
-				AppActions.translateDown(speed);
-				break;
-			case 'Left':
-				AppActions.translateLeft(speed);
-				break;
-			case 'U+0009':
-				if (e.shiftKey)
-					AppActions.selectNext();
-				else
-					AppActions.selectPrev();
-				e.preventDefault();
-				break;
-			case 'U+0041': // a
-				($__0 = AppActions).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50])))
-				break;
-		}
-	},
-	
-	getMouseClientPos: function() {
-		return [800, 250];
-	}
-	
-});
-
-module.exports = Keyboard;
-
-},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
+},{"./NumericControl":171,"react":162}],171:[function(require,module,exports){
 var
    React = require('react')
    ,ENTER_KEY_CODE = 13
@@ -21364,7 +21364,7 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 });
 
 module.exports = SidePanelContainer;
-},{"./Inspector":169,"./Panel":172,"./Settings":175,"react":162}],177:[function(require,module,exports){
+},{"./Inspector":170,"./Panel":172,"./Settings":175,"react":162}],177:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
