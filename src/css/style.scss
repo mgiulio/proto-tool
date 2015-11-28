@@ -1,50 +1,8 @@
 @import 'normalize-lite';
-
-$toolbar-app-height: 40px;
-$sidepanel-width: 300px;
-
-.app {
-	width: 100vw;
-	height: 100vh;
-}
-
-.toolbar-app {
-	width: 100%;
-	height: $toolbar-app-height;
-	
-	overflow: hidden;
-	
-	background-color: #bdbaba;
-}
-
-.canvas {
-	display: block;
-	width: 100%;
-	height: calc(100% - #{$toolbar-app-height});
-	
-	margin: 0;
-	
-	background: #e0e0e0;
-	
-	fill: #ffffff;
-	stroke: #666;
-}
-
-.app.sidepanel-visible .canvas {
-	width: calc(100% - #{$sidepanel-width});
-	float: left;
-}
-
-.sidepanel-container {
-	display: block;
-	width: $sidepanel-width;
-	height: calc(100% - #{$toolbar-app-height});
-	float: right;
-	
-	background-color: #333;
-	
-	position: relative;
-}
+@import 'vars';
+@import 'layout';
+@import 'appbar';
+@import 'inspector';
 
 .panel {
 	position: absolute;
@@ -83,25 +41,3 @@ $sidepanel-width: 300px;
 		cursor: pointer;
 	}
 }
-
-.toolbar-app {
-	.logo {
-		float: left;
-		height: 100%;
-		margin: 0;
-	}
-	
-	.panels {
-		display: inline-block;
-		float: right;
-		height: 100%;
-	}
-	
-	.about {
-		float: right;
-		height: 100%;
-		margin-left: 40px;
-	}
-}
-
-@import 'inspector';

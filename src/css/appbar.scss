@@ -1,0 +1,23 @@
+.toolbar-app {
+	overflow: hidden;
+	
+	background-color: #bdbaba;
+	
+	.logo {
+		float: left;
+		height: 100%;
+		margin: 0;
+	}
+	
+	.panels {
+		display: inline-block;
+		float: right;
+		height: 100%;
+	}
+	
+	.about {
+		float: right;
+		height: 100%;
+		margin-left: 40px;
+	}
+}
