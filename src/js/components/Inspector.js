@@ -34,6 +34,7 @@ var Body = React.createClass({
 		return (
 			<div className="inspector-body">
 				<Geometry selectedObject={this.props.selectedObject} />
+				<Color selectedObject={this.props.selectedObject} />
 			</div>
 		);
 	}
@@ -77,6 +78,20 @@ var Geometry = React.createClass({
 	
 	onChangeX: function(newValue) {
 		appActions.setPosition(newValue, this.props.selectedObject.y);
+	}
+
+});
+
+var Color = React.createClass({
+
+	render: function() {
+		if (!this.props.selectedObject)
+			return null;
+		
+		return (
+			<div className="inspector-section inspector-color">
+			</div>
+		);
 	}
 
 });

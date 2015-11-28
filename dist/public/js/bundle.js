@@ -21001,7 +21001,8 @@ var Body = React.createClass({displayName: "Body",
 	render: function() {
 		return (
 			React.createElement("div", {className: "inspector-body"}, 
-				React.createElement(Geometry, {selectedObject: this.props.selectedObject})
+				React.createElement(Geometry, {selectedObject: this.props.selectedObject}), 
+				React.createElement(Color, {selectedObject: this.props.selectedObject})
 			)
 		);
 	}
@@ -21045,6 +21046,20 @@ var Geometry = React.createClass({displayName: "Geometry",
 	
 	onChangeX: function(newValue) {
 		appActions.setPosition(newValue, this.props.selectedObject.y);
+	}
+
+});
+
+var Color = React.createClass({displayName: "Color",
+
+	render: function() {
+		if (!this.props.selectedObject)
+			return null;
+		
+		return (
+			React.createElement("div", {className: "inspector-section inspector-color"}
+			)
+		);
 	}
 
 });

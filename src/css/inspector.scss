@@ -22,8 +22,14 @@ $gap: 10px;
 
 .inspector-section {
 	padding: 0 0 $gap;
-	border-bottom: 1px solid #181818;
-	margin-bottom: $gap;
+	border-bottom: 1px solid #111;
+	border-top: 1px solid #444;
+}
+.inspector-section:first-child {
+	border-top: none;
+}
+.inspector-section:last-child {
+	border-bottom: none;
 }
 
 .inspector-section.inspector-geometry {
