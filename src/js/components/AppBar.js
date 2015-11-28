@@ -2,11 +2,11 @@ var
    React = require('react')
 ;
 
-var AppToolbar = React.createClass({
+var AppBar = React.createClass({
 	
 	render: function() {
 		return (
-			<div className="toolbar-app">
+			<div className="appbar">
 				<h1 className="logo">Bc</h1>
 				
 				<a className="about" href="#">About</a>
@@ -33,4 +33,4 @@ var SidePanelButtons = React.createClass({
 
 });
 
-module.exports = AppToolbar;
+module.exports = AppBar;

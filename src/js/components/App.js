@@ -1,13 +1,11 @@
 var
    React = require('react')
 	,HotKeys = require('./HotKeys')
-   ,Canvas = require('./Canvas')
-   //,SVGBrowser = require('./SVGBrowser')
-   ,SelectionBox = require('./SelectionBox')
+   ,CanvasViewport = require('./CanvasViewport')
 	,AppDispatcher = require('../dispatcher/AppDispatcher')
 	,appConstants = require('../constants/appConstants')
 	,SidePanelContainer = require('./SidePanelContainer')
-	,AppToolbar = require('./AppToolbar')
+	,AppBar = require('./AppBar')
 ;
 
 var App = React.createClass({
@@ -43,21 +41,10 @@ var App = React.createClass({
 			/>
 		}
 		
-		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
-		
-		var selectionBox;
-		if (this.props.selectedObject) {
-			var aabb = this.props.selectedObject.getAABB();
-			selectionBox = <SelectionBox x={aabb.x} y={aabb.y} w={aabb.w} h={aabb.h} />;
-		}
-		
 		return (
 			<div className={classes.join(' ')}>
-				<AppToolbar />
-				<Canvas>
-					{designObjectsRep}
-					{selectionBox}
-				</Canvas>
+				<AppBar />
+				<CanvasViewport designObjects={this.props.designObjects} doRender={this.props.doRender} selectedObject={this.props.selectedObject} />
 				{sidePanel}
 				<HotKeys />
 			</div>

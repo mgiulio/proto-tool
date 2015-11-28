@@ -3,25 +3,20 @@
 	height: 100vh;
 }
 
-.toolbar-app {
+.appbar {
 	width: 100%;
 	height: $toolbar-app-height;
 }
 
-.canvas {
+.canvas-viewport {
 	display: block;
 	width: 100%;
 	height: calc(100% - #{$toolbar-app-height});
 	
-	margin: 0;
-	
-	background: #e0e0e0;
-	
-	fill: #ffffff;
-	stroke: #666;
+	overflow: auto;
 }
 
-.app.sidepanel-visible .canvas {
+.app.sidepanel-visible .canvas-viewport {
 	width: calc(100% - #{$sidepanel-width});
 	float: left;
 }
@@ -36,4 +31,3 @@
 	
 	position: relative;
 }
-

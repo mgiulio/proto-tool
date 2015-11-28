@@ -20661,7 +20661,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"../lib/func":180}],164:[function(require,module,exports){
+},{"../constants/appConstants":178,"../dispatcher/AppDispatcher":179,"../lib/func":181}],164:[function(require,module,exports){
 var
    React = require('react')
    ,AppController = require('./components/AppController')
@@ -20697,17 +20697,15 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/AppController":166,"./stores/designObjectStore":183,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/AppController":167,"./stores/designObjectStore":184,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,HotKeys = require('./HotKeys')
-   ,Canvas = require('./Canvas')
-   //,SVGBrowser = require('./SVGBrowser')
-   ,SelectionBox = require('./SelectionBox')
+   ,CanvasViewport = require('./CanvasViewport')
 	,AppDispatcher = require('../dispatcher/AppDispatcher')
 	,appConstants = require('../constants/appConstants')
 	,SidePanelContainer = require('./SidePanelContainer')
-	,AppToolbar = require('./AppToolbar')
+	,AppBar = require('./AppBar')
 ;
 
 var App = React.createClass({displayName: "App",
@@ -20743,21 +20741,10 @@ var App = React.createClass({displayName: "App",
 			)
 		}
 		
-		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
-		
-		var selectionBox;
-		if (this.props.selectedObject) {
-			var aabb = this.props.selectedObject.getAABB();
-			selectionBox = React.createElement(SelectionBox, {x: aabb.x, y: aabb.y, w: aabb.w, h: aabb.h});
-		}
-		
 		return (
 			React.createElement("div", {className: classes.join(' ')}, 
-				React.createElement(AppToolbar, null), 
-				React.createElement(Canvas, null, 
-					designObjectsRep, 
-					selectionBox
-				), 
+				React.createElement(AppBar, null), 
+				React.createElement(CanvasViewport, {designObjects: this.props.designObjects, doRender: this.props.doRender, selectedObject: this.props.selectedObject}), 
 				sidePanel, 
 				React.createElement(HotKeys, null)
 			)
@@ -20795,7 +20782,45 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./AppToolbar":167,"./Canvas":168,"./HotKeys":169,"./SelectionBox":174,"./SidePanelContainer":176,"react":162}],166:[function(require,module,exports){
+},{"../constants/appConstants":178,"../dispatcher/AppDispatcher":179,"./AppBar":166,"./CanvasViewport":169,"./HotKeys":170,"./SidePanelContainer":177,"react":162}],166:[function(require,module,exports){
+var
+   React = require('react')
+;
+
+var AppBar = React.createClass({displayName: "AppBar",
+	
+	render: function() {
+		return (
+			React.createElement("div", {className: "appbar"}, 
+				React.createElement("h1", {className: "logo"}, "Bc"), 
+				
+				React.createElement("a", {className: "about", href: "#"}, "About"), 
+				
+				React.createElement(SidePanelButtons, null)
+			)
+		);
+	}
+	
+});
+
+var SidePanelButtons = React.createClass({displayName: "SidePanelButtons",
+
+	render: function() {
+		return (
+			React.createElement("div", {className: "panels"}, 
+				React.createElement("label", {htmlFor: "inspector"}, "Inspector"), 
+				React.createElement("input", {id: "inspector", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleInspector(); }}), 
+				React.createElement("label", {htmlFor: "settings"}, "Settings"), 
+				React.createElement("input", {id: "settings", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleSettings(); }})
+			)
+		);
+	}
+
+});
+
+module.exports = AppBar;
+
+},{"react":162}],167:[function(require,module,exports){
 var
    React = require('react')
 	,doStore = require('../stores/designObjectStore')
@@ -20842,45 +20867,7 @@ var AppController = React.createClass({displayName: "AppController",
 
 module.exports = AppController;
 
-},{"../doRender":179,"../stores/designObjectStore":183,"./App":165,"react":162}],167:[function(require,module,exports){
-var
-   React = require('react')
-;
-
-var AppToolbar = React.createClass({displayName: "AppToolbar",
-	
-	render: function() {
-		return (
-			React.createElement("div", {className: "toolbar-app"}, 
-				React.createElement("h1", {className: "logo"}, "Bc"), 
-				
-				React.createElement("a", {className: "about", href: "#"}, "About"), 
-				
-				React.createElement(SidePanelButtons, null)
-			)
-		);
-	}
-	
-});
-
-var SidePanelButtons = React.createClass({displayName: "SidePanelButtons",
-
-	render: function() {
-		return (
-			React.createElement("div", {className: "panels"}, 
-				React.createElement("label", {htmlFor: "inspector"}, "Inspector"), 
-				React.createElement("input", {id: "inspector", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleInspector(); }}), 
-				React.createElement("label", {htmlFor: "settings"}, "Settings"), 
-				React.createElement("input", {id: "settings", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleSettings(); }})
-			)
-		);
-	}
-
-});
-
-module.exports = AppToolbar;
-
-},{"react":162}],168:[function(require,module,exports){
+},{"../doRender":180,"../stores/designObjectStore":184,"./App":165,"react":162}],168:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20900,6 +20887,38 @@ var Canvas = React.createClass({displayName: "Canvas",
 module.exports = Canvas;
 
 },{"react":162}],169:[function(require,module,exports){
+var
+   React = require('react')
+   ,Canvas = require('./Canvas')
+   ,SelectionBox = require('./SelectionBox')
+;
+
+var CanvasViewport = React.createClass({displayName: "CanvasViewport",
+	
+	render: function() {
+		var designObjectsRep = this.props.designObjects.map(this.props.doRender);
+		
+		var selectionBox;
+		if (this.props.selectedObject) {
+			var aabb = this.props.selectedObject.getAABB();
+			selectionBox = React.createElement(SelectionBox, {x: aabb.x, y: aabb.y, w: aabb.w, h: aabb.h});
+		}
+		
+		return (
+			React.createElement("div", {className: "canvas-viewport"}, 
+				React.createElement(Canvas, null, 
+					designObjectsRep, 
+					selectionBox
+				)
+			)
+		);
+	}
+	
+});
+
+module.exports = CanvasViewport;
+
+},{"./Canvas":168,"./SelectionBox":175,"react":162}],170:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -20965,7 +20984,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 
 module.exports = Keyboard;
 
-},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
 var
    React = require('react')
    NumericControl = require('./NumericControl')
@@ -21066,7 +21085,7 @@ var Color = React.createClass({displayName: "Color",
 
 module.exports = Inspector;
 
-},{"./NumericControl":171,"react":162}],171:[function(require,module,exports){
+},{"./NumericControl":172,"react":162}],172:[function(require,module,exports){
 var
    React = require('react')
    ,ENTER_KEY_CODE = 13
@@ -21123,7 +21142,7 @@ var NumericControl = React.createClass({displayName: "NumericControl",
 
 module.exports = NumericControl;
 
-},{"react":162}],172:[function(require,module,exports){
+},{"react":162}],173:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -21147,7 +21166,7 @@ var Panel = React.createClass({displayName: "Panel",
 
 module.exports = Panel;
 
-},{"react":162}],173:[function(require,module,exports){
+},{"react":162}],174:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -21206,7 +21225,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],174:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],175:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('../actions/AppActions')
@@ -21337,7 +21356,7 @@ var Handle = React.createClass({displayName: "Handle",
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"../constants/appConstants":177,"react":162}],175:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":178,"react":162}],176:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -21354,7 +21373,7 @@ var Settings = React.createClass({displayName: "Settings",
 
 module.exports = Settings;
 
-},{"react":162}],176:[function(require,module,exports){
+},{"react":162}],177:[function(require,module,exports){
 var
 	React = require('react')
 	,Panel = require('./Panel')
@@ -21389,7 +21408,7 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 });
 
 module.exports = SidePanelContainer;
-},{"./Inspector":170,"./Panel":172,"./Settings":175,"react":162}],177:[function(require,module,exports){
+},{"./Inspector":171,"./Panel":173,"./Settings":176,"react":162}],178:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -21416,7 +21435,7 @@ module.exports = keyMirror({
 	TOGGLE_SETTINGS: null,
 });
 
-},{"keymirror":6}],178:[function(require,module,exports){
+},{"keymirror":6}],179:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -21434,7 +21453,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],179:[function(require,module,exports){
+},{"flux":3}],180:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -21460,7 +21479,7 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":173,"react":162}],180:[function(require,module,exports){
+},{"./components/SVGRectangle":174,"react":162}],181:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21508,7 +21527,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],181:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 var
 	appConstants = require('../../constants/appConstants')
 ;
@@ -21599,7 +21618,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../../constants/appConstants":177}],182:[function(require,module,exports){
+},{"../../constants/appConstants":178}],183:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21671,7 +21690,7 @@ module.exports = {
 	getObjects: getObjects,
 	getSelectedObject: getSelectedObject
 };
-},{"./Rectangle":181}],183:[function(require,module,exports){
+},{"./Rectangle":182}],184:[function(require,module,exports){
 var
 	dos = require('./design-objects/design-objects')
 ;
@@ -21756,4 +21775,4 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./design-objects/design-objects":182,"events":1,"object-assign":7}]},{},[164]);
+},{"../constants/appConstants":178,"../dispatcher/AppDispatcher":179,"./design-objects/design-objects":183,"events":1,"object-assign":7}]},{},[164]);
