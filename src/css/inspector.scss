@@ -1,11 +1,8 @@
-$inspector-side-padding: 10px;
-
-.inspector {
-}
+$gap: 10px;
 
 .inspector-header {
 	margin: 0;
-	padding: $inspector-side-padding;
+	padding: $gap;
 	
 	text-align: center;
 	
@@ -20,41 +17,66 @@ $inspector-side-padding: 10px;
 }
 
 .inspector-body {
-	padding: 0 	$inspector-side-padding;
+	padding: 2 * $gap $gap;
 }
 
 .inspector-section {
-	padding: $inspector-side-padding 0;
+	padding: 0 0 $gap;
 	border-bottom: 1px solid #181818;
+	margin-bottom: $gap;
 }
 
-.inspector-geometry {
-	span {
-		display: inline-block;
-		width: 100px;
-		
-	}
-	input {
-		display: inline-block;
-		width: 50px;
-		margin-right: 10px;
-		text-align: center;
-		
-		border: none;
-		border-radius: 3px;
-		
-		font-family: monospace;
-	}
+.inspector-section.inspector-geometry {
+	padding-bottom: $gap * 2;
 }
 
-.inspector input {
-	background: #252525;
-	color: #ccc;
+.inspector-geo-label {
+	display: inline-block;
+	width: 100px;
+}
+
+.inspector-geo-ctrl-wrap {
+	display: inline-block;
+	position: relative;
+	padding: 5px;
+}
+
+.num-ctrl {
+	display: inline-block;
+	width: 50px;
 	padding: 5px;
 	
+	text-align: center;
+
+	border: none;
+	border-radius: 3px;
+
+	font-family: monospace;
+
+	background: #252525;
+	color: #ccc;
+
 	/*
 	&:focus {
-	 	outline: 1px solid #0000dd;
+	outline: 1px solid #0000dd;
 	}
 	*/
 }
+
+.inspector-geo-ctrl-label {
+	font-size: 0.7em;
+	line-height: 1;
+	text-transform: uppercase;
+	
+	position: absolute;
+	left: 50%;
+	top: 0;
+	transform: translate(-50%, -100%);
+}
+
+.inspector-size .inspector-geo-ctrl-label {
+	top: auto;
+	bottom: 0;
+	transform: translate(-50%, 100%);
+}
+

@@ -14,9 +14,17 @@ var NumericControl = React.createClass({
 	},
 	
 	render: function() {
+		var
+			classes = ['num-ctrl']
+		;
+		if (this.props.className)
+			classes.push(this.props.className);
+		
 		return (
 			<input 
 				type="text" 
+				id={this.props.id}
+				className={classes.join(' ')}
 				value={this.state.value === null ? '' : String(this.state.value)} 
 				onChange={this.onChange} 
 				onKeyDown={this.onKeyDown}

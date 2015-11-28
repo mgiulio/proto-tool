@@ -48,28 +48,29 @@ var Geometry = React.createClass({
 		
 		return (
 			<div className="inspector-section inspector-geometry">
-				<p>
-					<span>Position</span>
-					<NumericControl
-						value={this.props.selectedObject.x} 
-						onChange={this.onChangeX} 
-					/>
-					<NumericControl
-						value={this.props.selectedObject.y} 
-						onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} 
-					/>
-				</p>
-				<p>
-					<span>Size</span>
-					<NumericControl
-						value={this.props.selectedObject.w} 
-						onChange={appActions.setWidth.bind(appActions)} 
-					/>
-					<NumericControl
-						value={this.props.selectedObject.h} 
-						onChange={appActions.setHeight.bind(appActions)} 
-					/>
-				</p>
+				<div className="inspector-position">
+					<span className="inspector-geo-label">Position</span>
+					<div className="inspector-geo-ctrl-wrap">
+						<NumericControl id="inspector-x" value={this.props.selectedObject.x} onChange={this.onChangeX} />
+						<label className="inspector-geo-ctrl-label" htmlFor="inspector-x">x</label>
+					</div>
+					<div className="inspector-geo-ctrl-wrap">
+						<NumericControl id="inspector-y" value={this.props.selectedObject.y} onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} 
+						/>
+						<label className="inspector-geo-ctrl-label" htmlFor="inspector-y">y</label>
+					</div>
+				</div>
+				<div className="inspector-size">
+					<span className="inspector-geo-label">Size</span>
+					<div className="inspector-geo-ctrl-wrap">
+						<NumericControl id="inspector-w" value={this.props.selectedObject.w} onChange={appActions.setWidth.bind(appActions)} />
+						<label className="inspector-geo-ctrl-label" htmlFor="inspector-w">w</label>
+					</div>
+					<div className="inspector-geo-ctrl-wrap">
+						<NumericControl id="inspector-h" value={this.props.selectedObject.h} onChange={appActions.setHeight.bind(appActions)} />
+						<label className="inspector-geo-ctrl-label" htmlFor="inspector-h">h</label>
+					</div>
+				</div>
 			</div>
 		);
 	},

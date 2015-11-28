@@ -21016,26 +21016,27 @@ var Geometry = React.createClass({displayName: "Geometry",
 		
 		return (
 			React.createElement("div", {className: "inspector-section inspector-geometry"}, 
-				React.createElement("p", null, 
-					React.createElement("span", null, "Position"), 
-					React.createElement(NumericControl, {
-						value: this.props.selectedObject.x, 
-						onChange: this.onChangeX}
+				React.createElement("div", {className: "inspector-position"}, 
+					React.createElement("span", {className: "inspector-geo-label"}, "Position"), 
+					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
+						React.createElement(NumericControl, {id: "inspector-x", value: this.props.selectedObject.x, onChange: this.onChangeX}), 
+						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-x"}, "x")
 					), 
-					React.createElement(NumericControl, {
-						value: this.props.selectedObject.y, 
-						onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)}
+					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
+						React.createElement(NumericControl, {id: "inspector-y", value: this.props.selectedObject.y, onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)}
+						), 
+						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-y"}, "y")
 					)
 				), 
-				React.createElement("p", null, 
-					React.createElement("span", null, "Size"), 
-					React.createElement(NumericControl, {
-						value: this.props.selectedObject.w, 
-						onChange: appActions.setWidth.bind(appActions)}
+				React.createElement("div", {className: "inspector-size"}, 
+					React.createElement("span", {className: "inspector-geo-label"}, "Size"), 
+					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
+						React.createElement(NumericControl, {id: "inspector-w", value: this.props.selectedObject.w, onChange: appActions.setWidth.bind(appActions)}), 
+						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-w"}, "w")
 					), 
-					React.createElement(NumericControl, {
-						value: this.props.selectedObject.h, 
-						onChange: appActions.setHeight.bind(appActions)}
+					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
+						React.createElement(NumericControl, {id: "inspector-h", value: this.props.selectedObject.h, onChange: appActions.setHeight.bind(appActions)}), 
+						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-h"}, "h")
 					)
 				)
 			)
@@ -21067,9 +21068,17 @@ var NumericControl = React.createClass({displayName: "NumericControl",
 	},
 	
 	render: function() {
+		var
+			classes = ['num-ctrl']
+		;
+		if (this.props.className)
+			classes.push(this.props.className);
+		
 		return (
 			React.createElement("input", {
 				type: "text", 
+				id: this.props.id, 
+				className: classes.join(' '), 
 				value: this.state.value === null ? '' : String(this.state.value), 
 				onChange: this.onChange, 
 				onKeyDown: this.onKeyDown}
