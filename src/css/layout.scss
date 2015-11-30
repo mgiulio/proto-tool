@@ -1,15 +1,20 @@
 .app {
 	width: 100vw;
 	height: 100vh;
+	
+	display: flex;
+	flex-direction: column;
+	flex-warp: no-wrap;
 }
 
 .app-bar {
 	width: 100%;
 	height: $toolbar-app-height;
+	flex: 0 0 auto;
 }
 
 .app-body {
-	height: calc(100% - #{$toolbar-app-height});
+	flex: 1 1 auto;
 	
 	display: flex;
 	flex-direction: row;
@@ -20,7 +25,6 @@
 
 .canvas-viewport {
 	width: 100%;
-	height: 100%;
 	flex: 0 0 auto;
 	
 	transition: width 0.3s;
@@ -28,13 +32,9 @@
 
 .sidepanel-container {
 	width: $sidepanel-width;
-	height: 100%;
 	flex: 0 0 auto;
 }
 
 .app.sidepanel-visible .canvas-viewport {
 	width: calc(100% - #{$sidepanel-width});
 }
-
-
-
