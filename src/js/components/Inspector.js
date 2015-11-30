@@ -1,15 +1,34 @@
 var
    React = require('react')
+   ,doStore = require('../stores/designObjectStore')
    NumericControl = require('./NumericControl')
 ;
 
 var Inspector = React.createClass({
 	
+	getInitialState: function() {
+		return {
+			selectedObject: doStore.getSelectedObject()
+		};
+	},
+	
+	componentDidMount: function() {
+		doStore.addChangeListener(this._onChange);
+	},
+	
+	componentWillUnmount: function() {
+		doStore.removeChangeListener(this._onChange);
+	},
+	
+	_onChange: function() {
+		this.setState({selectedObject: doStore.getSelectedObject()});
+	},
+	
 	render: function() {
 		return (
 			<div className="inspector">
-				<Header selectedObject={this.props.selectedObject} />
-				<Body selectedObject={this.props.selectedObject} />
+				<Header selectedObject={this.state.selectedObject} />
+				<Body selectedObject={this.state.selectedObject} />
 			</div>
 		);
 	}

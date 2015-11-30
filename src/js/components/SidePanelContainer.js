@@ -15,7 +15,7 @@ var SidePanelContainer = React.createClass({
 		if (this.props.inspector)
 			panels.push(
 				<Panel onTop={this.props.panelOnTop === 'INSPECTOR'} key={1} >
-					<Inspector selectedObject={this.props.selectedObject} />
+					<Inspector />
 				</Panel>
 			);
 	

@@ -37,7 +37,6 @@ var App = React.createClass({
 				inspector={this.state.inspectorPanel} 
 				settings={this.state.settingsPanel} 
 				panelOnTop={this.state.panelOnTop} 
-				selectedObject={this.props.selectedObject}
 			/>
 		}
 		
@@ -45,7 +44,7 @@ var App = React.createClass({
 			<div className={classes.join(' ')}>
 				<AppBar />
 				<div className="app-body">
-					<CanvasViewport designObjects={this.props.designObjects} doRender={this.props.doRender} selectedObject={this.props.selectedObject} />
+					<CanvasViewport />
 					{sidePanel}
 				</div>
 				<HotKeys />

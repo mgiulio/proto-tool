@@ -1,15 +1,15 @@
 var
    React = require('react')
-   ,AppController = require('./components/AppController')
    ,appActions = require('./actions/AppActions')
    //,appConstants = require('./constants/appConstants')
    ,designObjectStore = require('./stores/designObjectStore')
+   ,App = require('./components/App')
 ;
 
 window.appActions = appActions;
 //window.appConstants = appConstants;
 
-React.render(<AppController />, document.body, populate);
+React.render(<App />, document.body, populate);
 
 function populate() {
 	/*
