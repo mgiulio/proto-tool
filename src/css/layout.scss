@@ -3,31 +3,38 @@
 	height: 100vh;
 }
 
-.appbar {
+.app-bar {
 	width: 100%;
 	height: $toolbar-app-height;
 }
 
-.canvas-viewport {
-	display: block;
-	width: 100%;
+.app-body {
 	height: calc(100% - #{$toolbar-app-height});
 	
-	overflow: auto;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	
+	overflow: hidden;
+}
+
+.canvas-viewport {
+	width: 100%;
+	height: 100%;
+	flex: 0 0 auto;
+	
+	transition: width 0.3s;
+}
+
+.sidepanel-container {
+	width: $sidepanel-width;
+	height: 100%;
+	flex: 0 0 auto;
 }
 
 .app.sidepanel-visible .canvas-viewport {
 	width: calc(100% - #{$sidepanel-width});
-	float: left;
 }
 
-.sidepanel-container {
-	display: block;
-	width: $sidepanel-width;
-	height: calc(100% - #{$toolbar-app-height});
-	float: right;
-	
-	background-color: #333;
-	
-	position: relative;
-}
+
+

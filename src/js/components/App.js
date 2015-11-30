@@ -12,7 +12,7 @@ var App = React.createClass({
 	
 	getInitialState: function() {
 		return {
-			inspectorPanel: true,
+			inspectorPanel: false,
 			settingsPanel: false,
 			panelOnTop: 'inspector'
 		};
@@ -44,8 +44,10 @@ var App = React.createClass({
 		return (
 			<div className={classes.join(' ')}>
 				<AppBar />
-				<CanvasViewport designObjects={this.props.designObjects} doRender={this.props.doRender} selectedObject={this.props.selectedObject} />
-				{sidePanel}
+				<div className="app-body">
+					<CanvasViewport designObjects={this.props.designObjects} doRender={this.props.doRender} selectedObject={this.props.selectedObject} />
+					{sidePanel}
+				</div>
 				<HotKeys />
 			</div>
 		);

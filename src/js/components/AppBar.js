@@ -6,7 +6,7 @@ var AppBar = React.createClass({
 	
 	render: function() {
 		return (
-			<div className="appbar">
+			<div className="app-bar">
 				<h1 className="logo">Bc</h1>
 				
 				<a className="about" href="#">About</a>

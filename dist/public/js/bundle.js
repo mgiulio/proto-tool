@@ -20712,7 +20712,7 @@ var App = React.createClass({displayName: "App",
 	
 	getInitialState: function() {
 		return {
-			inspectorPanel: true,
+			inspectorPanel: false,
 			settingsPanel: false,
 			panelOnTop: 'inspector'
 		};
@@ -20744,8 +20744,10 @@ var App = React.createClass({displayName: "App",
 		return (
 			React.createElement("div", {className: classes.join(' ')}, 
 				React.createElement(AppBar, null), 
-				React.createElement(CanvasViewport, {designObjects: this.props.designObjects, doRender: this.props.doRender, selectedObject: this.props.selectedObject}), 
-				sidePanel, 
+				React.createElement("div", {className: "app-body"}, 
+					React.createElement(CanvasViewport, {designObjects: this.props.designObjects, doRender: this.props.doRender, selectedObject: this.props.selectedObject}), 
+					sidePanel
+				), 
 				React.createElement(HotKeys, null)
 			)
 		);
@@ -20791,7 +20793,7 @@ var AppBar = React.createClass({displayName: "AppBar",
 	
 	render: function() {
 		return (
-			React.createElement("div", {className: "appbar"}, 
+			React.createElement("div", {className: "app-bar"}, 
 				React.createElement("h1", {className: "logo"}, "Bc"), 
 				
 				React.createElement("a", {className: "about", href: "#"}, "About"), 
