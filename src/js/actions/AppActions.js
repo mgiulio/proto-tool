@@ -148,6 +148,20 @@ var AppActions = {
 			actionType: appConstants.TOGGLE_SETTINGS
 		});
 	},
+	
+	setCanvasWidth: function(w) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_CANVAS_WIDTH,
+			w: w
+		});
+	},
+	
+	setCanvasHeight: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_CANVAS_HEIGHT,
+			h: h
+		});
+	},
 
 };
 

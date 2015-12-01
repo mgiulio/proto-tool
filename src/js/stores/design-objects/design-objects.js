@@ -61,6 +61,14 @@ function getCanvasSize() {
 	return  canvasSize;
 }
 
+function setCanvasWidth(w) {
+	canvasSize[0] = w;
+}
+
+function setCanvasHeight(h) {
+	canvasSize[1] = h;
+}
+
 module.exports = {
 	addObject: addObject,
 	select: select,
@@ -73,5 +81,7 @@ module.exports = {
 	setHeight: setHeight,
 	getObjects: getObjects,
 	getSelectedObject: getSelectedObject,
-	getCanvasSize: getCanvasSize
+	getCanvasSize: getCanvasSize,
+	setCanvasWidth: setCanvasWidth,
+	setCanvasHeight: setCanvasHeight
 };

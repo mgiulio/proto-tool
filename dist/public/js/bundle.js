@@ -20656,6 +20656,20 @@ var AppActions = {
 			actionType: appConstants.TOGGLE_SETTINGS
 		});
 	},
+	
+	setCanvasWidth: function(w) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_CANVAS_WIDTH,
+			w: w
+		});
+	},
+	
+	setCanvasHeight: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.SET_CANVAS_HEIGHT,
+			h: h
+		});
+	},
 
 };
 
@@ -21356,13 +21370,81 @@ module.exports = SelectionBox;
 },{"../actions/AppActions":163,"../constants/appConstants":177,"react":162}],175:[function(require,module,exports){
 var
    React = require('react')
+   ,doStore = require('../stores/designObjectStore')
+   NumericControl = require('./NumericControl')
 ;
 
 var Settings = React.createClass({displayName: "Settings",
 	
+	getInitialState: function() {
+		return {
+			canvasSize: doStore.getCanvasSize()
+		};
+	},
+	
+	componentDidMount: function() {
+		doStore.addChangeListener(this._onChange);
+	},
+	
+	componentWillUnmount: function() {
+		doStore.removeChangeListener(this._onChange);
+	},
+	
+	_onChange: function() {
+		this.setState({canvasSize: doStore.getCanvasSize()});
+	},
+	
 	render: function() {
 		return (
-			React.createElement("p", null, "Settings")
+			React.createElement("div", {className: "settings"}, 
+				React.createElement(Header, null), 
+				React.createElement(Body, {canvasWidth: this.state.canvasSize[0], canvasHeight: this.state.canvasSize[1]})
+			)
+		);
+	}
+	
+});
+
+var Header = React.createClass({displayName: "Header",
+
+	render: function() {
+		return (
+			React.createElement("h1", {className: "settings-header"}, "Settings")
+		);
+	}
+
+});
+
+var Body = React.createClass({displayName: "Body",
+
+	render: function() {
+		return (
+			React.createElement("div", {className: "settings-body"}, 
+				React.createElement(CanvasSize, {canvasWidth: this.props.canvasWidth, canvasHeight: this.props.canvasHeight})
+			)
+		);
+	}
+	
+});
+
+var CanvasSize = React.createClass({displayName: "CanvasSize",
+
+	render: function() {
+		return (
+			React.createElement("div", {className: "settings-section settings-canvas-size"}, 
+				React.createElement("div", {className: "inspector-position"}, 
+					React.createElement("span", {className: "inspector-geo-label"}, "Canvas size"), 
+					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
+						React.createElement(NumericControl, {id: "canvas-w", value: this.props.canvasWidth, onChange: appActions.setCanvasWidth.bind(appActions)}), 
+						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "canvas-w"}, "x")
+					), 
+					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
+						React.createElement(NumericControl, {id: "canvas-h", value: this.props.canvasHeight, onChange: appActions.setCanvasHeight.bind(appActions)}
+						), 
+						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-y"}, "y")
+					)
+				)
+			)
 		);
 	}
 
@@ -21370,7 +21452,7 @@ var Settings = React.createClass({displayName: "Settings",
 
 module.exports = Settings;
 
-},{"react":162}],176:[function(require,module,exports){
+},{"../stores/designObjectStore":182,"./NumericControl":171,"react":162}],176:[function(require,module,exports){
 var
 	React = require('react')
 	,Panel = require('./Panel')
@@ -21409,27 +21491,30 @@ module.exports = SidePanelContainer;
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
-  ADD_OBJECT: null,
-  SELECT_OBJECT: null,
-  SELECT_NEXT: null,
-  SELECT_PREV: null,
-  TRANSLATE: null,
-  SET_POSITION: null,
-  RESIZE_SIDE: null,
-  SET_WIDTH: null,
-  SET_HEIGHT: null,
-  
-  TOP: null,
-  RIGHT: null,
-  BOTTOM: null,
-  LEFT: null,
-  
+	ADD_OBJECT: null,
+	SELECT_OBJECT: null,
+	SELECT_NEXT: null,
+	SELECT_PREV: null,
+	TRANSLATE: null,
+	SET_POSITION: null,
+	RESIZE_SIDE: null,
+	SET_WIDTH: null,
+	SET_HEIGHT: null,
+
+	TOP: null,
+	RIGHT: null,
+	BOTTOM: null,
+	LEFT: null,
+
 	SHOW_INSPECTOR: null,
 	HIDE_INSPECTOR: null,
 	TOGGLE_INSPECTOR: null,
 	SHOW_SETTINGS: null,
 	HIDE_SETTINGS: null,
 	TOGGLE_SETTINGS: null,
+	
+	SET_CANVAS_WIDTH: null,
+	SET_CANVAS_HEIGHT: null,
 });
 
 },{"keymirror":6}],178:[function(require,module,exports){
@@ -21653,6 +21738,14 @@ function getCanvasSize() {
 	return  canvasSize;
 }
 
+function setCanvasWidth(w) {
+	canvasSize[0] = w;
+}
+
+function setCanvasHeight(h) {
+	canvasSize[1] = h;
+}
+
 module.exports = {
 	addObject: addObject,
 	select: select,
@@ -21665,7 +21758,9 @@ module.exports = {
 	setHeight: setHeight,
 	getObjects: getObjects,
 	getSelectedObject: getSelectedObject,
-	getCanvasSize: getCanvasSize
+	getCanvasSize: getCanvasSize,
+	setCanvasWidth: setCanvasWidth,
+	setCanvasHeight: setCanvasHeight
 };
 },{"./Rectangle":180}],182:[function(require,module,exports){
 var
@@ -21714,6 +21809,14 @@ AppDispatcher.register(function(action) {
 			break;
 		case appConstants.SET_HEIGHT:
 			dos.setHeight(action.h);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_CANVAS_WIDTH:
+			dos.setCanvasWidth(action.w);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SET_CANVAS_HEIGHT:
+			dos.setCanvasHeight(action.h);
 			designObjectStore.emitChange();
 			break;
 		default:
