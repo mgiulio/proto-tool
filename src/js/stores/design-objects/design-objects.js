@@ -5,7 +5,7 @@ var
 	designObjects = {
 		'Rectangle': Rectangle
 	},
-	canvasSize = [1600, 500]
+	canvasSize = [2000, 1000]
 ;
 
 function addObject(type, x, y, w, h) {

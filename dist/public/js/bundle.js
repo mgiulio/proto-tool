@@ -21597,7 +21597,7 @@ var
 	designObjects = {
 		'Rectangle': Rectangle
 	},
-	canvasSize = [1600, 500]
+	canvasSize = [2000, 1000]
 ;
 
 function addObject(type, x, y, w, h) {
@@ -21740,14 +21740,8 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 		this.removeListener(CHANGE_EVENT, callback);
 	},
 	
-	getObjects: function() {
-		return dos.getObjects();
-	},
-	
-	getSelectedObject: function() {
-		return dos.getSelectedObject();
-	},
-	
+	getObjects: dos.getObjects.bind(dos),
+	getSelectedObject: dos.getSelectedObject.bind(dos),
 	getCanvasSize: dos.getCanvasSize.bind(dos)
   
 });

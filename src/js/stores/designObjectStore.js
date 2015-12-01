@@ -70,14 +70,8 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 		this.removeListener(CHANGE_EVENT, callback);
 	},
 	
-	getObjects: function() {
-		return dos.getObjects();
-	},
-	
-	getSelectedObject: function() {
-		return dos.getSelectedObject();
-	},
-	
+	getObjects: dos.getObjects.bind(dos),
+	getSelectedObject: dos.getSelectedObject.bind(dos),
 	getCanvasSize: dos.getCanvasSize.bind(dos)
   
 });
