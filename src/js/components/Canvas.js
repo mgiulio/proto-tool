@@ -10,7 +10,8 @@ var Canvas = React.createClass({
 	getState: function() {
 		return {
 			designObjects: doStore.getObjects(),
-			selectedObject: doStore.getSelectedObject()
+			selectedObject: doStore.getSelectedObject(),
+			canvasSize: doStore.getCanvasSize()
 		};
 	},
 	
@@ -40,7 +41,7 @@ var Canvas = React.createClass({
 		}
 		
 		return (
-			<svg className="canvas">
+			<svg className="canvas" width={this.state.canvasSize[0]} height={this.state.canvasSize[1]}>
 				{designObjectsRep}
 				{selectionBox}
 			</svg>

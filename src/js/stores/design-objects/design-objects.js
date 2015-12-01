@@ -4,7 +4,8 @@ var
 	Rectangle = require('./Rectangle'),
 	designObjects = {
 		'Rectangle': Rectangle
-	}
+	},
+	canvasSize = [1600, 500]
 ;
 
 function addObject(type, x, y, w, h) {
@@ -56,6 +57,10 @@ function getSelectedObject() {
 	return objects[selected];
 }
 
+function getCanvasSize() {
+	return  canvasSize;
+}
+
 module.exports = {
 	addObject: addObject,
 	select: select,
@@ -67,5 +72,6 @@ module.exports = {
 	setWidth: setWidth,
 	setHeight: setHeight,
 	getObjects: getObjects,
-	getSelectedObject: getSelectedObject
+	getSelectedObject: getSelectedObject,
+	getCanvasSize: getCanvasSize
 };

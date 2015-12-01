@@ -20834,7 +20834,8 @@ var Canvas = React.createClass({displayName: "Canvas",
 	getState: function() {
 		return {
 			designObjects: doStore.getObjects(),
-			selectedObject: doStore.getSelectedObject()
+			selectedObject: doStore.getSelectedObject(),
+			canvasSize: doStore.getCanvasSize()
 		};
 	},
 	
@@ -20864,7 +20865,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 		}
 		
 		return (
-			React.createElement("svg", {className: "canvas"}, 
+			React.createElement("svg", {className: "canvas", width: this.state.canvasSize[0], height: this.state.canvasSize[1]}, 
 				designObjectsRep, 
 				selectionBox
 			)
@@ -21595,7 +21596,8 @@ var
 	Rectangle = require('./Rectangle'),
 	designObjects = {
 		'Rectangle': Rectangle
-	}
+	},
+	canvasSize = [1600, 500]
 ;
 
 function addObject(type, x, y, w, h) {
@@ -21647,6 +21649,10 @@ function getSelectedObject() {
 	return objects[selected];
 }
 
+function getCanvasSize() {
+	return  canvasSize;
+}
+
 module.exports = {
 	addObject: addObject,
 	select: select,
@@ -21658,7 +21664,8 @@ module.exports = {
 	setWidth: setWidth,
 	setHeight: setHeight,
 	getObjects: getObjects,
-	getSelectedObject: getSelectedObject
+	getSelectedObject: getSelectedObject,
+	getCanvasSize: getCanvasSize
 };
 },{"./Rectangle":180}],182:[function(require,module,exports){
 var
@@ -21739,7 +21746,9 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	
 	getSelectedObject: function() {
 		return dos.getSelectedObject();
-	}
+	},
+	
+	getCanvasSize: dos.getCanvasSize.bind(dos)
   
 });
 
