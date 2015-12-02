@@ -20675,7 +20675,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":181,"../dispatcher/AppDispatcher":182,"../lib/func":183}],164:[function(require,module,exports){
+},{"../constants/appConstants":182,"../dispatcher/AppDispatcher":183,"../lib/func":184}],164:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('./actions/AppActions')
@@ -20711,7 +20711,7 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":186,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":187,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,HotKeys = require('./HotKeys')
@@ -20797,7 +20797,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../constants/appConstants":181,"../dispatcher/AppDispatcher":182,"./AppBar":166,"./CanvasViewport":168,"./HotKeys":170,"./SidePanelContainer":180,"react":162}],166:[function(require,module,exports){
+},{"../constants/appConstants":182,"../dispatcher/AppDispatcher":183,"./AppBar":166,"./CanvasViewport":168,"./HotKeys":170,"./SidePanelContainer":180,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20890,7 +20890,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 
 module.exports = Canvas;
 
-},{"../stores/designObjectStore":186,"../svgRenderer":187,"./SelectionBox":178,"react":162}],168:[function(require,module,exports){
+},{"../stores/designObjectStore":187,"../svgRenderer":188,"./SelectionBox":178,"react":162}],168:[function(require,module,exports){
 var
    React = require('react')
    ,Canvas = require('./Canvas')
@@ -21006,12 +21006,13 @@ module.exports = Keyboard;
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
-   NumericControl = require('./NumericControl')
    ,Panel = require('./Panel')
    ,PanelHeader = require('./PanelHeader')
    ,PanelBody = require('./PanelBody')
    ,PanelSection = require('./PanelSection')
    ,ControlRow = require('./ControlRow')
+   ,NumericControl = require('./NumericControl')
+   ,VerticalLabel = require('./VerticalLabel')
 ;
 
 var Inspector = React.createClass({displayName: "Inspector",
@@ -21057,12 +21058,20 @@ var Geometry = React.createClass({displayName: "Geometry",
 		return (
 			React.createElement(PanelSection, {className: "inspector-geometry"}, 
 				React.createElement(ControlRow, {label: "Position"}, 
-					React.createElement(NumericControl, {id: "inspector-x", value: this.props.selectedObject.x, onChange: this.onChangeX}), 
-					React.createElement(NumericControl, {id: "inspector-y", value: this.props.selectedObject.y, onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)})
+					React.createElement(VerticalLabel, {text: "x", align: "top"}, 
+						React.createElement(NumericControl, {id: "inspector-x", value: this.props.selectedObject.x, onChange: this.onChangeX})
+					), 
+					React.createElement(VerticalLabel, {text: "y", align: "top"}, 
+						React.createElement(NumericControl, {id: "inspector-y", value: this.props.selectedObject.y, onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)})
+					)
 				), 
 				React.createElement(ControlRow, {label: "Size"}, 
-					React.createElement(NumericControl, {id: "inspector-w", value: this.props.selectedObject.w, onChange: appActions.setWidth.bind(appActions)}), 
-					React.createElement(NumericControl, {id: "inspector-h", value: this.props.selectedObject.h, onChange: appActions.setHeight.bind(appActions)})
+					React.createElement(VerticalLabel, {text: "w", align: "bottom"}, 
+							React.createElement(NumericControl, {id: "inspector-w", value: this.props.selectedObject.w, onChange: appActions.setWidth.bind(appActions)})
+					), 
+					React.createElement(VerticalLabel, {text: "h", align: "bottom"}, 
+						React.createElement(NumericControl, {id: "inspector-h", value: this.props.selectedObject.h, onChange: appActions.setHeight.bind(appActions)})
+					)
 				)
 			)
 		);
@@ -21096,7 +21105,7 @@ var Color = React.createClass({displayName: "Color",
 
 module.exports = Inspector;
 
-},{"../stores/designObjectStore":186,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"react":162}],172:[function(require,module,exports){
+},{"../stores/designObjectStore":187,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"./VerticalLabel":181,"react":162}],172:[function(require,module,exports){
 var
    React = require('react')
    ,ENTER_KEY_CODE = 13
@@ -21420,7 +21429,7 @@ var Handle = React.createClass({displayName: "Handle",
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"../constants/appConstants":181,"react":162}],179:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":182,"react":162}],179:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
@@ -21430,6 +21439,7 @@ var
    ,PanelSection = require('./PanelSection')
    ,ControlRow = require('./ControlRow')
    ,NumericControl = require('./NumericControl')
+   ,VerticalLabel = require('./VerticalLabel')
 ;
 
 var Settings = React.createClass({displayName: "Settings",
@@ -21456,11 +21466,15 @@ var Settings = React.createClass({displayName: "Settings",
 		return (
 			React.createElement(Panel, {className: "settings"}, 
 				React.createElement(PanelHeader, null, "Settings"), 
-				React.createElement(PanelBody, null, 
+				React.createElement(PanelBody, null, 	
 					React.createElement(PanelSection, null, 
 						React.createElement(ControlRow, {label: "Size"}, 
-							React.createElement(NumericControl, {id: "canvas-w", value: this.state.canvasSize[0], onChange: appActions.setCanvasWidth.bind(appActions)}), 
-							React.createElement(NumericControl, {id: "canvas-h", value: this.state.canvasSize[1], onChange: appActions.setCanvasHeight.bind(appActions)})
+							React.createElement(VerticalLabel, {text: "w", align: "top"}, 
+								React.createElement(NumericControl, {id: "canvas-w", value: this.state.canvasSize[0], onChange: appActions.setCanvasWidth.bind(appActions)})
+							), 
+							React.createElement(VerticalLabel, {text: "h", align: "top"}, 
+								React.createElement(NumericControl, {id: "canvas-h", value: this.state.canvasSize[1], onChange: appActions.setCanvasHeight.bind(appActions)})
+							)
 						)
 					)
 				)
@@ -21472,7 +21486,7 @@ var Settings = React.createClass({displayName: "Settings",
 
 module.exports = Settings;
 
-},{"../stores/designObjectStore":186,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"react":162}],180:[function(require,module,exports){
+},{"../stores/designObjectStore":187,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"./VerticalLabel":181,"react":162}],180:[function(require,module,exports){
 var
 	React = require('react')
 	,Inspector = require('./Inspector')
@@ -21499,6 +21513,32 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 
 module.exports = SidePanelContainer;
 },{"./Inspector":171,"./Settings":179,"react":162}],181:[function(require,module,exports){
+var
+	React = require('react')
+;
+
+var VerticalLabel = React.createClass({displayName: "VerticalLabel",
+
+	render: function() {
+		var classes = ['vertical-label'];
+		if (this.props.align === 'bottom')
+			classes.push('bottom');
+		else
+			classes.push('top');
+		
+		return (
+			React.createElement("div", {className: classes.join(' ')}, 
+				this.props.children, 
+				React.createElement("label", {className: "vertical-label__text"}, this.props.text)
+			)
+		);
+	}
+	
+});
+
+module.exports = VerticalLabel;
+
+},{"react":162}],182:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -21528,7 +21568,7 @@ module.exports = keyMirror({
 	SET_CANVAS_HEIGHT: null,
 });
 
-},{"keymirror":6}],182:[function(require,module,exports){
+},{"keymirror":6}],183:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -21546,7 +21586,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],183:[function(require,module,exports){
+},{"flux":3}],184:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21594,7 +21634,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],184:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 var
 	appConstants = require('../../constants/appConstants')
 ;
@@ -21685,7 +21725,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../../constants/appConstants":181}],185:[function(require,module,exports){
+},{"../../constants/appConstants":182}],186:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21773,7 +21813,7 @@ module.exports = {
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
 };
-},{"./Rectangle":184}],186:[function(require,module,exports){
+},{"./Rectangle":185}],187:[function(require,module,exports){
 var
 	dos = require('./design-objects/design-objects')
 ;
@@ -21862,7 +21902,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":181,"../dispatcher/AppDispatcher":182,"./design-objects/design-objects":185,"events":1,"object-assign":7}],187:[function(require,module,exports){
+},{"../constants/appConstants":182,"../dispatcher/AppDispatcher":183,"./design-objects/design-objects":186,"events":1,"object-assign":7}],188:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')

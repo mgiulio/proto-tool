@@ -7,6 +7,7 @@ var
    ,PanelSection = require('./PanelSection')
    ,ControlRow = require('./ControlRow')
    ,NumericControl = require('./NumericControl')
+   ,VerticalLabel = require('./VerticalLabel')
 ;
 
 var Settings = React.createClass({
@@ -33,11 +34,15 @@ var Settings = React.createClass({
 		return (
 			<Panel className="settings">
 				<PanelHeader>Settings</PanelHeader>
-				<PanelBody>
+				<PanelBody>	
 					<PanelSection>
 						<ControlRow label="Size">
-							<NumericControl id="canvas-w" value={this.state.canvasSize[0]} onChange={appActions.setCanvasWidth.bind(appActions)} />
-							<NumericControl id="canvas-h" value={this.state.canvasSize[1]} onChange={appActions.setCanvasHeight.bind(appActions)} />
+							<VerticalLabel text="w" align="top">
+								<NumericControl id="canvas-w" value={this.state.canvasSize[0]} onChange={appActions.setCanvasWidth.bind(appActions)} />
+							</VerticalLabel>
+							<VerticalLabel text="h" align="top">
+								<NumericControl id="canvas-h" value={this.state.canvasSize[1]} onChange={appActions.setCanvasHeight.bind(appActions)} />
+							</VerticalLabel>
 						</ControlRow>
 					</PanelSection>
 				</PanelBody>
