@@ -2,6 +2,11 @@ var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
    NumericControl = require('./NumericControl')
+   ,Panel = require('./Panel')
+   ,PanelHeader = require('./PanelHeader')
+   ,PanelBody = require('./PanelBody')
+   ,PanelSection = require('./PanelSection')
+   ,ControlRow = require('./ControlRow')
 ;
 
 var Inspector = React.createClass({
@@ -26,35 +31,13 @@ var Inspector = React.createClass({
 	
 	render: function() {
 		return (
-			<div className="inspector">
-				<Header selectedObject={this.state.selectedObject} />
-				<Body selectedObject={this.state.selectedObject} />
-			</div>
-		);
-	}
-	
-});
-
-var Header = React.createClass({
-
-	render: function() {
-		var title = this.props.selectedObject ? this.props.selectedObject.getType() : 'no object selected';
-		
-		return (
-			<h1 className="inspector-header">{title}</h1>
-		);
-	}
-
-});
-
-var Body = React.createClass({
-
-	render: function() {
-		return (
-			<div className="inspector-body">
-				<Geometry selectedObject={this.props.selectedObject} />
-				<Color selectedObject={this.props.selectedObject} />
-			</div>
+			<Panel className="inspector">
+				<PanelHeader>{this.state.selectedObject ? this.state.selectedObject.getType() : 'no object selected'}</PanelHeader>
+				<PanelBody>
+					<Geometry selectedObject={this.state.selectedObject} />
+						{/* <Color selectedObject={this.state.selectedObject} /> */}
+				</PanelBody>
+			</Panel>
 		);
 	}
 	
@@ -67,31 +50,16 @@ var Geometry = React.createClass({
 			return null;
 		
 		return (
-			<div className="inspector-section inspector-geometry">
-				<div className="inspector-position">
-					<span className="inspector-geo-label">Position</span>
-					<div className="inspector-geo-ctrl-wrap">
-						<NumericControl id="inspector-x" value={this.props.selectedObject.x} onChange={this.onChangeX} />
-						<label className="inspector-geo-ctrl-label" htmlFor="inspector-x">x</label>
-					</div>
-					<div className="inspector-geo-ctrl-wrap">
-						<NumericControl id="inspector-y" value={this.props.selectedObject.y} onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} 
-						/>
-						<label className="inspector-geo-ctrl-label" htmlFor="inspector-y">y</label>
-					</div>
-				</div>
-				<div className="inspector-size">
-					<span className="inspector-geo-label">Size</span>
-					<div className="inspector-geo-ctrl-wrap">
-						<NumericControl id="inspector-w" value={this.props.selectedObject.w} onChange={appActions.setWidth.bind(appActions)} />
-						<label className="inspector-geo-ctrl-label" htmlFor="inspector-w">w</label>
-					</div>
-					<div className="inspector-geo-ctrl-wrap">
-						<NumericControl id="inspector-h" value={this.props.selectedObject.h} onChange={appActions.setHeight.bind(appActions)} />
-						<label className="inspector-geo-ctrl-label" htmlFor="inspector-h">h</label>
-					</div>
-				</div>
-			</div>
+			<PanelSection className="inspector-geometry">
+				<ControlRow label="Position">
+					<NumericControl id="inspector-x" value={this.props.selectedObject.x} onChange={this.onChangeX} />
+					<NumericControl id="inspector-y" value={this.props.selectedObject.y} onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} />
+				</ControlRow>
+				<ControlRow label="Size">
+					<NumericControl id="inspector-w" value={this.props.selectedObject.w} onChange={appActions.setWidth.bind(appActions)} />
+					<NumericControl id="inspector-h" value={this.props.selectedObject.h} onChange={appActions.setHeight.bind(appActions)} />
+				</ControlRow>
+			</PanelSection>
 		);
 	},
 	
@@ -108,8 +76,14 @@ var Color = React.createClass({
 			return null;
 		
 		return (
-			<div className="inspector-section inspector-color">
-			</div>
+			<PanelSection className="inspector-color">
+				<ControlRow label="Bg Color">
+					<NumericControl value={999} onChange={null} />
+				</ControlRow>
+				<ControlRow label="Fg Color">
+					<NumericControl value={999} onChange={null} />
+				</ControlRow>
+			</PanelSection>
 		);
 	}
 

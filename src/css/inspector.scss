@@ -1,72 +1,7 @@
-$gap: 10px;
-
-.inspector-header {
-	margin: 0;
-	padding: $gap;
-	
-	text-align: center;
-	
-	font-family: sans-serif;
-	text-transform: uppercase;
-	font-size: 16px;
-	
-	background-color: #cd6565;
-	color: #efefef;
-	
-	box-shadow: 0 1px 1px 1px rgba(0,0,0, 0.5);
-}
-
-.inspector-body {
-	padding: 2 * $gap $gap;
-}
-
-.inspector-section {
-	padding: 0 0 $gap;
-	border-bottom: 1px solid #111;
-	border-top: 1px solid #444;
-}
-.inspector-section:first-child {
-	border-top: none;
-}
-.inspector-section:last-child {
-	border-bottom: none;
-}
-
-.inspector-section.inspector-geometry {
-	padding-bottom: $gap * 2;
-}
-
-.inspector-geo-label {
-	display: inline-block;
-	width: 100px;
-}
-
 .inspector-geo-ctrl-wrap {
 	display: inline-block;
 	position: relative;
 	padding: 5px;
-}
-
-.num-ctrl {
-	display: inline-block;
-	width: 50px;
-	padding: 5px;
-	
-	text-align: center;
-
-	border: none;
-	border-radius: 3px;
-
-	font-family: monospace;
-
-	background: #252525;
-	color: #ccc;
-
-	/*
-	&:focus {
-	outline: 1px solid #0000dd;
-	}
-	*/
 }
 
 .inspector-geo-ctrl-label {

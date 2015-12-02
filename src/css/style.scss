@@ -3,7 +3,9 @@
 @import 'layout';
 @import 'appbar';
 @import 'canvas';
+@import 'panel';
 @import 'inspector';
+@import 'settings';
 
 .sidepanel-container {
 	background-color: #333;
@@ -12,26 +14,6 @@
 }
 .canvas-viewport {
 	overflow: auto;
-}
-
-.panel {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	
-	z-index: 1;
-	
-	background-color: #333;
-	color: #999;
-	
-	font-family: lato, sans-serif;
-	font-size: 14px;
-	
-	&.ontop {
-		z-index: 2;
-	}
 }
 
 .object {

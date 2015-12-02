@@ -20675,7 +20675,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"../lib/func":179}],164:[function(require,module,exports){
+},{"../constants/appConstants":181,"../dispatcher/AppDispatcher":182,"../lib/func":183}],164:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('./actions/AppActions')
@@ -20711,7 +20711,7 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":182,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":186,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,HotKeys = require('./HotKeys')
@@ -20797,7 +20797,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./AppBar":166,"./CanvasViewport":168,"./HotKeys":169,"./SidePanelContainer":176,"react":162}],166:[function(require,module,exports){
+},{"../constants/appConstants":181,"../dispatcher/AppDispatcher":182,"./AppBar":166,"./CanvasViewport":168,"./HotKeys":170,"./SidePanelContainer":180,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -20890,7 +20890,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 
 module.exports = Canvas;
 
-},{"../stores/designObjectStore":182,"../svgRenderer":183,"./SelectionBox":174,"react":162}],168:[function(require,module,exports){
+},{"../stores/designObjectStore":186,"../svgRenderer":187,"./SelectionBox":178,"react":162}],168:[function(require,module,exports){
 var
    React = require('react')
    ,Canvas = require('./Canvas')
@@ -20911,6 +20911,32 @@ var CanvasViewport = React.createClass({displayName: "CanvasViewport",
 module.exports = CanvasViewport;
 
 },{"./Canvas":167,"react":162}],169:[function(require,module,exports){
+var
+	React = require('react')
+;
+
+var ControlRow = React.createClass({displayName: "ControlRow",
+
+	render: function() {
+		var classes = ['control-row'];
+		if (this.props.className)
+			classes.push(this.props.className);
+		
+		return (
+			React.createElement("div", {className: classes.join(' ')}, 
+				React.createElement("div", {className: "control-row__label"}, this.props.label), 
+				React.createElement("div", {className: "control-row__controls"}, 
+					this.props.children
+				)
+			)
+		);
+	}
+	
+});
+
+module.exports = ControlRow;
+
+},{"react":162}],170:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -20976,11 +21002,16 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 
 module.exports = Keyboard;
 
-},{"../actions/AppActions":163,"react":162}],170:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
    NumericControl = require('./NumericControl')
+   ,Panel = require('./Panel')
+   ,PanelHeader = require('./PanelHeader')
+   ,PanelBody = require('./PanelBody')
+   ,PanelSection = require('./PanelSection')
+   ,ControlRow = require('./ControlRow')
 ;
 
 var Inspector = React.createClass({displayName: "Inspector",
@@ -21005,34 +21036,12 @@ var Inspector = React.createClass({displayName: "Inspector",
 	
 	render: function() {
 		return (
-			React.createElement("div", {className: "inspector"}, 
-				React.createElement(Header, {selectedObject: this.state.selectedObject}), 
-				React.createElement(Body, {selectedObject: this.state.selectedObject})
-			)
-		);
-	}
-	
-});
-
-var Header = React.createClass({displayName: "Header",
-
-	render: function() {
-		var title = this.props.selectedObject ? this.props.selectedObject.getType() : 'no object selected';
-		
-		return (
-			React.createElement("h1", {className: "inspector-header"}, title)
-		);
-	}
-
-});
-
-var Body = React.createClass({displayName: "Body",
-
-	render: function() {
-		return (
-			React.createElement("div", {className: "inspector-body"}, 
-				React.createElement(Geometry, {selectedObject: this.props.selectedObject}), 
-				React.createElement(Color, {selectedObject: this.props.selectedObject})
+			React.createElement(Panel, {className: "inspector"}, 
+				React.createElement(PanelHeader, null, this.state.selectedObject ? this.state.selectedObject.getType() : 'no object selected'), 
+				React.createElement(PanelBody, null, 
+					React.createElement(Geometry, {selectedObject: this.state.selectedObject})
+						/* <Color selectedObject={this.state.selectedObject} /> */
+				)
 			)
 		);
 	}
@@ -21046,29 +21055,14 @@ var Geometry = React.createClass({displayName: "Geometry",
 			return null;
 		
 		return (
-			React.createElement("div", {className: "inspector-section inspector-geometry"}, 
-				React.createElement("div", {className: "inspector-position"}, 
-					React.createElement("span", {className: "inspector-geo-label"}, "Position"), 
-					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
-						React.createElement(NumericControl, {id: "inspector-x", value: this.props.selectedObject.x, onChange: this.onChangeX}), 
-						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-x"}, "x")
-					), 
-					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
-						React.createElement(NumericControl, {id: "inspector-y", value: this.props.selectedObject.y, onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)}
-						), 
-						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-y"}, "y")
-					)
+			React.createElement(PanelSection, {className: "inspector-geometry"}, 
+				React.createElement(ControlRow, {label: "Position"}, 
+					React.createElement(NumericControl, {id: "inspector-x", value: this.props.selectedObject.x, onChange: this.onChangeX}), 
+					React.createElement(NumericControl, {id: "inspector-y", value: this.props.selectedObject.y, onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)})
 				), 
-				React.createElement("div", {className: "inspector-size"}, 
-					React.createElement("span", {className: "inspector-geo-label"}, "Size"), 
-					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
-						React.createElement(NumericControl, {id: "inspector-w", value: this.props.selectedObject.w, onChange: appActions.setWidth.bind(appActions)}), 
-						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-w"}, "w")
-					), 
-					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
-						React.createElement(NumericControl, {id: "inspector-h", value: this.props.selectedObject.h, onChange: appActions.setHeight.bind(appActions)}), 
-						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-h"}, "h")
-					)
+				React.createElement(ControlRow, {label: "Size"}, 
+					React.createElement(NumericControl, {id: "inspector-w", value: this.props.selectedObject.w, onChange: appActions.setWidth.bind(appActions)}), 
+					React.createElement(NumericControl, {id: "inspector-h", value: this.props.selectedObject.h, onChange: appActions.setHeight.bind(appActions)})
 				)
 			)
 		);
@@ -21087,7 +21081,13 @@ var Color = React.createClass({displayName: "Color",
 			return null;
 		
 		return (
-			React.createElement("div", {className: "inspector-section inspector-color"}
+			React.createElement(PanelSection, {className: "inspector-color"}, 
+				React.createElement(ControlRow, {label: "Bg Color"}, 
+					React.createElement(NumericControl, {value: 999, onChange: null})
+				), 
+				React.createElement(ControlRow, {label: "Fg Color"}, 
+					React.createElement(NumericControl, {value: 999, onChange: null})
+				)
 			)
 		);
 	}
@@ -21096,7 +21096,7 @@ var Color = React.createClass({displayName: "Color",
 
 module.exports = Inspector;
 
-},{"../stores/designObjectStore":182,"./NumericControl":171,"react":162}],171:[function(require,module,exports){
+},{"../stores/designObjectStore":186,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"react":162}],172:[function(require,module,exports){
 var
    React = require('react')
    ,ENTER_KEY_CODE = 13
@@ -21153,7 +21153,7 @@ var NumericControl = React.createClass({displayName: "NumericControl",
 
 module.exports = NumericControl;
 
-},{"react":162}],172:[function(require,module,exports){
+},{"react":162}],173:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -21177,7 +21177,60 @@ var Panel = React.createClass({displayName: "Panel",
 
 module.exports = Panel;
 
-},{"react":162}],173:[function(require,module,exports){
+},{"react":162}],174:[function(require,module,exports){
+var
+	React = require('react')
+;
+
+var PanelBody = React.createClass({displayName: "PanelBody",
+
+	render: function() {
+		return (
+			React.createElement("div", {className: "panel__body"}, this.props.children)
+		);
+	}
+	
+});
+
+module.exports = PanelBody;
+
+},{"react":162}],175:[function(require,module,exports){
+var
+	React = require('react')
+;
+
+var PanelHeader = React.createClass({displayName: "PanelHeader",
+
+	render: function() {
+		return React.createElement("h1", {className: "panel__header"}, this.props.children);
+	}
+
+});
+
+module.exports = PanelHeader;
+},{"react":162}],176:[function(require,module,exports){
+var
+	React = require('react')
+;
+
+var PanelSection = React.createClass({displayName: "PanelSection",
+
+	render: function() {
+		var classes = ['panel__body__section'];
+		if (this.props.className)
+			classes.push(this.props.className);
+		
+		return (
+			React.createElement("div", {className: classes.join(' ')}, 
+				this.props.children
+			)
+		);
+	}
+
+});
+
+module.exports = PanelSection;
+},{"react":162}],177:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -21236,7 +21289,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],174:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],178:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('../actions/AppActions')
@@ -21367,11 +21420,16 @@ var Handle = React.createClass({displayName: "Handle",
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"../constants/appConstants":177,"react":162}],175:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":181,"react":162}],179:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
-   NumericControl = require('./NumericControl')
+   ,Panel = require('./Panel')
+   ,PanelHeader = require('./PanelHeader')
+   ,PanelBody = require('./PanelBody')
+   ,PanelSection = require('./PanelSection')
+   ,ControlRow = require('./ControlRow')
+   ,NumericControl = require('./NumericControl')
 ;
 
 var Settings = React.createClass({displayName: "Settings",
@@ -21396,66 +21454,27 @@ var Settings = React.createClass({displayName: "Settings",
 	
 	render: function() {
 		return (
-			React.createElement("div", {className: "settings"}, 
-				React.createElement(Header, null), 
-				React.createElement(Body, {canvasWidth: this.state.canvasSize[0], canvasHeight: this.state.canvasSize[1]})
-			)
-		);
-	}
-	
-});
-
-var Header = React.createClass({displayName: "Header",
-
-	render: function() {
-		return (
-			React.createElement("h1", {className: "settings-header"}, "Settings")
-		);
-	}
-
-});
-
-var Body = React.createClass({displayName: "Body",
-
-	render: function() {
-		return (
-			React.createElement("div", {className: "settings-body"}, 
-				React.createElement(CanvasSize, {canvasWidth: this.props.canvasWidth, canvasHeight: this.props.canvasHeight})
-			)
-		);
-	}
-	
-});
-
-var CanvasSize = React.createClass({displayName: "CanvasSize",
-
-	render: function() {
-		return (
-			React.createElement("div", {className: "settings-section settings-canvas-size"}, 
-				React.createElement("div", {className: "inspector-position"}, 
-					React.createElement("span", {className: "inspector-geo-label"}, "Canvas size"), 
-					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
-						React.createElement(NumericControl, {id: "canvas-w", value: this.props.canvasWidth, onChange: appActions.setCanvasWidth.bind(appActions)}), 
-						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "canvas-w"}, "x")
-					), 
-					React.createElement("div", {className: "inspector-geo-ctrl-wrap"}, 
-						React.createElement(NumericControl, {id: "canvas-h", value: this.props.canvasHeight, onChange: appActions.setCanvasHeight.bind(appActions)}
-						), 
-						React.createElement("label", {className: "inspector-geo-ctrl-label", htmlFor: "inspector-y"}, "y")
+			React.createElement(Panel, {className: "settings"}, 
+				React.createElement(PanelHeader, null, "Settings"), 
+				React.createElement(PanelBody, null, 
+					React.createElement(PanelSection, null, 
+						React.createElement(ControlRow, {label: "Size"}, 
+							React.createElement(NumericControl, {id: "canvas-w", value: this.state.canvasSize[0], onChange: appActions.setCanvasWidth.bind(appActions)}), 
+							React.createElement(NumericControl, {id: "canvas-h", value: this.state.canvasSize[1], onChange: appActions.setCanvasHeight.bind(appActions)})
+						)
 					)
 				)
 			)
 		);
 	}
-
+	
 });
 
 module.exports = Settings;
 
-},{"../stores/designObjectStore":182,"./NumericControl":171,"react":162}],176:[function(require,module,exports){
+},{"../stores/designObjectStore":186,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"react":162}],180:[function(require,module,exports){
 var
 	React = require('react')
-	,Panel = require('./Panel')
 	,Inspector = require('./Inspector')
 	,Settings = require('./Settings')
 ;
@@ -21468,18 +21487,10 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 		;
 	
 		if (this.props.inspector)
-			panels.push(
-				React.createElement(Panel, {onTop: this.props.panelOnTop === 'INSPECTOR', key: 1}, 
-					React.createElement(Inspector, null)
-				)
-			);
+			panels.push(React.createElement(Inspector, {onTop: this.props.panelOnTop === 'INSPECTOR', key: 1}));
 	
 		if (this.props.settings)
-			panels.push(
-				React.createElement(Panel, {onTop: this.props.panelOnTop === 'SETTINGS', key: 2}, 
-					React.createElement(Settings, null)
-				)
-			);
+			panels.push(React.createElement(Settings, {onTop: this.props.panelOnTop === 'SETTINGS', key: 2}));
 	
 		return panels.length > 0 ? React.createElement("div", {className: "sidepanel-container"}, panels) : null;
 	}
@@ -21487,7 +21498,7 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 });
 
 module.exports = SidePanelContainer;
-},{"./Inspector":170,"./Panel":172,"./Settings":175,"react":162}],177:[function(require,module,exports){
+},{"./Inspector":171,"./Settings":179,"react":162}],181:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -21517,7 +21528,7 @@ module.exports = keyMirror({
 	SET_CANVAS_HEIGHT: null,
 });
 
-},{"keymirror":6}],178:[function(require,module,exports){
+},{"keymirror":6}],182:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -21535,7 +21546,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],179:[function(require,module,exports){
+},{"flux":3}],183:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21583,7 +21594,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],180:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 var
 	appConstants = require('../../constants/appConstants')
 ;
@@ -21674,7 +21685,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../../constants/appConstants":177}],181:[function(require,module,exports){
+},{"../../constants/appConstants":181}],185:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21762,7 +21773,7 @@ module.exports = {
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
 };
-},{"./Rectangle":180}],182:[function(require,module,exports){
+},{"./Rectangle":184}],186:[function(require,module,exports){
 var
 	dos = require('./design-objects/design-objects')
 ;
@@ -21851,7 +21862,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":177,"../dispatcher/AppDispatcher":178,"./design-objects/design-objects":181,"events":1,"object-assign":7}],183:[function(require,module,exports){
+},{"../constants/appConstants":181,"../dispatcher/AppDispatcher":182,"./design-objects/design-objects":185,"events":1,"object-assign":7}],187:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -21877,4 +21888,4 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":173,"react":162}]},{},[164]);
+},{"./components/SVGRectangle":177,"react":162}]},{},[164]);
