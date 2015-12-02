@@ -21015,7 +21015,7 @@ var
    ,VerticalLabel = require('./VerticalLabel')
 ;
 
-var Inspector = React.createClass({displayName: "Inspector",
+var InspectorPanel = React.createClass({displayName: "InspectorPanel",
 	
 	getInitialState: function() {
 		return {
@@ -21103,7 +21103,7 @@ var Color = React.createClass({displayName: "Color",
 
 });
 
-module.exports = Inspector;
+module.exports = InspectorPanel;
 
 },{"../stores/designObjectStore":187,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"./VerticalLabel":181,"react":162}],172:[function(require,module,exports){
 var
@@ -21442,7 +21442,7 @@ var
    ,VerticalLabel = require('./VerticalLabel')
 ;
 
-var Settings = React.createClass({displayName: "Settings",
+var SettingsPanel = React.createClass({displayName: "SettingsPanel",
 	
 	getInitialState: function() {
 		return {
@@ -21484,13 +21484,13 @@ var Settings = React.createClass({displayName: "Settings",
 	
 });
 
-module.exports = Settings;
+module.exports = SettingsPanel;
 
 },{"../stores/designObjectStore":187,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"./VerticalLabel":181,"react":162}],180:[function(require,module,exports){
 var
 	React = require('react')
-	,Inspector = require('./Inspector')
-	,Settings = require('./Settings')
+	,InspectorPanel = require('./InspectorPanel')
+	,SettingsPanel = require('./SettingsPanel')
 ;
 
 var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
@@ -21501,10 +21501,10 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 		;
 	
 		if (this.props.inspector)
-			panels.push(React.createElement(Inspector, {onTop: this.props.panelOnTop === 'INSPECTOR', key: 1}));
+			panels.push(React.createElement(InspectorPanel, {onTop: this.props.panelOnTop === 'INSPECTOR', key: 1}));
 	
 		if (this.props.settings)
-			panels.push(React.createElement(Settings, {onTop: this.props.panelOnTop === 'SETTINGS', key: 2}));
+			panels.push(React.createElement(SettingsPanel, {onTop: this.props.panelOnTop === 'SETTINGS', key: 2}));
 	
 		return panels.length > 0 ? React.createElement("div", {className: "sidepanel-container"}, panels) : null;
 	}
@@ -21512,7 +21512,7 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 });
 
 module.exports = SidePanelContainer;
-},{"./Inspector":171,"./Settings":179,"react":162}],181:[function(require,module,exports){
+},{"./InspectorPanel":171,"./SettingsPanel":179,"react":162}],181:[function(require,module,exports){
 var
 	React = require('react')
 ;

@@ -10,7 +10,7 @@ var
    ,VerticalLabel = require('./VerticalLabel')
 ;
 
-var Inspector = React.createClass({
+var InspectorPanel = React.createClass({
 	
 	getInitialState: function() {
 		return {
@@ -98,4 +98,4 @@ var Color = React.createClass({
 
 });
 
-module.exports = Inspector;
+module.exports = InspectorPanel;

@@ -1,7 +1,7 @@
 var
 	React = require('react')
-	,Inspector = require('./Inspector')
-	,Settings = require('./Settings')
+	,InspectorPanel = require('./InspectorPanel')
+	,SettingsPanel = require('./SettingsPanel')
 ;
 
 var SidePanelContainer = React.createClass({
@@ -12,10 +12,10 @@ var SidePanelContainer = React.createClass({
 		;
 	
 		if (this.props.inspector)
-			panels.push(<Inspector onTop={this.props.panelOnTop === 'INSPECTOR'} key={1} />);
+			panels.push(<InspectorPanel onTop={this.props.panelOnTop === 'INSPECTOR'} key={1} />);
 	
 		if (this.props.settings)
-			panels.push(<Settings onTop={this.props.panelOnTop === 'SETTINGS'} key={2} />);
+			panels.push(<SettingsPanel onTop={this.props.panelOnTop === 'SETTINGS'} key={2} />);
 	
 		return panels.length > 0 ? <div className="sidepanel-container">{panels}</div> : null;
 	}

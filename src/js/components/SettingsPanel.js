@@ -10,7 +10,7 @@ var
    ,VerticalLabel = require('./VerticalLabel')
 ;
 
-var Settings = React.createClass({
+var SettingsPanel = React.createClass({
 	
 	getInitialState: function() {
 		return {
@@ -52,4 +52,4 @@ var Settings = React.createClass({
 	
 });
 
-module.exports = Settings;
+module.exports = SettingsPanel;
