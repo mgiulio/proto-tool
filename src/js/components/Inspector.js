@@ -54,18 +54,18 @@ var Geometry = React.createClass({
 			<PanelSection className="inspector-geometry">
 				<ControlRow label="Position">
 					<VerticalLabel text="x" align="top">
-						<NumericControl id="inspector-x" value={this.props.selectedObject.x} onChange={this.onChangeX} />
+						<NumericControl value={this.props.selectedObject.x} onChange={this.onChangeX} />
 					</VerticalLabel>
 					<VerticalLabel text="y" align="top">
-						<NumericControl id="inspector-y" value={this.props.selectedObject.y} onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} />
+						<NumericControl value={this.props.selectedObject.y} onChange={appActions.setPosition.bind(appActions, this.props.selectedObject.x)} />
 					</VerticalLabel>
 				</ControlRow>
 				<ControlRow label="Size">
 					<VerticalLabel text="w" align="bottom">
-							<NumericControl id="inspector-w" value={this.props.selectedObject.w} onChange={appActions.setWidth.bind(appActions)} />
+							<NumericControl value={this.props.selectedObject.w} onChange={appActions.setWidth.bind(appActions)} />
 					</VerticalLabel>
 					<VerticalLabel text="h" align="bottom">
-						<NumericControl id="inspector-h" value={this.props.selectedObject.h} onChange={appActions.setHeight.bind(appActions)} />
+						<NumericControl value={this.props.selectedObject.h} onChange={appActions.setHeight.bind(appActions)} />
 					</VerticalLabel>
 				</ControlRow>
 			</PanelSection>

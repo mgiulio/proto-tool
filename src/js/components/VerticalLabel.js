@@ -14,7 +14,7 @@ var VerticalLabel = React.createClass({
 		return (
 			<div className={classes.join(' ')}>
 				{this.props.children}
-				<label className="vertical-label__text" >{this.props.text}</label>
+				<label className="vertical-label__text">{this.props.text}</label>
 			</div>
 		);
 	}

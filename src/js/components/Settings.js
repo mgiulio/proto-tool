@@ -38,10 +38,10 @@ var Settings = React.createClass({
 					<PanelSection>
 						<ControlRow label="Size">
 							<VerticalLabel text="w" align="top">
-								<NumericControl id="canvas-w" value={this.state.canvasSize[0]} onChange={appActions.setCanvasWidth.bind(appActions)} />
+								<NumericControl value={this.state.canvasSize[0]} onChange={appActions.setCanvasWidth.bind(appActions)} />
 							</VerticalLabel>
 							<VerticalLabel text="h" align="top">
-								<NumericControl id="canvas-h" value={this.state.canvasSize[1]} onChange={appActions.setCanvasHeight.bind(appActions)} />
+								<NumericControl value={this.state.canvasSize[1]} onChange={appActions.setCanvasHeight.bind(appActions)} />
 							</VerticalLabel>
 						</ControlRow>
 					</PanelSection>

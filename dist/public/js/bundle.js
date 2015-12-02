@@ -21059,18 +21059,18 @@ var Geometry = React.createClass({displayName: "Geometry",
 			React.createElement(PanelSection, {className: "inspector-geometry"}, 
 				React.createElement(ControlRow, {label: "Position"}, 
 					React.createElement(VerticalLabel, {text: "x", align: "top"}, 
-						React.createElement(NumericControl, {id: "inspector-x", value: this.props.selectedObject.x, onChange: this.onChangeX})
+						React.createElement(NumericControl, {value: this.props.selectedObject.x, onChange: this.onChangeX})
 					), 
 					React.createElement(VerticalLabel, {text: "y", align: "top"}, 
-						React.createElement(NumericControl, {id: "inspector-y", value: this.props.selectedObject.y, onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)})
+						React.createElement(NumericControl, {value: this.props.selectedObject.y, onChange: appActions.setPosition.bind(appActions, this.props.selectedObject.x)})
 					)
 				), 
 				React.createElement(ControlRow, {label: "Size"}, 
 					React.createElement(VerticalLabel, {text: "w", align: "bottom"}, 
-							React.createElement(NumericControl, {id: "inspector-w", value: this.props.selectedObject.w, onChange: appActions.setWidth.bind(appActions)})
+							React.createElement(NumericControl, {value: this.props.selectedObject.w, onChange: appActions.setWidth.bind(appActions)})
 					), 
 					React.createElement(VerticalLabel, {text: "h", align: "bottom"}, 
-						React.createElement(NumericControl, {id: "inspector-h", value: this.props.selectedObject.h, onChange: appActions.setHeight.bind(appActions)})
+						React.createElement(NumericControl, {value: this.props.selectedObject.h, onChange: appActions.setHeight.bind(appActions)})
 					)
 				)
 			)
@@ -21470,10 +21470,10 @@ var Settings = React.createClass({displayName: "Settings",
 					React.createElement(PanelSection, null, 
 						React.createElement(ControlRow, {label: "Size"}, 
 							React.createElement(VerticalLabel, {text: "w", align: "top"}, 
-								React.createElement(NumericControl, {id: "canvas-w", value: this.state.canvasSize[0], onChange: appActions.setCanvasWidth.bind(appActions)})
+								React.createElement(NumericControl, {value: this.state.canvasSize[0], onChange: appActions.setCanvasWidth.bind(appActions)})
 							), 
 							React.createElement(VerticalLabel, {text: "h", align: "top"}, 
-								React.createElement(NumericControl, {id: "canvas-h", value: this.state.canvasSize[1], onChange: appActions.setCanvasHeight.bind(appActions)})
+								React.createElement(NumericControl, {value: this.state.canvasSize[1], onChange: appActions.setCanvasHeight.bind(appActions)})
 							)
 						)
 					)
