@@ -35,6 +35,6 @@
 	flex: 0 0 auto;
 }
 
-.app.sidepanel-visible .canvas-viewport {
+.sidepanel-visible .canvas-viewport {
 	width: calc(100% - #{$sidepanel-width});
 }

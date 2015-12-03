@@ -20675,7 +20675,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/appConstants":182,"../dispatcher/AppDispatcher":183,"../lib/func":184}],164:[function(require,module,exports){
+},{"../constants/appConstants":183,"../dispatcher/AppDispatcher":184,"../lib/func":185}],164:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('./actions/AppActions')
@@ -20711,95 +20711,37 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":187,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":188,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,HotKeys = require('./HotKeys')
-   ,CanvasViewport = require('./CanvasViewport')
-	,AppDispatcher = require('../dispatcher/AppDispatcher')
-	,appConstants = require('../constants/appConstants')
-	,SidePanelContainer = require('./SidePanelContainer')
 	,AppBar = require('./AppBar')
+	,AppBody = require('./AppBody')
 ;
 
 var App = React.createClass({displayName: "App",
 	
-	getInitialState: function() {
-		return {
-			inspectorPanel: false,
-			settingsPanel: false,
-			panelOnTop: 'inspector'
-		};
-	},
-	
-	componentDidMount: function() {
-		this.dispatcherCbId = AppDispatcher.register(this.handlePanelActions);
-	},
-	
-	componentWillUnmount: function() {
-		AppDispatcher.unregister(this.dispatcherCbId);
-	},
-	
 	render: function() {
 		var classes = ['app'];
 
-		var sidePanel;
-		if (this.isSidePanelVisible()) {
-			classes.push('sidepanel-visible');
-			
-			sidePanel = React.createElement(SidePanelContainer, {
-				inspector: this.state.inspectorPanel, 
-				settings: this.state.settingsPanel, 
-				panelOnTop: this.state.panelOnTop}
-			)
-		}
-		
 		return (
 			React.createElement("div", {className: classes.join(' ')}, 
 				React.createElement(AppBar, null), 
-				React.createElement("div", {className: "app-body"}, 
-					React.createElement(CanvasViewport, null), 
-					sidePanel
-				), 
+				React.createElement(AppBody, null), 
 				React.createElement(HotKeys, null)
 			)
 		);
-	},
-	
-	isSidePanelVisible: function() {
-		return this.state.inspectorPanel || this.state.settingsPanel;
-	},
-		
-	handlePanelActions: function(action) {
-		switch (action.actionType) {
-			case appConstants.SHOW_INSPECTOR:
-				this.setState({inspectorPanel: true, panelOnTop: 'INSPECTOR'});
-				break;
-			case appConstants.HIDE_INSPECTOR:
-				this.setState({inspectorPanel: false});
-				break;
-			case appConstants.TOGGLE_INSPECTOR:
-				this.setState({inspectorPanel: !this.state.inspectorPanel});
-				break;
-			case appConstants.SHOW_SETTINGS:
-				this.setState({settingsPanel: true, panelOnTop: 'SETTINGS'});
-				break;
-			case appConstants.HIDE_SETTINGS:
-				this.setState({settingsPanel: false});
-				break;
-			case appConstants.TOGGLE_SETTINGS:
-				this.setState({settingsPanel: !this.state.settingsPanel});
-				break;
-		}
 	}
 	
 });
 
 module.exports = App;
 
-},{"../constants/appConstants":182,"../dispatcher/AppDispatcher":183,"./AppBar":166,"./CanvasViewport":168,"./HotKeys":170,"./SidePanelContainer":180,"react":162}],166:[function(require,module,exports){
+},{"./AppBar":166,"./AppBody":167,"./HotKeys":171,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
+   ,sidePanelStore = require('../stores/sidePanelStore')
+   ,appActions = require('../actions/AppActions')
 ;
 
 var AppBar = React.createClass({displayName: "AppBar",
@@ -20819,15 +20761,45 @@ var AppBar = React.createClass({displayName: "AppBar",
 });
 
 var SidePanelButtons = React.createClass({displayName: "SidePanelButtons",
+	
+	getInitialState: function() {
+		return {
+			isInspectorVisible: sidePanelStore.isInspectorVisible(),
+			isSettingsVisible: sidePanelStore.isSettingsVisible()
+		};
+	},
+	
+	componentDidMount: function() {
+		sidePanelStore.addChangeListener(this._onChange);
+	},
+	
+	componentWillUnmount: function() {
+		sidePanelStore.removeChangeListener(this._onChange);
+	},
+	
+	_onChange: function() {
+		this.setState({
+			isInspectorVisible: sidePanelStore.isInspectorVisible(),
+			isSettingsVisible: sidePanelStore.isSettingsVisible()
+		});
+	},
 
 	render: function() {
 		return (
 			React.createElement("div", {className: "panels"}, 
-				React.createElement("label", {htmlFor: "inspector"}, "Inspector"), 
-				React.createElement("input", {id: "inspector", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleInspector(); }}), 
-				React.createElement("label", {htmlFor: "settings"}, "Settings"), 
-				React.createElement("input", {id: "settings", type: "checkbox", onChange: function(e)  { e.stopPropagation(); appActions.toggleSettings(); }})
+				React.createElement(TwoStateButton, {icon: "inspector", state: this.state.isInspectorVisible ? 'down' : 'up', onClick: appActions.toggleInspector}), 
+				React.createElement(TwoStateButton, {icon: "settings", state: this.state.isSettingsVisible ? 'down' : 'up', onClick: appActions.toggleSettings})
 			)
+		);
+	}
+
+});
+
+var TwoStateButton = React.createClass({displayName: "TwoStateButton",
+
+	render: function() {
+		return (
+			React.createElement("button", {onClick: this.props.onClick}, (this.props.icon + " " + this.props.state))
 		);
 	}
 
@@ -20835,7 +20807,54 @@ var SidePanelButtons = React.createClass({displayName: "SidePanelButtons",
 
 module.exports = AppBar;
 
-},{"react":162}],167:[function(require,module,exports){
+},{"../actions/AppActions":163,"../stores/sidePanelStore":189,"react":162}],167:[function(require,module,exports){
+var
+	React = require('react')
+	,sidePanelStore = require('../stores/sidePanelStore')
+	,CanvasViewport = require('./CanvasViewport')
+	,SidePanelContainer = require('./SidePanelContainer')
+;
+
+var AppBody = React.createClass({displayName: "AppBody",
+	
+	getInitialState: function() {
+		return {
+			isSidePanelVisible: sidePanelStore.isSidePanelVisible()
+		};
+	},
+	
+	componentDidMount: function() {
+		sidePanelStore.addChangeListener(this._onChange);
+	},
+	
+	componentWillUnmount: function() {
+		sidePanelStore.removeChangeListener(this._onChange);
+	},
+	
+	_onChange: function() {
+		this.setState({
+			isSidePanelVisible: sidePanelStore.isSidePanelVisible()
+		});
+	},
+	
+	render: function() {
+		var classes = ['app-body'];
+		if (this.state.isSidePanelVisible)
+			classes.push('sidepanel-visible');
+		
+		return (
+			React.createElement("div", {className: classes.join(' ')}, 
+				React.createElement(CanvasViewport, null), 
+				React.createElement(SidePanelContainer, null)
+			)
+		);
+	}
+	
+});
+
+module.exports = AppBody;
+
+},{"../stores/sidePanelStore":189,"./CanvasViewport":169,"./SidePanelContainer":181,"react":162}],168:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
@@ -20890,7 +20909,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 
 module.exports = Canvas;
 
-},{"../stores/designObjectStore":187,"../svgRenderer":188,"./SelectionBox":178,"react":162}],168:[function(require,module,exports){
+},{"../stores/designObjectStore":188,"../svgRenderer":190,"./SelectionBox":179,"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
    ,Canvas = require('./Canvas')
@@ -20910,7 +20929,7 @@ var CanvasViewport = React.createClass({displayName: "CanvasViewport",
 
 module.exports = CanvasViewport;
 
-},{"./Canvas":167,"react":162}],169:[function(require,module,exports){
+},{"./Canvas":168,"react":162}],170:[function(require,module,exports){
 var
 	React = require('react')
 ;
@@ -20936,7 +20955,7 @@ var ControlRow = React.createClass({displayName: "ControlRow",
 
 module.exports = ControlRow;
 
-},{"react":162}],170:[function(require,module,exports){
+},{"react":162}],171:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -21002,7 +21021,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 
 module.exports = Keyboard;
 
-},{"../actions/AppActions":163,"react":162}],171:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],172:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
@@ -21105,7 +21124,7 @@ var Color = React.createClass({displayName: "Color",
 
 module.exports = InspectorPanel;
 
-},{"../stores/designObjectStore":187,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"./VerticalLabel":181,"react":162}],172:[function(require,module,exports){
+},{"../stores/designObjectStore":188,"./ControlRow":170,"./NumericControl":173,"./Panel":174,"./PanelBody":175,"./PanelHeader":176,"./PanelSection":177,"./VerticalLabel":182,"react":162}],173:[function(require,module,exports){
 var
    React = require('react')
    ,ENTER_KEY_CODE = 13
@@ -21162,7 +21181,7 @@ var NumericControl = React.createClass({displayName: "NumericControl",
 
 module.exports = NumericControl;
 
-},{"react":162}],173:[function(require,module,exports){
+},{"react":162}],174:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -21186,7 +21205,7 @@ var Panel = React.createClass({displayName: "Panel",
 
 module.exports = Panel;
 
-},{"react":162}],174:[function(require,module,exports){
+},{"react":162}],175:[function(require,module,exports){
 var
 	React = require('react')
 ;
@@ -21203,7 +21222,7 @@ var PanelBody = React.createClass({displayName: "PanelBody",
 
 module.exports = PanelBody;
 
-},{"react":162}],175:[function(require,module,exports){
+},{"react":162}],176:[function(require,module,exports){
 var
 	React = require('react')
 ;
@@ -21217,7 +21236,7 @@ var PanelHeader = React.createClass({displayName: "PanelHeader",
 });
 
 module.exports = PanelHeader;
-},{"react":162}],176:[function(require,module,exports){
+},{"react":162}],177:[function(require,module,exports){
 var
 	React = require('react')
 ;
@@ -21239,7 +21258,7 @@ var PanelSection = React.createClass({displayName: "PanelSection",
 });
 
 module.exports = PanelSection;
-},{"react":162}],177:[function(require,module,exports){
+},{"react":162}],178:[function(require,module,exports){
 var
    React = require('react')
    ,AppActions = require('../actions/AppActions')
@@ -21298,7 +21317,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],178:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],179:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('../actions/AppActions')
@@ -21429,7 +21448,7 @@ var Handle = React.createClass({displayName: "Handle",
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"../constants/appConstants":182,"react":162}],179:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":183,"react":162}],180:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
@@ -21486,33 +21505,67 @@ var SettingsPanel = React.createClass({displayName: "SettingsPanel",
 
 module.exports = SettingsPanel;
 
-},{"../stores/designObjectStore":187,"./ControlRow":169,"./NumericControl":172,"./Panel":173,"./PanelBody":174,"./PanelHeader":175,"./PanelSection":176,"./VerticalLabel":181,"react":162}],180:[function(require,module,exports){
+},{"../stores/designObjectStore":188,"./ControlRow":170,"./NumericControl":173,"./Panel":174,"./PanelBody":175,"./PanelHeader":176,"./PanelSection":177,"./VerticalLabel":182,"react":162}],181:[function(require,module,exports){
 var
 	React = require('react')
+	,sidePanelStore = require('../stores/sidePanelStore')
 	,InspectorPanel = require('./InspectorPanel')
 	,SettingsPanel = require('./SettingsPanel')
 ;
 
 var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 	
+	getState: function() {
+		var visiblePanel;
+		if (!sidePanelStore.isSidePanelVisible())
+			visiblePanel = null;
+		else if (sidePanelStore.isInspectorVisible())
+			visiblePanel = 'INSPECTOR';
+		else if (sidePanelStore.isSettingsVisible())
+			visiblePanel = 'SETTINGS';
+		
+		return {
+			visiblePanel: visiblePanel
+		};
+	},
+	
+	getInitialState: function() {
+		return this.getState();
+	},
+	
+	componentDidMount: function() {
+		sidePanelStore.addChangeListener(this._onChange);
+	},
+	
+	componentWillUnmount: function() {
+		sidePanelStore.removeChangeListener(this._onChange);
+	},
+	
+	_onChange: function() {
+		this.setState(this.getState());
+	},
+	
 	render: function() {
-		var 
-			panels = []
-		;
+		if (!this.state.visiblePanel)
+			return null;
+		
+		var panel;
+		if (this.state.visiblePanel === 'INSPECTOR')
+			panel = React.createElement(InspectorPanel, null);
+		else if (this.state.visiblePanel === 'SETTINGS')
+			panel = React.createElement(SettingsPanel, null);
 	
-		if (this.props.inspector)
-			panels.push(React.createElement(InspectorPanel, {onTop: this.props.panelOnTop === 'INSPECTOR', key: 1}));
-	
-		if (this.props.settings)
-			panels.push(React.createElement(SettingsPanel, {onTop: this.props.panelOnTop === 'SETTINGS', key: 2}));
-	
-		return panels.length > 0 ? React.createElement("div", {className: "sidepanel-container"}, panels) : null;
+		return (
+			React.createElement("div", {className: "sidepanel-container"}, 
+				panel
+			)
+		);
 	}
 
 });
 
 module.exports = SidePanelContainer;
-},{"./InspectorPanel":171,"./SettingsPanel":179,"react":162}],181:[function(require,module,exports){
+},{"../stores/sidePanelStore":189,"./InspectorPanel":172,"./SettingsPanel":180,"react":162}],182:[function(require,module,exports){
 var
 	React = require('react')
 ;
@@ -21538,7 +21591,7 @@ var VerticalLabel = React.createClass({displayName: "VerticalLabel",
 
 module.exports = VerticalLabel;
 
-},{"react":162}],182:[function(require,module,exports){
+},{"react":162}],183:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -21568,7 +21621,7 @@ module.exports = keyMirror({
 	SET_CANVAS_HEIGHT: null,
 });
 
-},{"keymirror":6}],183:[function(require,module,exports){
+},{"keymirror":6}],184:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -21586,7 +21639,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],184:[function(require,module,exports){
+},{"flux":3}],185:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21634,7 +21687,7 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
-},{}],185:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 var
 	appConstants = require('../../constants/appConstants')
 ;
@@ -21725,7 +21778,7 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 
 module.exports = Rectangle;
 
-},{"../../constants/appConstants":182}],186:[function(require,module,exports){
+},{"../../constants/appConstants":183}],187:[function(require,module,exports){
 var
 	objects = [],
 	selected = null,
@@ -21813,7 +21866,7 @@ module.exports = {
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
 };
-},{"./Rectangle":185}],187:[function(require,module,exports){
+},{"./Rectangle":186}],188:[function(require,module,exports){
 var
 	dos = require('./design-objects/design-objects')
 ;
@@ -21902,7 +21955,97 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":182,"../dispatcher/AppDispatcher":183,"./design-objects/design-objects":186,"events":1,"object-assign":7}],188:[function(require,module,exports){
+},{"../constants/appConstants":183,"../dispatcher/AppDispatcher":184,"./design-objects/design-objects":187,"events":1,"object-assign":7}],189:[function(require,module,exports){
+var
+	activePanel = null // with the following values: null, 'inspector', 'settings'
+;
+
+var 
+	AppDispatcher = require('../dispatcher/AppDispatcher')
+	,appConstants = require('../constants/appConstants')
+;
+
+AppDispatcher.register(function(action) {
+	switch (action.actionType) {
+		case appConstants.TOGGLE_INSPECTOR:
+			activePanel = activePanel === null || activePanel === 'SETTINGS' ? 'INSPECTOR' : null;
+			store.emitChange();
+			break;
+		case appConstants.TOGGLE_SETTINGS:
+			activePanel = activePanel === null || activePanel === 'INSPECTOR' ? 'SETTINGS' : null;
+			store.emitChange();
+			break;
+		case appConstants.SHOW_INSPECTOR:
+			if (activePanel !== 'INSPECTOR') {
+				activePanel = 'INSPECTOR';
+				store.emitChange();
+			}
+			break;
+		case appConstants.SHOW_SETTINGS:
+			if (activePanel !== 'SETTINGS') {
+				activePanel = 'SETTINGS';
+				store.emitChange();
+			}
+			break;
+		case appConstants.CLOSE_PANEL:
+			if (activePanel !== null) {
+				activePanel = null;
+				store.emitChange();
+			}
+			break;
+		case appConstants.HIDE_INSPECTOR:
+			if (activePanel === 'INSPECTOR') {
+				activePanel = null;
+				store.emitChange();
+			}
+			break;
+		case appConstants.HIDE_SETTINGS:
+			if (activePanel === 'SETTINGS') {
+				activePanel = null;
+				store.emitChange();
+			}
+			break;
+		default:
+	}
+});
+		
+var 
+	EventEmitter = require('events').EventEmitter,
+	CHANGE_EVENT = 'change',
+	assign = require('object-assign');
+;
+
+var store = assign({}, EventEmitter.prototype, {
+	
+	emitChange: function() {
+		this.emit(CHANGE_EVENT);
+	},
+	
+	addChangeListener: function(callback) {
+		this.on(CHANGE_EVENT, callback);
+	},
+
+	removeChangeListener: function(callback) {
+		this.removeListener(CHANGE_EVENT, callback);
+	},
+	
+	isSidePanelVisible: function() {
+		return activePanel !== null;
+	},
+	
+	isInspectorVisible: function() {
+		return activePanel === 'INSPECTOR';
+	},
+	
+	isSettingsVisible: function() {
+		return activePanel === 'SETTINGS';
+	}
+  
+});
+
+module.exports = store;
+
+},{"../constants/appConstants":183,"../dispatcher/AppDispatcher":184,"events":1,"object-assign":7}],190:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
@@ -21928,4 +22071,4 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":177,"react":162}]},{},[164]);
+},{"./components/SVGRectangle":178,"react":162}]},{},[164]);

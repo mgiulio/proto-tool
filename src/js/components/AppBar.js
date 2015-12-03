@@ -1,5 +1,7 @@
 var
    React = require('react')
+   ,sidePanelStore = require('../stores/sidePanelStore')
+   ,appActions = require('../actions/AppActions')
 ;
 
 var AppBar = React.createClass({
@@ -19,15 +21,45 @@ var AppBar = React.createClass({
 });
 
 var SidePanelButtons = React.createClass({
+	
+	getInitialState: function() {
+		return {
+			isInspectorVisible: sidePanelStore.isInspectorVisible(),
+			isSettingsVisible: sidePanelStore.isSettingsVisible()
+		};
+	},
+	
+	componentDidMount: function() {
+		sidePanelStore.addChangeListener(this._onChange);
+	},
+	
+	componentWillUnmount: function() {
+		sidePanelStore.removeChangeListener(this._onChange);
+	},
+	
+	_onChange: function() {
+		this.setState({
+			isInspectorVisible: sidePanelStore.isInspectorVisible(),
+			isSettingsVisible: sidePanelStore.isSettingsVisible()
+		});
+	},
 
 	render: function() {
 		return (
 			<div className="panels">
-				<label htmlFor="inspector">Inspector</label>
-				<input id="inspector" type="checkbox" onChange={e => { e.stopPropagation(); appActions.toggleInspector(); }} />
-				<label htmlFor="settings">Settings</label>
-				<input id="settings" type="checkbox" onChange={e => { e.stopPropagation(); appActions.toggleSettings(); }} />
+				<TwoStateButton icon="inspector" state={this.state.isInspectorVisible ? 'down' : 'up'} onClick={appActions.toggleInspector} />
+				<TwoStateButton icon="settings" state={this.state.isSettingsVisible ? 'down' : 'up'} onClick={appActions.toggleSettings} />
 			</div>
+		);
+	}
+
+});
+
+var TwoStateButton = React.createClass({
+
+	render: function() {
+		return (
+			<button onClick={this.props.onClick}>{`${this.props.icon} ${this.props.state}`}</button>
 		);
 	}
 
