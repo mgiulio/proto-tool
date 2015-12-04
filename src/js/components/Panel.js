@@ -6,9 +6,8 @@ var Panel = React.createClass({
 	
 	render: function() {
 		var classes = ['panel'];
-		
-		if (this.props.onTop)
-			classes.push('ontop');
+		if (this.props.className)
+			classes.push(this.props.className);
 		
 		return (
 			<div className={classes.join(' ')}>

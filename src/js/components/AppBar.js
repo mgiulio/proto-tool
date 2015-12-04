@@ -47,19 +47,30 @@ var SidePanelButtons = React.createClass({
 	render: function() {
 		return (
 			<div className="panels">
-				<TwoStateButton icon="inspector" state={this.state.isInspectorVisible ? 'down' : 'up'} onClick={appActions.toggleInspector} />
-				<TwoStateButton icon="settings" state={this.state.isSettingsVisible ? 'down' : 'up'} onClick={appActions.toggleSettings} />
+				<TwoStateButton className="inspector" icon="tune" state={this.state.isInspectorVisible ? 'down' : 'up'} onClick={appActions.toggleInspector} />
+				<TwoStateButton className="settings" icon="cog" state={this.state.isSettingsVisible ? 'down' : 'up'} onClick={appActions.toggleSettings} />
 			</div>
 		);
 	}
 
 });
 
+var Icon = require('./Icon');
+
 var TwoStateButton = React.createClass({
 
 	render: function() {
+		var
+			classes = ['twostatebutton']
+		;
+		if (this.props.className)
+			classes.push(this.props.className);
+		classes.push(this.props.state);
+		
 		return (
-			<button onClick={this.props.onClick}>{`${this.props.icon} ${this.props.state}`}</button>
+			<button className={classes.join(' ')} onClick={this.props.onClick}>
+				<Icon which={this.props.icon} />
+			</button>
 		);
 	}
 

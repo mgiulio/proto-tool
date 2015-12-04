@@ -1,8 +1,9 @@
 var
    React = require('react')
-	,HotKeys = require('./HotKeys')
 	,AppBar = require('./AppBar')
 	,AppBody = require('./AppBody')
+	,SVGSprite = require('./SVGSprite')
+	,HotKeys = require('./HotKeys')
 ;
 
 var App = React.createClass({
@@ -12,6 +13,7 @@ var App = React.createClass({
 
 		return (
 			<div className={classes.join(' ')}>
+				<SVGSprite />
 				<AppBar />
 				<AppBody />
 				<HotKeys />

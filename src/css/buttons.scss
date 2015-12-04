@@ -1,0 +1,39 @@
+button:focus, button:active {
+	outline: none;
+}
+
+.twostatebutton {
+	box-sizing: border-box;
+	
+	-webkit-appearance: none;
+	background: none;
+	border: none;
+	padding: 8px !important;
+	
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+
+	cursor: pointer;
+	
+	.icon {
+		display: inline-block;
+		width: 100%;
+		height: 100%;
+
+		fill: #fff;
+	}
+}
+
+.twostatebutton.inspector:hover,
+.twostatebutton.inspector.down
+{
+	background-color: $inspector-panel-color; 
+}
+
+.twostatebutton.settings:hover,
+.twostatebutton.settings.down
+{
+	background-color: $settings-panel-color;
+}
+
