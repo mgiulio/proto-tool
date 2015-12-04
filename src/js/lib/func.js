@@ -45,3 +45,20 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
+
+/*
+var shape = {
+	x: 0,
+	y: 0,
+	translate: function(dx, dy) { this.x += dx; this.y += dy; }
+};
+			
+var 
+	goLeft = partial(shape.translate, -1, 0).bind(shape) // Note how we could leave dx free, for example to specify speed
+	//,goLeftBy = partial(shape.translate, _, 0).bind(shape)
+	//moveRight = partial(shape.translate, 1, 0)
+
+console.log(shape);
+goLeft(); // o.x === -1
+console.log(shape);
+*/
