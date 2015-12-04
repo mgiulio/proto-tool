@@ -25,14 +25,14 @@ button:focus, button:active {
 	}
 }
 
-.twostatebutton.inspector:hover,
-.twostatebutton.inspector.down
+.twostatebutton.appbar__panel-buttons__inspector:hover,
+.twostatebutton.appbar__panel-buttons__inspector.down
 {
 	background-color: $inspector-panel-color; 
 }
 
-.twostatebutton.settings:hover,
-.twostatebutton.settings.down
+.twostatebutton.appbar__panel-buttons__settings:hover,
+.twostatebutton.appbar__panel-buttons__settings.down
 {
 	background-color: $settings-panel-color;
 }

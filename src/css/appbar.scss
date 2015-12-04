@@ -1,23 +1,27 @@
-.app-bar {
-	overflow: hidden;
+.appbar {
+	display: flex;
+	flex-wrap: nowrap;
+	position: relative;
 	
-	background-color: #bdbaba;
-	
-	.logo {
-		float: left;
-		height: 100%;
-		margin: 0;
-	}
-	
-	.panels {
-		display: inline-block;
-		float: right;
-		height: 100%;
-	}
-	
-	.about {
-		float: right;
-		height: 100%;
-		margin-left: 40px;
-	}
+	background-color: $appbar-bg-color;
 }
+
+.appbar__panel-buttons {
+	flex: 0 0 auto;
+	margin-left: auto;
+}
+
+.appbar__logo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	
+	color: #fff;
+	border: 1px solid #fff;
+	font-size: 20px;
+	padding: 4px;
+	border-radius: 2px;
+}
+	

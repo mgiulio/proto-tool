@@ -20749,11 +20749,8 @@ var AppBar = React.createClass({displayName: "AppBar",
 	
 	render: function() {
 		return (
-			React.createElement("div", {className: "app-bar"}, 
-				React.createElement("h1", {className: "logo"}, "Bc"), 
-				
-				React.createElement("a", {className: "about", href: "#"}, "About"), 
-				
+			React.createElement("div", {className: "appbar"}, 
+				React.createElement("h1", {className: "appbar__logo"}, "Pr"), 
 				React.createElement(SidePanelButtons, null)
 			)
 		);
@@ -20787,9 +20784,9 @@ var SidePanelButtons = React.createClass({displayName: "SidePanelButtons",
 
 	render: function() {
 		return (
-			React.createElement("div", {className: "panels"}, 
-				React.createElement(TwoStateButton, {className: "inspector", icon: "tune", state: this.state.isInspectorVisible ? 'down' : 'up', onClick: appActions.toggleInspector}), 
-				React.createElement(TwoStateButton, {className: "settings", icon: "cog", state: this.state.isSettingsVisible ? 'down' : 'up', onClick: appActions.toggleSettings})
+			React.createElement("div", {className: "appbar__panel-buttons"}, 
+				React.createElement(TwoStateButton, {className: "appbar__panel-buttons__inspector", icon: "tune", state: this.state.isInspectorVisible ? 'down' : 'up', onClick: appActions.toggleInspector}), 
+				React.createElement(TwoStateButton, {className: "appbar__panel-buttons__settings", icon: "cog", state: this.state.isSettingsVisible ? 'down' : 'up', onClick: appActions.toggleSettings})
 			)
 		);
 	}

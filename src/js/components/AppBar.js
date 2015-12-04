@@ -8,11 +8,8 @@ var AppBar = React.createClass({
 	
 	render: function() {
 		return (
-			<div className="app-bar">
-				<h1 className="logo">Bc</h1>
-				
-				<a className="about" href="#">About</a>
-				
+			<div className="appbar">
+				<h1 className="appbar__logo">Pr</h1>
 				<SidePanelButtons />
 			</div>
 		);
@@ -46,9 +43,9 @@ var SidePanelButtons = React.createClass({
 
 	render: function() {
 		return (
-			<div className="panels">
-				<TwoStateButton className="inspector" icon="tune" state={this.state.isInspectorVisible ? 'down' : 'up'} onClick={appActions.toggleInspector} />
-				<TwoStateButton className="settings" icon="cog" state={this.state.isSettingsVisible ? 'down' : 'up'} onClick={appActions.toggleSettings} />
+			<div className="appbar__panel-buttons">
+				<TwoStateButton className="appbar__panel-buttons__inspector" icon="tune" state={this.state.isInspectorVisible ? 'down' : 'up'} onClick={appActions.toggleInspector} />
+				<TwoStateButton className="appbar__panel-buttons__settings" icon="cog" state={this.state.isSettingsVisible ? 'down' : 'up'} onClick={appActions.toggleSettings} />
 			</div>
 		);
 	}
