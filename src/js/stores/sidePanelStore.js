@@ -1,5 +1,5 @@
 var
-	activePanel = null // with the following values: null, 'inspector', 'settings'
+	activePanel = null
 ;
 
 var 

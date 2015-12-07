@@ -20828,33 +20828,86 @@ var AppBody = React.createClass({displayName: "AppBody",
 	
 	getInitialState: function() {
 		return {
-			isSidePanelVisible: sidePanelStore.isSidePanelVisible()
+			sidePanelState: sidePanelStore.isSidePanelVisible() ? 'OPEN' : 'CLOSED'
 		};
 	},
 	
 	componentDidMount: function() {
 		sidePanelStore.addChangeListener(this._onChange);
+		
+		this.getDOMNode().addEventListener('transitionend', this.onTransitionEnd);
 	},
 	
 	componentWillUnmount: function() {
 		sidePanelStore.removeChangeListener(this._onChange);
+		
+		this.getDOMNode().removeEventListener('transitionend', this.onTransitionEnd);
+	},
+	
+	onTransitionEnd: function(e) {
+		if (e.target.classList.contains('canvas-viewport')) {
+			e.stopPropagation();
+			
+			if (this.state.sidePanelState === 'OPENING')
+				this.setState({sidePanelState: 'OPEN'});
+			if (this.state.sidePanelState === 'CLOSING')
+				this.setState({sidePanelState: 'CLOSED'});
+		}
 	},
 	
 	_onChange: function() {
-		this.setState({
-			isSidePanelVisible: sidePanelStore.isSidePanelVisible()
-		});
+		var newState = this.state.sidePanelState;
+		
+		if (this.state.sidePanelState === 'CLOSED' && sidePanelStore.isSidePanelVisible()) {
+			newState = 'OPENING';
+			
+			this.panel = this.getVisiblePanel();
+		}
+		else if (this.state.sidePanelState === 'OPEN')
+			if (!sidePanelStore.isSidePanelVisible())
+				newState = 'CLOSING';
+			else {
+				this.panel = this.getVisiblePanel();
+				this.forceUpdate();
+			}
+		
+		if (newState != this.state.sidePanelState)
+			this.setState({sidePanelState: newState});
+	},
+	
+	getVisiblePanel: function() {
+		if (sidePanelStore.isInspectorVisible())
+			return 'INSPECTOR';
+		else if (sidePanelStore.isSettingsVisible())
+			return 'SETTINGS';
 	},
 	
 	render: function() {
-		var classes = ['app-body'];
-		if (this.state.isSidePanelVisible)
-			classes.push('sidepanel-visible');
+		var 
+			classes = ['app-body']
+			,sidePanel
+		;
+		
+		switch (this.state.sidePanelState) {
+			case 'CLOSED':
+				break;
+			case 'OPENING':
+				classes.push('sidepanel-visible');
+				sidePanel = React.createElement(SidePanelContainer, {panel: this.panel})
+				break;
+			case 'OPEN':
+				classes.push('sidepanel-visible');
+				sidePanel = React.createElement(SidePanelContainer, {panel: this.panel})
+				break;
+			case 'CLOSING':
+				sidePanel = React.createElement(SidePanelContainer, {panel: this.panel})
+				break;
+		}
 		
 		return (
 			React.createElement("div", {className: classes.join(' ')}, 
 				React.createElement(CanvasViewport, null), 
-				React.createElement(SidePanelContainer, null)
+				sidePanel
 			)
 		);
 	}
@@ -21566,51 +21619,17 @@ module.exports = SettingsPanel;
 },{"../stores/designObjectStore":190,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":184,"react":162}],183:[function(require,module,exports){
 var
 	React = require('react')
-	,sidePanelStore = require('../stores/sidePanelStore')
 	,InspectorPanel = require('./InspectorPanel')
 	,SettingsPanel = require('./SettingsPanel')
 ;
 
 var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 	
-	getState: function() {
-		var visiblePanel;
-		if (!sidePanelStore.isSidePanelVisible())
-			visiblePanel = null;
-		else if (sidePanelStore.isInspectorVisible())
-			visiblePanel = 'INSPECTOR';
-		else if (sidePanelStore.isSettingsVisible())
-			visiblePanel = 'SETTINGS';
-		
-		return {
-			visiblePanel: visiblePanel
-		};
-	},
-	
-	getInitialState: function() {
-		return this.getState();
-	},
-	
-	componentDidMount: function() {
-		sidePanelStore.addChangeListener(this._onChange);
-	},
-	
-	componentWillUnmount: function() {
-		sidePanelStore.removeChangeListener(this._onChange);
-	},
-	
-	_onChange: function() {
-		this.setState(this.getState());
-	},
-	
 	render: function() {
-		if (!this.state.visiblePanel)
-			return null;
-		
 		var panel;
-		if (this.state.visiblePanel === 'INSPECTOR')
+		if (this.props.panel === 'INSPECTOR')
 			panel = React.createElement(InspectorPanel, null);
-		else if (this.state.visiblePanel === 'SETTINGS')
+		else if (this.props.panel === 'SETTINGS')
 			panel = React.createElement(SettingsPanel, null);
 	
 		return (
@@ -21623,7 +21642,7 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 });
 
 module.exports = SidePanelContainer;
-},{"../stores/sidePanelStore":191,"./InspectorPanel":173,"./SettingsPanel":182,"react":162}],184:[function(require,module,exports){
+},{"./InspectorPanel":173,"./SettingsPanel":182,"react":162}],184:[function(require,module,exports){
 var
 	React = require('react')
 ;
@@ -21744,6 +21763,24 @@ module.exports = {
 	compose: compose,
 	partial: partial
 };
+
+/*
+var shape = {
+	x: 0,
+	y: 0,
+	translate: function(dx, dy) { this.x += dx; this.y += dy; }
+};
+			
+var 
+	goLeft = partial(shape.translate, -1, 0).bind(shape) // Note how we could leave dx free, for example to specify speed
+	//,goLeftBy = partial(shape.translate, _, 0).bind(shape)
+	//moveRight = partial(shape.translate, 1, 0)
+
+console.log(shape);
+goLeft(); // o.x === -1
+console.log(shape);
+*/
+
 },{}],188:[function(require,module,exports){
 var
 	appConstants = require('../../constants/appConstants')
@@ -22014,7 +22051,7 @@ module.exports = designObjectStore;
 
 },{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"./design-objects/design-objects":189,"events":1,"object-assign":7}],191:[function(require,module,exports){
 var
-	activePanel = null // with the following values: null, 'inspector', 'settings'
+	activePanel = null
 ;
 
 var 
