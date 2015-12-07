@@ -1,100 +1,101 @@
 var
 	baseObject = require('./baseObject')
 	,appConstants = require('../../constants/appConstants')
+	,assign = require('object-assign')
 ;
 
-var proto = Object.create(baseObject);
-
-proto.minSize = 5;
-
-proto.getType = function() {
-	return this.type;
-};
-
-proto.getAABB = function() {
-	return {
-		x: this.x,
-		y: this.y,
-		w: this.w,
-		h: this.h
-	};
-};
-
-proto.setPosition = function(x, y) {
-	this.x = x;
-	this.y = y;
+var proto = assign(Object.create(baseObject), {
+	minSize: 5,
 	
-	this.checkCanvasBoundary();
-};
-
-proto.translate = function(dx, dy) {
-	this.x += dx;
-	this.y += dy;
+	getType: function() {
+		return this.type;
+	},
 	
-	this.checkCanvasBoundary();
-};
-
-proto.checkCanvasBoundary = function() {
-	if (this.x < 0)
-		this.x = 0;
-	else if (this.x + this.w >= this.canvasSize[0])
-		this.x = this.canvasSize[0] - this.w;
+	getAABB: function() {
+		return {
+			x: this.x,
+			y: this.y,
+			w: this.w,
+			h: this.h
+		};
+	},
 	
-	if (this.y < 0)
-		this.y = 0;
-	else if (this.y + this.h >= this.canvasSize[1])
-		this.y = this.canvasSize[1] - this.h;
-};
-
-proto.setWidth = function(w) {
-	this.w = w;
+	setPosition: function(x, y) {
+		this.x = x;
+		this.y = y;
 	
-	if (this.w < Rectangle.minSize)
-		this.w = Rectangle.minSize;
-};
+		this.checkCanvasBoundary();
+	},
 
-proto.setHeight = function(h) {
-	this.h = h;
+	translate: function(dx, dy) {
+		this.x += dx;
+		this.y += dy;
 	
-	if (this.h < Rectangle.minSize)
-		this.h = Rectangle.minSize;
-};
+		this.checkCanvasBoundary();
+	},
 
-proto.resizeSide = function(side, amount) {
-	switch (side) {
-		case appConstants.TOP:
-			if (amount < 0 && (this.h + amount) < Rectangle.minSize) {
-				this.y -= Rectangle.minSize - this.h;
-				this.h = Rectangle.minSize;
-			}
-			else {
-				this.y -= amount;
-				this.h += amount;
-			}
-			break;
-		case appConstants.RIGHT:
-			this.w += amount;
-			if (this.w < Rectangle.minSize)
-				this.w = Rectangle.minSize;
-			break;
-		case appConstants.BOTTOM:
-			this.h += amount;
-			if (this.h < Rectangle.minSize)
-				this.h = Rectangle.minSize;
-			break;
-		case appConstants.LEFT:
-			if (amount < 0 && (this.w + amount) < Rectangle.minSize) {
-				this.x -= Rectangle.minSize - this.w;
-				this.w = Rectangle.minSize;
-			}
-			else {
-				this.x -= amount;
+	checkCanvasBoundary: function() {
+		if (this.x < 0)
+			this.x = 0;
+		else if (this.x + this.w >= this.canvasSize[0])
+			this.x = this.canvasSize[0] - this.w;
+		
+		if (this.y < 0)
+			this.y = 0;
+		else if (this.y + this.h >= this.canvasSize[1])
+			this.y = this.canvasSize[1] - this.h;
+	},
+
+	setWidth: function(w) {
+		this.w = w;
+		
+		if (this.w < this.minSize)
+			this.w = this.minSize;
+	},
+
+	setHeight: function(h) {
+		this.h = h;
+		
+		if (this.h < this.minSize)
+			this.h = this.minSize;
+	},
+
+	resizeSide: function(side, amount) {
+		switch (side) {
+			case appConstants.TOP:
+				if (amount < 0 && (this.h + amount) < this.minSize) {
+					this.y -= this.minSize - this.h;
+					this.h = this.minSize;
+				}
+				else {
+					this.y -= amount;
+					this.h += amount;
+				}
+				break;
+			case appConstants.RIGHT:
 				this.w += amount;
-			}
-			break;
-		default:
+				if (this.w < this.minSize)
+					this.w = this.minSize;
+				break;
+			case appConstants.BOTTOM:
+				this.h += amount;
+				if (this.h < this.minSize)
+					this.h = this.minSize;
+				break;
+			case appConstants.LEFT:
+				if (amount < 0 && (this.w + amount) < this.minSize) {
+					this.x -= this.minSize - this.w;
+					this.w = this.minSize;
+				}
+				else {
+					this.x -= amount;
+					this.w += amount;
+				}
+				break;
+			default:
+		}
 	}
-};
+});
 
 function create(x, y, w, h) {
 	var o = Object.create(proto);
