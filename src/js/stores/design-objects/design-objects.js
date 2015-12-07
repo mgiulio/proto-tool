@@ -1,15 +1,19 @@
 var
-	objects = [],
-	selected = null,
-	Rectangle = require('./Rectangle'),
-	designObjects = {
-		'Rectangle': Rectangle
-	},
-	canvasSize = [2000, 1000]
+	objects = []
+	,selected = null
+	,rectangle = require('./rectangle')
+	,designObjects = {
+		'Rectangle': rectangle
+	}
+	,baseObject = require('./baseObject')
+	,canvasSize = [2000, 1000]
 ;
 
+baseObject.canvasSize[0] = canvasSize[0];
+baseObject.canvasSize[1] = canvasSize[1];
+
 function addObject(type, x, y, w, h) {
-	var o = new designObjects[type](x, y, w, h); 
+	var o = designObjects[type].create(x, y, w, h);
 	
 	objects.push(o);
 	selected = objects.length - 1;
@@ -63,10 +67,14 @@ function getCanvasSize() {
 
 function setCanvasWidth(w) {
 	canvasSize[0] = w;
+	
+	baseObject.canvasSize[0] = w;
 }
 
 function setCanvasHeight(h) {
 	canvasSize[1] = h;
+	
+	baseObject.canvasSize[1] = h;
 }
 
 module.exports = {

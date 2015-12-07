@@ -1,28 +1,17 @@
 var
-	appConstants = require('../../constants/appConstants')
+	baseObject = require('./baseObject')
+	,appConstants = require('../../constants/appConstants')
 ;
 
-function Rectangle(x, y, w, h) {
-	this.type = 'Rectangle';
-	
-	this.x = x;
-	this.y = y;
-	this.w = w;
-	this.h = h;
-	
-	this.canvasSize = 
-		//[600, 300]
-		[2000, 1000]
-	;
-}
+var proto = Object.create(baseObject);
 
-Rectangle.minSize = 5;
+proto.minSize = 5;
 
-Rectangle.prototype.getType = function() {
+proto.getType = function() {
 	return this.type;
 };
 
-Rectangle.prototype.getAABB = function() {
+proto.getAABB = function() {
 	return {
 		x: this.x,
 		y: this.y,
@@ -31,21 +20,21 @@ Rectangle.prototype.getAABB = function() {
 	};
 };
 
-Rectangle.prototype.setPosition = function(x, y) {
+proto.setPosition = function(x, y) {
 	this.x = x;
 	this.y = y;
 	
 	this.checkCanvasBoundary();
 };
 
-Rectangle.prototype.translate = function(dx, dy) {
+proto.translate = function(dx, dy) {
 	this.x += dx;
 	this.y += dy;
 	
 	this.checkCanvasBoundary();
 };
 
-Rectangle.prototype.checkCanvasBoundary = function() {
+proto.checkCanvasBoundary = function() {
 	if (this.x < 0)
 		this.x = 0;
 	else if (this.x + this.w >= this.canvasSize[0])
@@ -57,21 +46,21 @@ Rectangle.prototype.checkCanvasBoundary = function() {
 		this.y = this.canvasSize[1] - this.h;
 };
 
-Rectangle.prototype.setWidth = function(w) {
+proto.setWidth = function(w) {
 	this.w = w;
 	
 	if (this.w < Rectangle.minSize)
 		this.w = Rectangle.minSize;
 };
 
-Rectangle.prototype.setHeight = function(h) {
+proto.setHeight = function(h) {
 	this.h = h;
 	
 	if (this.h < Rectangle.minSize)
 		this.h = Rectangle.minSize;
 };
 
-Rectangle.prototype.resizeSide = function(side, amount) {
+proto.resizeSide = function(side, amount) {
 	switch (side) {
 		case appConstants.TOP:
 			if (amount < 0 && (this.h + amount) < Rectangle.minSize) {
@@ -107,4 +96,19 @@ Rectangle.prototype.resizeSide = function(side, amount) {
 	}
 };
 
-module.exports = Rectangle;
+function create(x, y, w, h) {
+	var o = Object.create(proto);
+	
+	o.type = 'Rectangle';
+	
+	o.x = x;
+	o.y = y;
+	o.w = w;
+	o.h = h;
+	
+	return o;
+}
+
+module.exports = {
+	create: create
+};

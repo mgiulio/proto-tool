@@ -20710,7 +20710,7 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":190,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":191,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,AppBar = require('./AppBar')
@@ -20816,7 +20816,7 @@ var TwoStateButton = React.createClass({displayName: "TwoStateButton",
 
 module.exports = AppBar;
 
-},{"../actions/AppActions":163,"../stores/sidePanelStore":191,"./Icon":172,"react":162}],167:[function(require,module,exports){
+},{"../actions/AppActions":163,"../stores/sidePanelStore":192,"./Icon":172,"react":162}],167:[function(require,module,exports){
 var
 	React = require('react')
 	,sidePanelStore = require('../stores/sidePanelStore')
@@ -20916,7 +20916,7 @@ var AppBody = React.createClass({displayName: "AppBody",
 
 module.exports = AppBody;
 
-},{"../stores/sidePanelStore":191,"./CanvasViewport":169,"./SidePanelContainer":183,"react":162}],168:[function(require,module,exports){
+},{"../stores/sidePanelStore":192,"./CanvasViewport":169,"./SidePanelContainer":183,"react":162}],168:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
@@ -20971,7 +20971,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 
 module.exports = Canvas;
 
-},{"../stores/designObjectStore":190,"../svgRenderer":192,"./SelectionBox":181,"react":162}],169:[function(require,module,exports){
+},{"../stores/designObjectStore":191,"../svgRenderer":193,"./SelectionBox":181,"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
    ,Canvas = require('./Canvas')
@@ -21209,7 +21209,7 @@ var Color = React.createClass({displayName: "Color",
 
 module.exports = InspectorPanel;
 
-},{"../stores/designObjectStore":190,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":184,"react":162}],174:[function(require,module,exports){
+},{"../stores/designObjectStore":191,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":184,"react":162}],174:[function(require,module,exports){
 var
    React = require('react')
    ,ENTER_KEY_CODE = 13
@@ -21616,7 +21616,7 @@ var SettingsPanel = React.createClass({displayName: "SettingsPanel",
 
 module.exports = SettingsPanel;
 
-},{"../stores/designObjectStore":190,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":184,"react":162}],183:[function(require,module,exports){
+},{"../stores/designObjectStore":191,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":184,"react":162}],183:[function(require,module,exports){
 var
 	React = require('react')
 	,InspectorPanel = require('./InspectorPanel')
@@ -21782,130 +21782,28 @@ console.log(shape);
 */
 
 },{}],188:[function(require,module,exports){
+var o = Object.create(Object.prototype);
+
+o.canvasSize = [null, null];
+
+module.exports = o;
+},{}],189:[function(require,module,exports){
 var
-	appConstants = require('../../constants/appConstants')
-;
-
-function Rectangle(x, y, w, h) {
-	this.type = 'Rectangle';
-	
-	this.x = x;
-	this.y = y;
-	this.w = w;
-	this.h = h;
-	
-	this.canvasSize = 
-		//[600, 300]
-		[2000, 1000]
-	;
-}
-
-Rectangle.minSize = 5;
-
-Rectangle.prototype.getType = function() {
-	return this.type;
-};
-
-Rectangle.prototype.getAABB = function() {
-	return {
-		x: this.x,
-		y: this.y,
-		w: this.w,
-		h: this.h
-	};
-};
-
-Rectangle.prototype.setPosition = function(x, y) {
-	this.x = x;
-	this.y = y;
-	
-	this.checkCanvasBoundary();
-};
-
-Rectangle.prototype.translate = function(dx, dy) {
-	this.x += dx;
-	this.y += dy;
-	
-	this.checkCanvasBoundary();
-};
-
-Rectangle.prototype.checkCanvasBoundary = function() {
-	if (this.x < 0)
-		this.x = 0;
-	else if (this.x + this.w >= this.canvasSize[0])
-		this.x = this.canvasSize[0] - this.w;
-	
-	if (this.y < 0)
-		this.y = 0;
-	else if (this.y + this.h >= this.canvasSize[1])
-		this.y = this.canvasSize[1] - this.h;
-};
-
-Rectangle.prototype.setWidth = function(w) {
-	this.w = w;
-	
-	if (this.w < Rectangle.minSize)
-		this.w = Rectangle.minSize;
-};
-
-Rectangle.prototype.setHeight = function(h) {
-	this.h = h;
-	
-	if (this.h < Rectangle.minSize)
-		this.h = Rectangle.minSize;
-};
-
-Rectangle.prototype.resizeSide = function(side, amount) {
-	switch (side) {
-		case appConstants.TOP:
-			if (amount < 0 && (this.h + amount) < Rectangle.minSize) {
-				this.y -= Rectangle.minSize - this.h;
-				this.h = Rectangle.minSize;
-			}
-			else {
-				this.y -= amount;
-				this.h += amount;
-			}
-			break;
-		case appConstants.RIGHT:
-			this.w += amount;
-			if (this.w < Rectangle.minSize)
-				this.w = Rectangle.minSize;
-			break;
-		case appConstants.BOTTOM:
-			this.h += amount;
-			if (this.h < Rectangle.minSize)
-				this.h = Rectangle.minSize;
-			break;
-		case appConstants.LEFT:
-			if (amount < 0 && (this.w + amount) < Rectangle.minSize) {
-				this.x -= Rectangle.minSize - this.w;
-				this.w = Rectangle.minSize;
-			}
-			else {
-				this.x -= amount;
-				this.w += amount;
-			}
-			break;
-		default:
+	objects = []
+	,selected = null
+	,rectangle = require('./rectangle')
+	,designObjects = {
+		'Rectangle': rectangle
 	}
-};
-
-module.exports = Rectangle;
-
-},{"../../constants/appConstants":185}],189:[function(require,module,exports){
-var
-	objects = [],
-	selected = null,
-	Rectangle = require('./Rectangle'),
-	designObjects = {
-		'Rectangle': Rectangle
-	},
-	canvasSize = [2000, 1000]
+	,baseObject = require('./baseObject')
+	,canvasSize = [2000, 1000]
 ;
+
+baseObject.canvasSize[0] = canvasSize[0];
+baseObject.canvasSize[1] = canvasSize[1];
 
 function addObject(type, x, y, w, h) {
-	var o = new designObjects[type](x, y, w, h); 
+	var o = designObjects[type].create(x, y, w, h);
 	
 	objects.push(o);
 	selected = objects.length - 1;
@@ -21959,10 +21857,14 @@ function getCanvasSize() {
 
 function setCanvasWidth(w) {
 	canvasSize[0] = w;
+	
+	baseObject.canvasSize[0] = w;
 }
 
 function setCanvasHeight(h) {
 	canvasSize[1] = h;
+	
+	baseObject.canvasSize[1] = h;
 }
 
 module.exports = {
@@ -21981,7 +21883,123 @@ module.exports = {
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
 };
-},{"./Rectangle":188}],190:[function(require,module,exports){
+},{"./baseObject":188,"./rectangle":190}],190:[function(require,module,exports){
+var
+	baseObject = require('./baseObject')
+	,appConstants = require('../../constants/appConstants')
+;
+
+var proto = Object.create(baseObject);
+
+proto.minSize = 5;
+
+proto.getType = function() {
+	return this.type;
+};
+
+proto.getAABB = function() {
+	return {
+		x: this.x,
+		y: this.y,
+		w: this.w,
+		h: this.h
+	};
+};
+
+proto.setPosition = function(x, y) {
+	this.x = x;
+	this.y = y;
+	
+	this.checkCanvasBoundary();
+};
+
+proto.translate = function(dx, dy) {
+	this.x += dx;
+	this.y += dy;
+	
+	this.checkCanvasBoundary();
+};
+
+proto.checkCanvasBoundary = function() {
+	if (this.x < 0)
+		this.x = 0;
+	else if (this.x + this.w >= this.canvasSize[0])
+		this.x = this.canvasSize[0] - this.w;
+	
+	if (this.y < 0)
+		this.y = 0;
+	else if (this.y + this.h >= this.canvasSize[1])
+		this.y = this.canvasSize[1] - this.h;
+};
+
+proto.setWidth = function(w) {
+	this.w = w;
+	
+	if (this.w < Rectangle.minSize)
+		this.w = Rectangle.minSize;
+};
+
+proto.setHeight = function(h) {
+	this.h = h;
+	
+	if (this.h < Rectangle.minSize)
+		this.h = Rectangle.minSize;
+};
+
+proto.resizeSide = function(side, amount) {
+	switch (side) {
+		case appConstants.TOP:
+			if (amount < 0 && (this.h + amount) < Rectangle.minSize) {
+				this.y -= Rectangle.minSize - this.h;
+				this.h = Rectangle.minSize;
+			}
+			else {
+				this.y -= amount;
+				this.h += amount;
+			}
+			break;
+		case appConstants.RIGHT:
+			this.w += amount;
+			if (this.w < Rectangle.minSize)
+				this.w = Rectangle.minSize;
+			break;
+		case appConstants.BOTTOM:
+			this.h += amount;
+			if (this.h < Rectangle.minSize)
+				this.h = Rectangle.minSize;
+			break;
+		case appConstants.LEFT:
+			if (amount < 0 && (this.w + amount) < Rectangle.minSize) {
+				this.x -= Rectangle.minSize - this.w;
+				this.w = Rectangle.minSize;
+			}
+			else {
+				this.x -= amount;
+				this.w += amount;
+			}
+			break;
+		default:
+	}
+};
+
+function create(x, y, w, h) {
+	var o = Object.create(proto);
+	
+	o.type = 'Rectangle';
+	
+	o.x = x;
+	o.y = y;
+	o.w = w;
+	o.h = h;
+	
+	return o;
+}
+
+module.exports = {
+	create: create
+};
+
+},{"../../constants/appConstants":185,"./baseObject":188}],191:[function(require,module,exports){
 var
 	dos = require('./design-objects/design-objects')
 ;
@@ -22070,7 +22088,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"./design-objects/design-objects":189,"events":1,"object-assign":7}],191:[function(require,module,exports){
+},{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"./design-objects/design-objects":189,"events":1,"object-assign":7}],192:[function(require,module,exports){
 var
 	activePanel = null
 ;
@@ -22160,7 +22178,7 @@ var store = assign({}, EventEmitter.prototype, {
 
 module.exports = store;
 
-},{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"events":1,"object-assign":7}],192:[function(require,module,exports){
+},{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"events":1,"object-assign":7}],193:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
