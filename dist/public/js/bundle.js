@@ -21793,6 +21793,11 @@ function Rectangle(x, y, w, h) {
 	this.y = y;
 	this.w = w;
 	this.h = h;
+	
+	this.canvasSize = 
+		//[600, 300]
+		[2000, 1000]
+	;
 }
 
 Rectangle.minSize = 5;
@@ -21813,6 +21818,27 @@ Rectangle.prototype.getAABB = function() {
 Rectangle.prototype.setPosition = function(x, y) {
 	this.x = x;
 	this.y = y;
+	
+	this.checkCanvasBoundary();
+};
+
+Rectangle.prototype.translate = function(dx, dy) {
+	this.x += dx;
+	this.y += dy;
+	
+	this.checkCanvasBoundary();
+};
+
+Rectangle.prototype.checkCanvasBoundary = function() {
+	if (this.x < 0)
+		this.x = 0;
+	else if (this.x + this.w >= this.canvasSize[0])
+		this.x = this.canvasSize[0] - this.w;
+	
+	if (this.y < 0)
+		this.y = 0;
+	else if (this.y + this.h >= this.canvasSize[1])
+		this.y = this.canvasSize[1] - this.h;
 };
 
 Rectangle.prototype.setWidth = function(w) {
@@ -21827,11 +21853,6 @@ Rectangle.prototype.setHeight = function(h) {
 	
 	if (this.h < Rectangle.minSize)
 		this.h = Rectangle.minSize;
-};
-
-Rectangle.prototype.translate = function(x, y) {
-	this.x += x;
-	this.y += y;
 };
 
 Rectangle.prototype.resizeSide = function(side, amount) {
@@ -21933,7 +21954,7 @@ function getSelectedObject() {
 }
 
 function getCanvasSize() {
-	return  canvasSize;
+	return canvasSize;
 }
 
 function setCanvasWidth(w) {

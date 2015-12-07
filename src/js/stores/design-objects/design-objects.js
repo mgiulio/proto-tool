@@ -58,7 +58,7 @@ function getSelectedObject() {
 }
 
 function getCanvasSize() {
-	return  canvasSize;
+	return canvasSize;
 }
 
 function setCanvasWidth(w) {
