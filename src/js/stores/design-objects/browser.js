@@ -4,9 +4,14 @@ var
 ;
 
 var proto = assign(Object.create(baseObject), {
+	
+	getTitle: function() {
+		return this.title;
+	}
+	
 });
 
-function create(x, y, w, h) {
+function create(x, y, w, h, title/* = 'untitled'*/) {
 	var o = Object.create(proto);
 	
 	o.type = 'Browser';
@@ -15,6 +20,8 @@ function create(x, y, w, h) {
 	o.y = y;
 	o.w = w;
 	o.h = h;
+	
+	o.title = title;
 	
 	return o;
 }

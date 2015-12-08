@@ -7,7 +7,7 @@ var SVGRectangle = React.createClass({
 	
 	render: function() {
 		var
-			{x: x, y: y, width: width, height: height} = this.props,
+			{x: x, y: y, width: width, height: height, title: title} = this.props,
 			titleBarH = 30,
 			toolbarH = 40,
 			iconSize = 24,
@@ -18,11 +18,15 @@ var SVGRectangle = React.createClass({
 			//statusBarHeight = 25,
 		;
 		
+		if (!title)
+			title = 'A Web Page';
+		
 		return (
 			<g id={this.props.id} className="object browser" transform={`translate(${x}, ${y})`} >
-				<rect x="0" y="0" width={width} height={height} />
-				<rect x="0" y="0" width={width} height={headerH} />
-				<line x1="0" y1={titleBarH} x2={width} y2={titleBarH} />
+				<rect x={0} y={0} width={width} height={height} />
+				<rect x={0} y={0} width={width} height={headerH} />
+				<text x={width / 2} y={titleBarH - 10} textAnchor="middle" fontFamily="Verdana" fontSize="14" fill="#333">{title}</text>
+				<line x1={0} y1={titleBarH} x2={width} y2={titleBarH} />
 				<g 
 					transform={`translate(0, ${titleBarH})`}
 					dangerouslySetInnerHTML={{ __html: `<use x="${iconPad}" y="${iconPad}" width="${iconSize}" height="${iconSize}" xlink:href="#cog" />`}}

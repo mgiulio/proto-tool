@@ -18,7 +18,7 @@ function svgRender(om, i) {
 		case 'Browser':
 			compo = <SVGBrowser
 				id={i} 
-				x={om.x} y={om.y} width={om.w} height={om.h} 
+				x={om.x} y={om.y} width={om.w} height={om.h} title={om.getTitle()} 
 				key={i} 
 			/>;
 			break;

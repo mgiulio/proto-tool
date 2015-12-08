@@ -21073,7 +21073,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 				($__0 = AppActions).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50])))
 				break;
 			case 66: // 'b'
-				($__1 = AppActions).addObject.apply($__1, ['Browser'].concat(this.getMouseClientPos().concat([600, 300])))
+				($__1 = AppActions).addObject.apply($__1, ['Browser'].concat(this.getMouseClientPos().concat([600, 300, 'ILGI'])))
 				break;
 		}
 	},
@@ -21355,7 +21355,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	
 	render: function() {
 		var
-			$__0=         this.props,x=$__0.x,y=$__0.y,width=$__0.width,height=$__0.height,
+			$__0=           this.props,x=$__0.x,y=$__0.y,width=$__0.width,height=$__0.height,title=$__0.title,
 			titleBarH = 30,
 			toolbarH = 40,
 			iconSize = 24,
@@ -21366,11 +21366,15 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 			//statusBarHeight = 25,
 		;
 		
+		if (!title)
+			title = 'A Web Page';
+		
 		return (
 			React.createElement("g", {id: this.props.id, className: "object browser", transform: ("translate(" + x + ", " + y + ")")}, 
-				React.createElement("rect", {x: "0", y: "0", width: width, height: height}), 
-				React.createElement("rect", {x: "0", y: "0", width: width, height: headerH}), 
-				React.createElement("line", {x1: "0", y1: titleBarH, x2: width, y2: titleBarH}), 
+				React.createElement("rect", {x: 0, y: 0, width: width, height: height}), 
+				React.createElement("rect", {x: 0, y: 0, width: width, height: headerH}), 
+				React.createElement("text", {x: width / 2, y: titleBarH - 10, textAnchor: "middle", fontFamily: "Verdana", fontSize: "14", fill: "#333"}, title), 
+				React.createElement("line", {x1: 0, y1: titleBarH, x2: width, y2: titleBarH}), 
 				React.createElement("g", {
 					transform: ("translate(0, " + titleBarH + ")"), 
 					dangerouslySetInnerHTML: { __html: ("<use x=\"" + iconPad + "\" y=\"" + iconPad + "\" width=\"" + iconSize + "\" height=\"" + iconSize + "\" xlink:href=\"#cog\" />")}, 
@@ -21958,9 +21962,14 @@ var
 ;
 
 var proto = assign(Object.create(baseObject), {
+	
+	getTitle: function() {
+		return this.title;
+	}
+	
 });
 
-function create(x, y, w, h) {
+function create(x, y, w, h, title/* = 'untitled'*/) {
 	var o = Object.create(proto);
 	
 	o.type = 'Browser';
@@ -21969,6 +21978,8 @@ function create(x, y, w, h) {
 	o.y = y;
 	o.w = w;
 	o.h = h;
+	
+	o.title = title;
 	
 	return o;
 }
@@ -22305,7 +22316,7 @@ function svgRender(om, i) {
 		case 'Browser':
 			compo = React.createElement(SVGBrowser, {
 				id: i, 
-				x: om.x, y: om.y, width: om.w, height: om.h, 
+				x: om.x, y: om.y, width: om.w, height: om.h, title: om.getTitle(), 
 				key: i}
 			);
 			break;
