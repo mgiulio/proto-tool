@@ -7,56 +7,56 @@ var SVGRectangle = React.createClass({
 	
 	render: function() {
 		var
-			osWidth= 600,
-			osHeight = 300,
-			headerHeight = 60, // use %?
-			statusBarHeight = 25,
-			{x: x, y: y, width: w, height: h} = this.props
+			{x: x, y: y, width: width, height: height} = this.props,
+			titleBarH = 30,
+			toolbarH = 40,
+			iconSize = 24,
+			headerH = titleBarH + toolbarH,
+			tbTile = toolbarH,
+			iconPad = (tbTile - iconSize) / 2,
+			locationBarW = width - tbTile * 4
+			//statusBarHeight = 25,
 		;
 		
 		return (
 			<g id={this.props.id} className="object browser" transform={`translate(${x}, ${y})`} >
-				<rect x="0" y="0" width={osWidth} height={osHeight} />
-				<rect x="0" y="0" width={osWidth} height={headerHeight} />
-				<rect x="0" y={osHeight - statusBarHeight} width={osWidth} height={statusBarHeight} />
+				<rect x="0" y="0" width={width} height={height} />
+				<rect x="0" y="0" width={width} height={headerH} />
+				<line x1="0" y1={titleBarH} x2={width} y2={titleBarH} />
+				<g 
+					transform={`translate(0, ${titleBarH})`}
+					dangerouslySetInnerHTML={{ __html: `<use x="${iconPad}" y="${iconPad}" width="${iconSize}" height="${iconSize}" xlink:href="#cog" />`}}
+					fill="#ff0000"
+					stroke="none"
+				/>
+				<g 
+					transform={`translate(${tbTile}, ${titleBarH})`}
+					dangerouslySetInnerHTML={{ __html: `<use x="${iconPad}" y="${iconPad}" width="${iconSize}" height="${iconSize}" xlink:href="#tune" />`}}
+					fill="#ff0000"
+					stroke="none"
+				/>
+				<g 
+					transform={`translate(${tbTile * 2}, ${titleBarH})`}
+					dangerouslySetInnerHTML={{ __html: `<use x="${iconPad}" y="${iconPad}" width="${iconSize}" height="${iconSize}" xlink:href="#cog" />`}}
+					fill="#ff0000"
+					stroke="none"
+				/>
+				<g 
+					transform={`translate(${tbTile * 3}, ${titleBarH})`}
+					fill="#ffffff"
+					stroke="#999"
+				>
+					<rect x={0} y={iconPad} width={locationBarW} height={iconSize} />
+				</g>
+				<g 
+					transform={`translate(${width - tbTile}, ${titleBarH})`}
+					dangerouslySetInnerHTML={{ __html: `<use x="${iconPad}" y="${iconPad}" width="${iconSize}" height="${iconSize}" xlink:href="#tune" />`}}
+					fill="#ff0000"
+					stroke="none"
+				/>
+				{/* <rect x="0" y={height - statusBarHeight} width={width} height={statusBarHeight} /> */}
 			</g>
 		);
-	},
-	
-	onClick: function(e) {
-		e.stopPropagation();
-		
-		AppActions.selectObject(this.props.id);
-	},
-	
-	onMouseDown: function(e) {
-		e.stopPropagation();
-		
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		document.addEventListener('mousemove', this.onMouseMove, false);
-		document.addEventListener('mouseup', this.onMouseUp, false);
-		
-		AppActions.selectObject(this.props.id);
-	},
-	
-	onMouseMove: function(e) {
-		e.stopPropagation();
-		
-		var dx = e.clientX - this.mouseX;
-		var dy = e.clientY - this.mouseY;
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		AppActions.translate(dx, dy);
-	},
-	
-	onMouseUp: function(e) {
-		e.stopPropagation();
-		
-		document.removeEventListener('mousemove', this.onMouseMove, false);
-		document.removeEventListener('mouseup', this.onMouseUp, false);
 	}
 
 });

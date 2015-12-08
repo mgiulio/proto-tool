@@ -20674,7 +20674,7 @@ var AppActions = {
 };
 
 module.exports = AppActions;
-},{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"../lib/func":187}],164:[function(require,module,exports){
+},{"../constants/appConstants":186,"../dispatcher/AppDispatcher":187,"../lib/func":188}],164:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('./actions/AppActions')
@@ -20710,7 +20710,7 @@ function populate() {
 	appActions.addObject('Rectangle', 120, 10, 100, 50);
 	appActions.addObject('Rectangle', 230, 10, 100, 50);
 }
-},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":191,"react":162}],165:[function(require,module,exports){
+},{"./actions/AppActions":163,"./components/App":165,"./stores/designObjectStore":193,"react":162}],165:[function(require,module,exports){
 var
    React = require('react')
 	,AppBar = require('./AppBar')
@@ -20738,7 +20738,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./AppBar":166,"./AppBody":167,"./HotKeys":171,"./SVGSprite":180,"react":162}],166:[function(require,module,exports){
+},{"./AppBar":166,"./AppBody":167,"./HotKeys":171,"./SVGSprite":181,"react":162}],166:[function(require,module,exports){
 var
    React = require('react')
    ,sidePanelStore = require('../stores/sidePanelStore')
@@ -20816,7 +20816,7 @@ var TwoStateButton = React.createClass({displayName: "TwoStateButton",
 
 module.exports = AppBar;
 
-},{"../actions/AppActions":163,"../stores/sidePanelStore":192,"./Icon":172,"react":162}],167:[function(require,module,exports){
+},{"../actions/AppActions":163,"../stores/sidePanelStore":194,"./Icon":172,"react":162}],167:[function(require,module,exports){
 var
 	React = require('react')
 	,sidePanelStore = require('../stores/sidePanelStore')
@@ -20916,7 +20916,7 @@ var AppBody = React.createClass({displayName: "AppBody",
 
 module.exports = AppBody;
 
-},{"../stores/sidePanelStore":192,"./CanvasViewport":169,"./SidePanelContainer":183,"react":162}],168:[function(require,module,exports){
+},{"../stores/sidePanelStore":194,"./CanvasViewport":169,"./SidePanelContainer":184,"react":162}],168:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
@@ -20971,7 +20971,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 
 module.exports = Canvas;
 
-},{"../stores/designObjectStore":191,"../svgRenderer":193,"./SelectionBox":181,"react":162}],169:[function(require,module,exports){
+},{"../stores/designObjectStore":193,"../svgRenderer":195,"./SelectionBox":182,"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
    ,Canvas = require('./Canvas')
@@ -21037,7 +21037,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 		document.removeEventListener('keydown', this.onKeydown, false);
 	},
 	
-	onKeydown: function(e) {var $__0;
+	onKeydown: function(e) {var $__0, $__1;
 		//e.stopPropagation();
 		//e.preventDefault();
 		
@@ -21049,7 +21049,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 		else
 			speed = 'normal';
 		
-		switch (e.keyIdentifier) {
+		switch (/*e.keyIdentifier*/e.which) {
 			case 'Up':
 				AppActions.translateUp(speed);
 				break;
@@ -21069,8 +21069,11 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 					AppActions.selectPrev();
 				e.preventDefault();
 				break;
-			case 'U+0041': // a
+			case 82: // 'r', was 'a'('U+0041')
 				($__0 = AppActions).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50])))
+				break;
+			case 66: // 'b'
+				($__1 = AppActions).addObject.apply($__1, ['Browser'].concat(this.getMouseClientPos().concat([600, 300])))
 				break;
 		}
 	},
@@ -21209,7 +21212,7 @@ var Color = React.createClass({displayName: "Color",
 
 module.exports = InspectorPanel;
 
-},{"../stores/designObjectStore":191,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":184,"react":162}],174:[function(require,module,exports){
+},{"../stores/designObjectStore":193,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":185,"react":162}],174:[function(require,module,exports){
 var
    React = require('react')
    ,ENTER_KEY_CODE = 13
@@ -21351,6 +21354,72 @@ var
 var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	
 	render: function() {
+		var
+			$__0=         this.props,x=$__0.x,y=$__0.y,width=$__0.width,height=$__0.height,
+			titleBarH = 30,
+			toolbarH = 40,
+			iconSize = 24,
+			headerH = titleBarH + toolbarH,
+			tbTile = toolbarH,
+			iconPad = (tbTile - iconSize) / 2,
+			locationBarW = width - tbTile * 4
+			//statusBarHeight = 25,
+		;
+		
+		return (
+			React.createElement("g", {id: this.props.id, className: "object browser", transform: ("translate(" + x + ", " + y + ")")}, 
+				React.createElement("rect", {x: "0", y: "0", width: width, height: height}), 
+				React.createElement("rect", {x: "0", y: "0", width: width, height: headerH}), 
+				React.createElement("line", {x1: "0", y1: titleBarH, x2: width, y2: titleBarH}), 
+				React.createElement("g", {
+					transform: ("translate(0, " + titleBarH + ")"), 
+					dangerouslySetInnerHTML: { __html: ("<use x=\"" + iconPad + "\" y=\"" + iconPad + "\" width=\"" + iconSize + "\" height=\"" + iconSize + "\" xlink:href=\"#cog\" />")}, 
+					fill: "#ff0000", 
+					stroke: "none"}
+				), 
+				React.createElement("g", {
+					transform: ("translate(" + tbTile + ", " + titleBarH + ")"), 
+					dangerouslySetInnerHTML: { __html: ("<use x=\"" + iconPad + "\" y=\"" + iconPad + "\" width=\"" + iconSize + "\" height=\"" + iconSize + "\" xlink:href=\"#tune\" />")}, 
+					fill: "#ff0000", 
+					stroke: "none"}
+				), 
+				React.createElement("g", {
+					transform: ("translate(" + (tbTile * 2) + ", " + titleBarH + ")"), 
+					dangerouslySetInnerHTML: { __html: ("<use x=\"" + iconPad + "\" y=\"" + iconPad + "\" width=\"" + iconSize + "\" height=\"" + iconSize + "\" xlink:href=\"#cog\" />")}, 
+					fill: "#ff0000", 
+					stroke: "none"}
+				), 
+				React.createElement("g", {
+					transform: ("translate(" + (tbTile * 3) + ", " + titleBarH + ")"), 
+					fill: "#ffffff", 
+					stroke: "#999"
+				}, 
+					React.createElement("rect", {x: 0, y: iconPad, width: locationBarW, height: iconSize})
+				), 
+				React.createElement("g", {
+					transform: ("translate(" + (width - tbTile) + ", " + titleBarH + ")"), 
+					dangerouslySetInnerHTML: { __html: ("<use x=\"" + iconPad + "\" y=\"" + iconPad + "\" width=\"" + iconSize + "\" height=\"" + iconSize + "\" xlink:href=\"#tune\" />")}, 
+					fill: "#ff0000", 
+					stroke: "none"}
+				)
+				/* <rect x="0" y={height - statusBarHeight} width={width} height={statusBarHeight} /> */
+			)
+		);
+	}
+
+});
+
+module.exports = SVGRectangle;
+
+},{"../actions/AppActions":163,"react":162}],180:[function(require,module,exports){
+var
+   React = require('react')
+   ,AppActions = require('../actions/AppActions')
+;
+
+var SVGRectangle = React.createClass({displayName: "SVGRectangle",
+	
+	render: function() {
 		return (
 			React.createElement("rect", {
 				id: this.props.id, className: "object", 
@@ -21401,7 +21470,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 
 module.exports = SVGRectangle;
 
-},{"../actions/AppActions":163,"react":162}],180:[function(require,module,exports){
+},{"../actions/AppActions":163,"react":162}],181:[function(require,module,exports){
 var
    React = require('react')
 ;
@@ -21428,7 +21497,7 @@ var SVGSprite = React.createClass({displayName: "SVGSprite",
 });
 
 module.exports = SVGSprite;
-},{"react":162}],181:[function(require,module,exports){
+},{"react":162}],182:[function(require,module,exports){
 var
    React = require('react')
    ,appActions = require('../actions/AppActions')
@@ -21559,7 +21628,7 @@ var Handle = React.createClass({displayName: "Handle",
 
 module.exports = SelectionBox;
 
-},{"../actions/AppActions":163,"../constants/appConstants":185,"react":162}],182:[function(require,module,exports){
+},{"../actions/AppActions":163,"../constants/appConstants":186,"react":162}],183:[function(require,module,exports){
 var
    React = require('react')
    ,doStore = require('../stores/designObjectStore')
@@ -21616,7 +21685,7 @@ var SettingsPanel = React.createClass({displayName: "SettingsPanel",
 
 module.exports = SettingsPanel;
 
-},{"../stores/designObjectStore":191,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":184,"react":162}],183:[function(require,module,exports){
+},{"../stores/designObjectStore":193,"./ControlRow":170,"./NumericControl":174,"./Panel":175,"./PanelBody":176,"./PanelHeader":177,"./PanelSection":178,"./VerticalLabel":185,"react":162}],184:[function(require,module,exports){
 var
 	React = require('react')
 	,InspectorPanel = require('./InspectorPanel')
@@ -21642,7 +21711,7 @@ var SidePanelContainer = React.createClass({displayName: "SidePanelContainer",
 });
 
 module.exports = SidePanelContainer;
-},{"./InspectorPanel":173,"./SettingsPanel":182,"react":162}],184:[function(require,module,exports){
+},{"./InspectorPanel":173,"./SettingsPanel":183,"react":162}],185:[function(require,module,exports){
 var
 	React = require('react')
 ;
@@ -21668,7 +21737,7 @@ var VerticalLabel = React.createClass({displayName: "VerticalLabel",
 
 module.exports = VerticalLabel;
 
-},{"react":162}],185:[function(require,module,exports){
+},{"react":162}],186:[function(require,module,exports){
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
@@ -21697,7 +21766,7 @@ module.exports = keyMirror({
 	SET_CANVAS_WIDTH: null,
 	SET_CANVAS_HEIGHT: null,
 });
-},{"keymirror":6}],186:[function(require,module,exports){
+},{"keymirror":6}],187:[function(require,module,exports){
 /*
  * Copyright (c) 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -21715,7 +21784,7 @@ var Dispatcher = require('flux').Dispatcher;
 
 module.exports = new Dispatcher();
 
-},{"flux":3}],187:[function(require,module,exports){
+},{"flux":3}],188:[function(require,module,exports){
 var
 	placeholder = '_', // symbol? Object? function?
 	compose = function(f, g, h) {  // Adapted from Underscore.js
@@ -21781,117 +21850,14 @@ goLeft(); // o.x === -1
 console.log(shape);
 */
 
-},{}],188:[function(require,module,exports){
-var o = Object.create(Object.prototype);
-
-o.canvasSize = [null, null];
-
-module.exports = o;
 },{}],189:[function(require,module,exports){
 var
-	objects = []
-	,selected = null
-	,rectangle = require('./rectangle')
-	,designObjects = {
-		'Rectangle': rectangle
-	}
-	,baseObject = require('./baseObject')
-	,canvasSize = [2000, 1000]
+	assign = require('object-assign')
 ;
 
-baseObject.canvasSize[0] = canvasSize[0];
-baseObject.canvasSize[1] = canvasSize[1];
-
-function addObject(type, x, y, w, h) {
-	var o = designObjects[type].create(x, y, w, h);
+var o = assign(Object.create(Object.prototype), {
 	
-	objects.push(o);
-	selected = objects.length - 1;
-}
-	
-function select(i) {
-	selected = i;
-}
-	
-function selectNext() {
-	selected = (selected + 1) % objects.length;
-}
-
-function selectPrev() {
-	selected--;
-	if (selected < 0)
-		selected = objects.length - 1;
-}
-	
-function setPosition(x, y) {
-	objects[selected].setPosition(x, y);
-}
-
-function setWidth(w) {
-	objects[selected].setWidth(w);
-}
-
-function setHeight(h) {
-	objects[selected].setHeight(h);
-}
-
-function translate(x, y) {
-	objects[selected].translate(x, y);
-}
-
-function resizeSide(side, amount) {
-	objects[selected].resizeSide(side, amount);
-}
-
-function getObjects() {
-	return objects;
-}
-	
-function getSelectedObject() {
-	return objects[selected];
-}
-
-function getCanvasSize() {
-	return canvasSize;
-}
-
-function setCanvasWidth(w) {
-	canvasSize[0] = w;
-	
-	baseObject.canvasSize[0] = w;
-}
-
-function setCanvasHeight(h) {
-	canvasSize[1] = h;
-	
-	baseObject.canvasSize[1] = h;
-}
-
-module.exports = {
-	addObject: addObject,
-	select: select,
-	selectNext: selectNext,
-	selectPrev: selectPrev,
-	setPosition: setPosition,
-	translate: translate,
-	resizeSide: resizeSide,
-	setWidth: setWidth,
-	setHeight: setHeight,
-	getObjects: getObjects,
-	getSelectedObject: getSelectedObject,
-	getCanvasSize: getCanvasSize,
-	setCanvasWidth: setCanvasWidth,
-	setCanvasHeight: setCanvasHeight
-};
-},{"./baseObject":188,"./rectangle":190}],190:[function(require,module,exports){
-var
-	baseObject = require('./baseObject')
-	,appConstants = require('../../constants/appConstants')
-	,assign = require('object-assign')
-;
-
-var proto = assign(Object.create(baseObject), {
-	minSize: 5,
+	canvasSize: [null, null],
 	
 	getType: function() {
 		return this.type;
@@ -21981,6 +21947,145 @@ var proto = assign(Object.create(baseObject), {
 			default:
 		}
 	}
+	
+});	
+
+module.exports = o;
+},{"object-assign":7}],190:[function(require,module,exports){
+var
+	baseObject = require('./baseObject')
+	,assign = require('object-assign')
+;
+
+var proto = assign(Object.create(baseObject), {
+});
+
+function create(x, y, w, h) {
+	var o = Object.create(proto);
+	
+	o.type = 'Browser';
+	
+	o.x = x;
+	o.y = y;
+	o.w = w;
+	o.h = h;
+	
+	return o;
+}
+
+module.exports = {
+	create: create
+};
+
+},{"./baseObject":189,"object-assign":7}],191:[function(require,module,exports){
+var
+	objects = []
+	,selected = null
+	,rectangle = require('./rectangle')
+	,browser = require('./browser')
+	,designObjects = {
+		'Rectangle': rectangle,
+		'Browser': browser
+	}
+	,baseObject = require('./baseObject')
+	,canvasSize = [2000, 1000]
+;
+
+baseObject.canvasSize[0] = canvasSize[0];
+baseObject.canvasSize[1] = canvasSize[1];
+
+function addObject(type, x, y, w, h) {
+	var o = designObjects[type].create(x, y, w, h);
+	
+	objects.push(o);
+	selected = objects.length - 1;
+}
+	
+function select(i) {
+	selected = i;
+}
+	
+function selectNext() {
+	selected = (selected + 1) % objects.length;
+}
+
+function selectPrev() {
+	selected--;
+	if (selected < 0)
+		selected = objects.length - 1;
+}
+	
+function setPosition(x, y) {
+	objects[selected].setPosition(x, y);
+}
+
+function setWidth(w) {
+	objects[selected].setWidth(w);
+}
+
+function setHeight(h) {
+	objects[selected].setHeight(h);
+}
+
+function translate(x, y) {
+	objects[selected].translate(x, y);
+}
+
+function resizeSide(side, amount) {
+	objects[selected].resizeSide(side, amount);
+}
+
+function getObjects() {
+	return objects;
+}
+	
+function getSelectedObject() {
+	return objects[selected];
+}
+
+function getCanvasSize() {
+	return canvasSize;
+}
+
+function setCanvasWidth(w) {
+	canvasSize[0] = w;
+	
+	baseObject.canvasSize[0] = w;
+}
+
+function setCanvasHeight(h) {
+	canvasSize[1] = h;
+	
+	baseObject.canvasSize[1] = h;
+}
+
+module.exports = {
+	addObject: addObject,
+	select: select,
+	selectNext: selectNext,
+	selectPrev: selectPrev,
+	setPosition: setPosition,
+	translate: translate,
+	resizeSide: resizeSide,
+	setWidth: setWidth,
+	setHeight: setHeight,
+	getObjects: getObjects,
+	getSelectedObject: getSelectedObject,
+	getCanvasSize: getCanvasSize,
+	setCanvasWidth: setCanvasWidth,
+	setCanvasHeight: setCanvasHeight
+};
+},{"./baseObject":189,"./browser":190,"./rectangle":192}],192:[function(require,module,exports){
+var
+	baseObject = require('./baseObject')
+	,appConstants = require('../../constants/appConstants')
+	,assign = require('object-assign')
+;
+
+var proto = assign(Object.create(baseObject), {
+	
+	minSize: 5
+	
 });
 
 function create(x, y, w, h) {
@@ -22000,7 +22105,7 @@ module.exports = {
 	create: create
 };
 
-},{"../../constants/appConstants":185,"./baseObject":188,"object-assign":7}],191:[function(require,module,exports){
+},{"../../constants/appConstants":186,"./baseObject":189,"object-assign":7}],193:[function(require,module,exports){
 var
 	dos = require('./design-objects/design-objects')
 ;
@@ -22089,7 +22194,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 
 module.exports = designObjectStore;
 
-},{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"./design-objects/design-objects":189,"events":1,"object-assign":7}],192:[function(require,module,exports){
+},{"../constants/appConstants":186,"../dispatcher/AppDispatcher":187,"./design-objects/design-objects":191,"events":1,"object-assign":7}],194:[function(require,module,exports){
 var
 	activePanel = null
 ;
@@ -22179,10 +22284,11 @@ var store = assign({}, EventEmitter.prototype, {
 
 module.exports = store;
 
-},{"../constants/appConstants":185,"../dispatcher/AppDispatcher":186,"events":1,"object-assign":7}],193:[function(require,module,exports){
+},{"../constants/appConstants":186,"../dispatcher/AppDispatcher":187,"events":1,"object-assign":7}],195:[function(require,module,exports){
 var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
+	,SVGBrowser = require('./components/SVGBrowser')
 ;
 
 function svgRender(om, i) {
@@ -22191,6 +22297,13 @@ function svgRender(om, i) {
 	switch (om.type) {
 		case 'Rectangle':
 			compo = React.createElement(SVGRectangle, {
+				id: i, 
+				x: om.x, y: om.y, width: om.w, height: om.h, 
+				key: i}
+			);
+			break;
+		case 'Browser':
+			compo = React.createElement(SVGBrowser, {
 				id: i, 
 				x: om.x, y: om.y, width: om.w, height: om.h, 
 				key: i}
@@ -22205,4 +22318,4 @@ function svgRender(om, i) {
 	
 module.exports = svgRender;
 
-},{"./components/SVGRectangle":179,"react":162}]},{},[164]);
+},{"./components/SVGBrowser":179,"./components/SVGRectangle":180,"react":162}]},{},[164]);

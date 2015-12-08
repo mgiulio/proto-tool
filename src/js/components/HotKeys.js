@@ -29,7 +29,7 @@ var Keyboard = React.createClass({
 		else
 			speed = 'normal';
 		
-		switch (e.keyIdentifier) {
+		switch (/*e.keyIdentifier*/e.which) {
 			case 'Up':
 				AppActions.translateUp(speed);
 				break;
@@ -49,8 +49,11 @@ var Keyboard = React.createClass({
 					AppActions.selectPrev();
 				e.preventDefault();
 				break;
-			case 'U+0041': // a
+			case 82: // 'r', was 'a'('U+0041')
 				AppActions.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50])))
+				break;
+			case 66: // 'b'
+				AppActions.addObject('Browser', ...(this.getMouseClientPos().concat([600, 300])))
 				break;
 		}
 	},

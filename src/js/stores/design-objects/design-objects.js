@@ -2,8 +2,10 @@ var
 	objects = []
 	,selected = null
 	,rectangle = require('./rectangle')
+	,browser = require('./browser')
 	,designObjects = {
-		'Rectangle': rectangle
+		'Rectangle': rectangle,
+		'Browser': browser
 	}
 	,baseObject = require('./baseObject')
 	,canvasSize = [2000, 1000]
