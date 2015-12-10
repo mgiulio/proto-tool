@@ -1,6 +1,5 @@
 var
 	baseObject = require('./baseObject')
-	,appConstants = require('../../constants/appConstants')
 	,assign = require('object-assign')
 ;
 

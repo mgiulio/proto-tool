@@ -9,7 +9,7 @@ var
 window.appActions = appActions;
 //window.appConstants = appConstants;
 
-React.render(<App />, document.body, populate);
+React.render(<App />, document.body/*, populate*/);
 
 function populate() {
 	/*

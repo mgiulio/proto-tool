@@ -1,5 +1,6 @@
 var
-	assign = require('object-assign')
+	assign = require('object-assign'),
+	appConstants = require('../../constants/AppConstants')
 ;
 
 var o = assign(Object.create(Object.prototype), {
