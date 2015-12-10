@@ -53,7 +53,7 @@ var Keyboard = React.createClass({
 				AppActions.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50])))
 				break;
 			case 66: // 'b'
-				AppActions.addObject('Browser', ...(this.getMouseClientPos().concat([600, 300, 'ILGI'])))
+				AppActions.addObject('Browser', ...(this.getMouseClientPos().concat([600, 300])))
 				break;
 		}
 	},

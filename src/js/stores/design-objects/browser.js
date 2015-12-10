@@ -11,7 +11,7 @@ var proto = assign(Object.create(baseObject), {
 	
 });
 
-function create(x, y, w, h, title/* = 'untitled'*/) {
+function create(x, y, w, h, rest) {
 	var o = Object.create(proto);
 	
 	o.type = 'Browser';
@@ -21,7 +21,7 @@ function create(x, y, w, h, title/* = 'untitled'*/) {
 	o.w = w;
 	o.h = h;
 	
-	o.title = title;
+	o.title = rest[0];
 	
 	return o;
 }

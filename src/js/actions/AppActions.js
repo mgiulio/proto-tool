@@ -45,14 +45,15 @@ translateUp: function(speed) {
 
 var AppActions = {
 	
-	addObject: function(type, x, y, w, h) {
+	addObject: function(type, x, y, w, h, ...rest) {
 		AppDispatcher.dispatch({
 			actionType: appConstants.ADD_OBJECT,
 			type: type,
 			x: x,
 			y: y,
 			w: w,
-			h: h
+			h: h,
+			rest: rest
 		});
 	},
 	

@@ -14,8 +14,8 @@ var
 baseObject.canvasSize[0] = canvasSize[0];
 baseObject.canvasSize[1] = canvasSize[1];
 
-function addObject(type, x, y, w, h) {
-	var o = designObjects[type].create(x, y, w, h);
+function addObject(type, x, y, w, h, rest) {
+	var o = designObjects[type].create(x, y, w, h, rest);
 	
 	objects.push(o);
 	selected = objects.length - 1;

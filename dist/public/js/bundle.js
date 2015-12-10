@@ -20553,14 +20553,15 @@ translateUp: function(speed) {
 
 var AppActions = {
 	
-	addObject: function(type, x, y, w, h) {
+	addObject: function(type, x, y, w, h ) {for (var rest=[],$__0=5,$__1=arguments.length;$__0<$__1;$__0++) rest.push(arguments[$__0]);
 		AppDispatcher.dispatch({
 			actionType: appConstants.ADD_OBJECT,
 			type: type,
 			x: x,
 			y: y,
 			w: w,
-			h: h
+			h: h,
+			rest: rest
 		});
 	},
 	
@@ -21031,10 +21032,17 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 	
 	componentDidMount: function() {
 		document.addEventListener('keydown', this.onKeydown, false);
+		document.addEventListener('mousemove', this.onMouseMove, false);
 	},
 	
 	componentWillMount: function() {
 		document.removeEventListener('keydown', this.onKeydown, false);
+	},
+	
+	onMouseMove: function(e) {
+		e.stopPropagation();
+		
+		console.log(e);
 	},
 	
 	onKeydown: function(e) {var $__0, $__1;
@@ -21073,7 +21081,7 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 				($__0 = AppActions).addObject.apply($__0, ['Rectangle'].concat(this.getMouseClientPos().concat([100, 50])))
 				break;
 			case 66: // 'b'
-				($__1 = AppActions).addObject.apply($__1, ['Browser'].concat(this.getMouseClientPos().concat([600, 300, 'ILGI'])))
+				($__1 = AppActions).addObject.apply($__1, ['Browser'].concat(this.getMouseClientPos().concat([600, 300])))
 				break;
 		}
 	},
@@ -21969,7 +21977,7 @@ var proto = assign(Object.create(baseObject), {
 	
 });
 
-function create(x, y, w, h, title/* = 'untitled'*/) {
+function create(x, y, w, h, rest) {
 	var o = Object.create(proto);
 	
 	o.type = 'Browser';
@@ -21979,7 +21987,7 @@ function create(x, y, w, h, title/* = 'untitled'*/) {
 	o.w = w;
 	o.h = h;
 	
-	o.title = title;
+	o.title = rest[0];
 	
 	return o;
 }
@@ -22005,8 +22013,8 @@ var
 baseObject.canvasSize[0] = canvasSize[0];
 baseObject.canvasSize[1] = canvasSize[1];
 
-function addObject(type, x, y, w, h) {
-	var o = designObjects[type].create(x, y, w, h);
+function addObject(type, x, y, w, h, rest) {
+	var o = designObjects[type].create(x, y, w, h, rest);
 	
 	objects.push(o);
 	selected = objects.length - 1;
@@ -22129,7 +22137,7 @@ var
 AppDispatcher.register(function(action) {
 	switch (action.actionType) {
 		case appConstants.ADD_OBJECT:
-			dos.addObject(action.type, action.x, action.y, action.w, action.h);
+			dos.addObject(action.type, action.x, action.y, action.w, action.h, action.rest);
 			designObjectStore.emitChange();
 			break;
 		case appConstants.SELECT_OBJECT:

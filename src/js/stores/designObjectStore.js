@@ -10,7 +10,7 @@ var
 AppDispatcher.register(function(action) {
 	switch (action.actionType) {
 		case appConstants.ADD_OBJECT:
-			dos.addObject(action.type, action.x, action.y, action.w, action.h);
+			dos.addObject(action.type, action.x, action.y, action.w, action.h, action.rest);
 			designObjectStore.emitChange();
 			break;
 		case appConstants.SELECT_OBJECT:
