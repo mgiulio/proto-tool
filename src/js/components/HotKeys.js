@@ -31,9 +31,6 @@ var Keyboard = React.createClass({
 	},
 	
 	onKeydown: function(e) {
-		//e.stopPropagation();
-		//e.preventDefault();
-		
 		var xy;
 		
 		var speed;
@@ -44,40 +41,55 @@ var Keyboard = React.createClass({
 		else
 			speed = 'normal';
 		
-		switch (/*e.keyIdentifier*/e.which) {
-			case 'Up':
+		switch (e.which) {
+			case 38: // up
 				AppActions.translateUp(speed);
+				e.stopPropagation();
+				e.preventDefault();
 				break;
-			case 'Right':
+			case 39: // right
 				AppActions.translateRight(speed);
+				e.stopPropagation();
+				e.preventDefault();
 				break;
-			case 'Down':
+			case 40: // down
 				AppActions.translateDown(speed);
+				e.stopPropagation();
+				e.preventDefault();
 				break;
-			case 'Left':
+			case 37: // left
 				AppActions.translateLeft(speed);
+				e.stopPropagation();
+				e.preventDefault();
 				break;
-			case 'U+0009':
+			case 9: // TAB
 				if (e.shiftKey)
 					AppActions.selectNext();
 				else
 					AppActions.selectPrev();
+				e.stopPropagation();
 				e.preventDefault();
 				break;
-			case 82: // 'r', was 'a'('U+0041')
+			case 82: // 'r'
 				xy = this.getClickPointCanvasSpace();
-				if (xy !== null)
-					//AppActions.addObject('Rectangle', ...(this.getMouseClientPos().concat([100, 50])))
-				AppActions.addObject('Rectangle', xy[0], xy[1], 100, 50);
+				if (xy !== null) {
+					AppActions.addObject('Rectangle', xy[0], xy[1], 100, 50);
+					e.stopPropagation();
+					e.preventDefault();
+				}
 				break;
 			case 66: // 'b'
-				//AppActions.addObject('Browser', ...(this.getMouseClientPos().concat([600, 300])))
 				xy = this.getClickPointCanvasSpace();
-				if (xy !== null)
+				if (xy !== null) {
 					AppActions.addObject('Browser', xy[0], xy[1], 600, 300);
+					e.stopPropagation();
+					e.preventDefault();
+				}
 				break;
-			case 46:
+			case 46: // CANC
 				appActions.removeObject();
+				e.stopPropagation();
+				e.preventDefault();
 				break;
 			default:
 		}
