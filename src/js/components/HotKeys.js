@@ -1,9 +1,8 @@
 var
-   React = require('react')
-   ,AppActions = require('../actions/AppActions')
-   
-   mousePosClient = [null, null],
-   cvp = null
+	React = require('react')
+	,AppActions = require('../actions/AppActions')
+	,mousePosClient = [null, null]
+	,cvp = null
 ;
 
 var Keyboard = React.createClass({
@@ -73,11 +72,14 @@ var Keyboard = React.createClass({
 				break;
 			case 66: // 'b'
 				//AppActions.addObject('Browser', ...(this.getMouseClientPos().concat([600, 300])))
-			
 				xy = this.getClickPointCanvasSpace();
 				if (xy !== null)
 					AppActions.addObject('Browser', xy[0], xy[1], 600, 300);
 				break;
+			case 46:
+				appActions.removeObject();
+				break;
+			default:
 		}
 	},
 	

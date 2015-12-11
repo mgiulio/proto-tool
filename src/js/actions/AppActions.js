@@ -57,6 +57,12 @@ var AppActions = {
 		});
 	},
 	
+	removeObject: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.REMOVE_OBJECT
+		});
+	},
+	
 	selectObject: function(i) {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SELECT_OBJECT,
@@ -162,7 +168,7 @@ var AppActions = {
 			actionType: appConstants.SET_CANVAS_HEIGHT,
 			h: h
 		});
-	},
+	}
 
 };
 

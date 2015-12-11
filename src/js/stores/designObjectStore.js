@@ -13,6 +13,10 @@ AppDispatcher.register(function(action) {
 			dos.addObject(action.type, action.x, action.y, action.w, action.h, action.rest);
 			designObjectStore.emitChange();
 			break;
+		case appConstants.REMOVE_OBJECT:
+		dos.removeObject();
+		designObjectStore.emitChange();
+		break;
 		case appConstants.SELECT_OBJECT:
 			dos.select(action.index);
 			designObjectStore.emitChange();

@@ -20,6 +20,14 @@ function addObject(type, x, y, w, h, rest) {
 	objects.push(o);
 	selected = objects.length - 1;
 }
+
+function removeObject() {
+	if (selected === null)
+		return;
+	
+	objects.splice(selected, 1);
+	selected = null;
+}
 	
 function select(i) {
 	selected = i;
@@ -81,6 +89,7 @@ function setCanvasHeight(h) {
 
 module.exports = {
 	addObject: addObject,
+	removeObject: removeObject,
 	select: select,
 	selectNext: selectNext,
 	selectPrev: selectPrev,

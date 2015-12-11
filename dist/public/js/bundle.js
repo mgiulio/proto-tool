@@ -20565,6 +20565,12 @@ var AppActions = {
 		});
 	},
 	
+	removeObject: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.REMOVE_OBJECT
+		});
+	},
+	
 	selectObject: function(i) {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SELECT_OBJECT,
@@ -20670,7 +20676,7 @@ var AppActions = {
 			actionType: appConstants.SET_CANVAS_HEIGHT,
 			h: h
 		});
-	},
+	}
 
 };
 
@@ -21020,11 +21026,10 @@ module.exports = ControlRow;
 
 },{"react":162}],171:[function(require,module,exports){
 var
-   React = require('react')
-   ,AppActions = require('../actions/AppActions')
-   
-   mousePosClient = [null, null],
-   cvp = null
+	React = require('react')
+	,AppActions = require('../actions/AppActions')
+	,mousePosClient = [null, null]
+	,cvp = null
 ;
 
 var Keyboard = React.createClass({displayName: "Keyboard",
@@ -21094,11 +21099,14 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 				break;
 			case 66: // 'b'
 				//AppActions.addObject('Browser', ...(this.getMouseClientPos().concat([600, 300])))
-			
 				xy = this.getClickPointCanvasSpace();
 				if (xy !== null)
 					AppActions.addObject('Browser', xy[0], xy[1], 600, 300);
 				break;
+			case 46:
+				appActions.removeObject();
+				break;
+			default:
 		}
 	},
 	
@@ -21786,6 +21794,7 @@ var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
 	ADD_OBJECT: null,
+	REMOVE_OBJECT: null,
 	SELECT_OBJECT: null,
 	SELECT_NEXT: null,
 	SELECT_PREV: null,
@@ -21815,6 +21824,7 @@ var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
 	ADD_OBJECT: null,
+	REMOVE_OBJECT: null,
 	SELECT_OBJECT: null,
 	SELECT_NEXT: null,
 	SELECT_PREV: null,
@@ -22081,6 +22091,14 @@ function addObject(type, x, y, w, h, rest) {
 	objects.push(o);
 	selected = objects.length - 1;
 }
+
+function removeObject() {
+	if (selected === null)
+		return;
+	
+	objects.splice(selected, 1);
+	selected = null;
+}
 	
 function select(i) {
 	selected = i;
@@ -22142,6 +22160,7 @@ function setCanvasHeight(h) {
 
 module.exports = {
 	addObject: addObject,
+	removeObject: removeObject,
 	select: select,
 	selectNext: selectNext,
 	selectPrev: selectPrev,
@@ -22201,6 +22220,10 @@ AppDispatcher.register(function(action) {
 			dos.addObject(action.type, action.x, action.y, action.w, action.h, action.rest);
 			designObjectStore.emitChange();
 			break;
+		case appConstants.REMOVE_OBJECT:
+		dos.removeObject();
+		designObjectStore.emitChange();
+		break;
 		case appConstants.SELECT_OBJECT:
 			dos.select(action.index);
 			designObjectStore.emitChange();
