@@ -16,6 +16,7 @@
 }
 .canvas-viewport {
 	overflow: auto;
+	background-color: $canvas-viewport-bg-color;
 }
 
 .object {
