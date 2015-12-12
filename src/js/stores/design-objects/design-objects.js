@@ -98,6 +98,32 @@ function setCanvasHeight(h) {
 	baseObject.canvasSize[1] = h;
 }
 
+function moveUp() {
+	var newPos = selected + 1;
+	
+	if (newPos === objects.length)
+		return;
+	
+	var tmp = objects[newPos];
+	objects[newPos] = objects[selected];
+	objects[selected] = tmp;
+	
+	selected = newPos;
+}
+
+function moveDown() {
+	var newPos = selected - 1;
+	
+	if (newPos < 0)
+		return;
+	
+	var tmp = objects[newPos];
+	objects[newPos] = objects[selected];
+	objects[selected] = tmp;
+	
+	selected = newPos;
+}
+
 module.exports = {
 	addObject: addObject,
 	removeObject: removeObject,
@@ -116,4 +142,6 @@ module.exports = {
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
+	,moveUp: moveUp
+	,moveDown: moveDown
 };

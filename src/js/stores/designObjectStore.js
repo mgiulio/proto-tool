@@ -63,6 +63,14 @@ AppDispatcher.register(function(action) {
 			dos.setCanvasHeight(action.h);
 			designObjectStore.emitChange();
 			break;
+		case appConstants.MOVE_UP:
+			dos.moveUp();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.MOVE_DOWN:
+			dos.moveDown();
+			designObjectStore.emitChange();
+			break;
 		default:
 	}
 });

@@ -174,6 +174,18 @@ var AppActions = {
 			actionType: appConstants.SET_CANVAS_HEIGHT,
 			h: h
 		});
+	},
+	
+	moveUp: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.MOVE_UP
+		});
+	},
+	
+	moveDown: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.MOVE_DOWN
+		});
 	}
 
 };

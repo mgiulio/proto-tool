@@ -20682,6 +20682,18 @@ var AppActions = {
 			actionType: appConstants.SET_CANVAS_HEIGHT,
 			h: h
 		});
+	},
+	
+	moveUp: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.MOVE_UP
+		});
+	},
+	
+	moveDown: function(h) {
+		AppDispatcher.dispatch({
+			actionType: appConstants.MOVE_DOWN
+		});
 	}
 
 };
@@ -21910,6 +21922,9 @@ module.exports = keyMirror({
 	
 	SET_CANVAS_WIDTH: null,
 	SET_CANVAS_HEIGHT: null,
+	
+	MOVE_UP: null,
+	MOVE_DOWN: null,
 });
 },{"keymirror":6}],188:[function(require,module,exports){
 var keyMirror = require('keymirror');
@@ -21941,6 +21956,9 @@ module.exports = keyMirror({
 	
 	SET_CANVAS_WIDTH: null,
 	SET_CANVAS_HEIGHT: null,
+	
+	MOVE_UP: null,
+	MOVE_DOWN: null,
 });
 },{"keymirror":6}],189:[function(require,module,exports){
 /*
@@ -22262,6 +22280,32 @@ function setCanvasHeight(h) {
 	baseObject.canvasSize[1] = h;
 }
 
+function moveUp() {
+	var newPos = selected + 1;
+	
+	if (newPos === objects.length)
+		return;
+	
+	var tmp = objects[newPos];
+	objects[newPos] = objects[selected];
+	objects[selected] = tmp;
+	
+	selected = newPos;
+}
+
+function moveDown() {
+	var newPos = selected - 1;
+	
+	if (newPos < 0)
+		return;
+	
+	var tmp = objects[newPos];
+	objects[newPos] = objects[selected];
+	objects[selected] = tmp;
+	
+	selected = newPos;
+}
+
 module.exports = {
 	addObject: addObject,
 	removeObject: removeObject,
@@ -22280,6 +22324,8 @@ module.exports = {
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
+	,moveUp: moveUp
+	,moveDown: moveDown
 };
 },{"./baseObject":191,"./browser":192,"./picture":194,"./rectangle":195}],194:[function(require,module,exports){
 var
@@ -22403,6 +22449,14 @@ AppDispatcher.register(function(action) {
 			break;
 		case appConstants.SET_CANVAS_HEIGHT:
 			dos.setCanvasHeight(action.h);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.MOVE_UP:
+			dos.moveUp();
+			designObjectStore.emitChange();
+			break;
+		case appConstants.MOVE_DOWN:
+			dos.moveDown();
 			designObjectStore.emitChange();
 			break;
 		default:

@@ -27,4 +27,7 @@ module.exports = keyMirror({
 	
 	SET_CANVAS_WIDTH: null,
 	SET_CANVAS_HEIGHT: null,
+	
+	MOVE_UP: null,
+	MOVE_DOWN: null,
 });
