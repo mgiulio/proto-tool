@@ -22,7 +22,12 @@ var SVGRectangle = React.createClass({
 			title = 'A Web Page';
 		
 		return (
-			<g id={this.props.id} className="object browser" transform={`translate(${x}, ${y})`} >
+			<g 
+				id={this.props.id} 
+				className="object browser" 
+				transform={`translate(${x}, ${y})`} 
+				onClick={this.onClick}
+			>
 				<rect x={0} y={0} width={width} height={height} />
 				<rect x={0} y={0} width={width} height={headerH} />
 				<text x={width / 2} y={titleBarH - 10} textAnchor="middle" fontFamily="Verdana" fontSize="14" fill="#333">{title}</text>
@@ -61,6 +66,12 @@ var SVGRectangle = React.createClass({
 				{/* <rect x="0" y={height - statusBarHeight} width={width} height={statusBarHeight} /> */}
 			</g>
 		);
+	},
+	
+	onClick: function(e) {
+		e.stopPropagation();
+		
+		AppActions.selectObject(this.props.id);
 	}
 
 });

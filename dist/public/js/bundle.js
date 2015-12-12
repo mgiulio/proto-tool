@@ -21440,7 +21440,12 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 			title = 'A Web Page';
 		
 		return (
-			React.createElement("g", {id: this.props.id, className: "object browser", transform: ("translate(" + x + ", " + y + ")")}, 
+			React.createElement("g", {
+				id: this.props.id, 
+				className: "object browser", 
+				transform: ("translate(" + x + ", " + y + ")"), 
+				onClick: this.onClick
+			}, 
 				React.createElement("rect", {x: 0, y: 0, width: width, height: height}), 
 				React.createElement("rect", {x: 0, y: 0, width: width, height: headerH}), 
 				React.createElement("text", {x: width / 2, y: titleBarH - 10, textAnchor: "middle", fontFamily: "Verdana", fontSize: "14", fill: "#333"}, title), 
@@ -21479,6 +21484,12 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 				/* <rect x="0" y={height - statusBarHeight} width={width} height={statusBarHeight} /> */
 			)
 		);
+	},
+	
+	onClick: function(e) {
+		e.stopPropagation();
+		
+		AppActions.selectObject(this.props.id);
 	}
 
 });
@@ -21499,12 +21510,23 @@ var SVGPicture = React.createClass({displayName: "SVGPicture",
 		;
 		
 		return (
-			React.createElement("g", {id: this.props.id, className: "object picture", transform: ("translate(" + x + ", " + y + ")")}, 
+			React.createElement("g", {
+				id: this.props.id, 
+				className: "object picture", 
+				transform: ("translate(" + x + ", " + y + ")"), 
+				onClick: this.onClick
+			}, 
 				React.createElement("rect", {x: 0, y: 0, width: width, height: height}), 
 				React.createElement("line", {x1: 0, y1: 0, x2: width, y2: height}), 
 				React.createElement("line", {x1: width, y1: 0, x2: 0, y2: height})
 			)
 		);
+	},
+	
+	onClick: function(e) {
+		e.stopPropagation();
+		
+		AppActions.selectObject(this.props.id);
 	}
 
 });
