@@ -20937,6 +20937,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 		return {
 			designObjects: doStore.getObjects(),
 			selectedObject: doStore.getSelectedObject(),
+			selectedObjectIndex: doStore.getSelectedObjectIndex(),
 			canvasSize: doStore.getCanvasSize()
 		};
 	},
@@ -20962,14 +20963,16 @@ var Canvas = React.createClass({displayName: "Canvas",
 		
 		var selectionBox;
 		if (this.state.selectedObject) {
-			var aabb = this.state.selectedObject.getAABB();
-			selectionBox = React.createElement(SelectionBox, {x: aabb.x, y: aabb.y, w: aabb.w, h: aabb.h});
+			var 
+				aabb = this.state.selectedObject.getAABB(),
+				selBoxIndex = this.state.selectedObjectIndex + 1
+			;
+			designObjectsRep.splice(selBoxIndex, 0, React.createElement(SelectionBox, {x: aabb.x, y: aabb.y, w: aabb.w, h: aabb.h, key: "selbox"}));
 		}
 		
 		return (
 			React.createElement("svg", {className: "canvas", width: this.state.canvasSize[0], height: this.state.canvasSize[1]}, 
-				designObjectsRep, 
-				selectionBox
+				designObjectsRep
 			)
 		);
 	}
@@ -22214,6 +22217,10 @@ function getSelectedObject() {
 	return objects[selected];
 }
 
+function getSelectedObjectIndex() {
+	return selected;
+}
+
 function getCanvasSize() {
 	return canvasSize;
 }
@@ -22243,6 +22250,7 @@ module.exports = {
 	setHeight: setHeight,
 	getObjects: getObjects,
 	getSelectedObject: getSelectedObject,
+	getSelectedObjectIndex: getSelectedObjectIndex,
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
@@ -22392,6 +22400,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	
 	getObjects: dos.getObjects.bind(dos),
 	getSelectedObject: dos.getSelectedObject.bind(dos),
+	getSelectedObjectIndex: dos.getSelectedObjectIndex.bind(dos),
 	getCanvasSize: dos.getCanvasSize.bind(dos)
   
 });

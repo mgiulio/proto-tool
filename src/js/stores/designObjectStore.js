@@ -84,6 +84,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	
 	getObjects: dos.getObjects.bind(dos),
 	getSelectedObject: dos.getSelectedObject.bind(dos),
+	getSelectedObjectIndex: dos.getSelectedObjectIndex.bind(dos),
 	getCanvasSize: dos.getCanvasSize.bind(dos)
   
 });

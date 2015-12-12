@@ -73,6 +73,10 @@ function getSelectedObject() {
 	return objects[selected];
 }
 
+function getSelectedObjectIndex() {
+	return selected;
+}
+
 function getCanvasSize() {
 	return canvasSize;
 }
@@ -102,6 +106,7 @@ module.exports = {
 	setHeight: setHeight,
 	getObjects: getObjects,
 	getSelectedObject: getSelectedObject,
+	getSelectedObjectIndex: getSelectedObjectIndex,
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
