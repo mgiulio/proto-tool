@@ -3,6 +3,7 @@ var
    ,doStore = require('../stores/designObjectStore')
    ,svgRenderer = require('../svgRenderer')
    ,SelectionBox = require('./SelectionBox')
+   ,appActions = require('../actions/AppActions')
 ;
 
 var Canvas = React.createClass({
@@ -45,10 +46,21 @@ var Canvas = React.createClass({
 		}
 		
 		return (
-			<svg className="canvas" width={this.state.canvasSize[0]} height={this.state.canvasSize[1]}>
+			<svg 
+				className="canvas" 
+				width={this.state.canvasSize[0]} 
+				height={this.state.canvasSize[1]}
+				onClick={null/*this.onClick*/}
+			>
 				{designObjectsRep}
 			</svg>
 		);
+	},
+	
+	onClick: function(e) {
+		e.stopPropagation();
+		
+		appActions.clearSelection();
 	}
 
 });

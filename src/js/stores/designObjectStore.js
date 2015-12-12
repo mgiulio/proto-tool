@@ -22,6 +22,11 @@ AppDispatcher.register(function(action) {
 			designObjectStore.emitChange();
 			break;
 		break;
+		case appConstants.CLEAR_SELECTION:
+			dos.clearSelection();
+			designObjectStore.emitChange();
+			break;
+		break;
 		case appConstants.SELECT_NEXT:
 			dos.selectNext();
 			designObjectStore.emitChange();

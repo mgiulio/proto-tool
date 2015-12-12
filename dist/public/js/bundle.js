@@ -20578,6 +20578,12 @@ var AppActions = {
 		});
 	},
 	
+	clearSelection: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.CLEAR_SELECTION
+		});
+	},
+	
 	selectNext: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SELECT_NEXT
@@ -20929,6 +20935,7 @@ var
    ,doStore = require('../stores/designObjectStore')
    ,svgRenderer = require('../svgRenderer')
    ,SelectionBox = require('./SelectionBox')
+   ,appActions = require('../actions/AppActions')
 ;
 
 var Canvas = React.createClass({displayName: "Canvas",
@@ -20971,17 +20978,28 @@ var Canvas = React.createClass({displayName: "Canvas",
 		}
 		
 		return (
-			React.createElement("svg", {className: "canvas", width: this.state.canvasSize[0], height: this.state.canvasSize[1]}, 
+			React.createElement("svg", {
+				className: "canvas", 
+				width: this.state.canvasSize[0], 
+				height: this.state.canvasSize[1], 
+				onClick: null/*this.onClick*/
+			}, 
 				designObjectsRep
 			)
 		);
+	},
+	
+	onClick: function(e) {
+		e.stopPropagation();
+		
+		appActions.clearSelection();
 	}
 
 });
 
 module.exports = Canvas;
 
-},{"../stores/designObjectStore":196,"../svgRenderer":198,"./SelectionBox":183,"react":162}],169:[function(require,module,exports){
+},{"../actions/AppActions":163,"../stores/designObjectStore":196,"../svgRenderer":198,"./SelectionBox":183,"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
    ,Canvas = require('./Canvas')
@@ -21869,6 +21887,7 @@ module.exports = keyMirror({
 	ADD_OBJECT: null,
 	REMOVE_OBJECT: null,
 	SELECT_OBJECT: null,
+	CLEAR_SELECTION: null,
 	SELECT_NEXT: null,
 	SELECT_PREV: null,
 	TRANSLATE: null,
@@ -21899,6 +21918,7 @@ module.exports = keyMirror({
 	ADD_OBJECT: null,
 	REMOVE_OBJECT: null,
 	SELECT_OBJECT: null,
+	CLEAR_SELECTION: null,
 	SELECT_NEXT: null,
 	SELECT_PREV: null,
 	TRANSLATE: null,
@@ -22178,6 +22198,11 @@ function removeObject() {
 function select(i) {
 	selected = i;
 }
+
+function clearSelection() {
+	console.log('clearSelection()');
+	selected = null;
+}
 	
 function selectNext() {
 	selected = (selected + 1) % objects.length;
@@ -22241,6 +22266,7 @@ module.exports = {
 	addObject: addObject,
 	removeObject: removeObject,
 	select: select,
+	clearSelection: clearSelection,
 	selectNext: selectNext,
 	selectPrev: selectPrev,
 	setPosition: setPosition,
@@ -22335,6 +22361,11 @@ AppDispatcher.register(function(action) {
 		break;
 		case appConstants.SELECT_OBJECT:
 			dos.select(action.index);
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.CLEAR_SELECTION:
+			dos.clearSelection();
 			designObjectStore.emitChange();
 			break;
 		break;

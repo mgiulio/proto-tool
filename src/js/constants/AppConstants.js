@@ -4,6 +4,7 @@ module.exports = keyMirror({
 	ADD_OBJECT: null,
 	REMOVE_OBJECT: null,
 	SELECT_OBJECT: null,
+	CLEAR_SELECTION: null,
 	SELECT_NEXT: null,
 	SELECT_PREV: null,
 	TRANSLATE: null,

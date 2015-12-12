@@ -34,6 +34,11 @@ function removeObject() {
 function select(i) {
 	selected = i;
 }
+
+function clearSelection() {
+	console.log('clearSelection()');
+	selected = null;
+}
 	
 function selectNext() {
 	selected = (selected + 1) % objects.length;
@@ -97,6 +102,7 @@ module.exports = {
 	addObject: addObject,
 	removeObject: removeObject,
 	select: select,
+	clearSelection: clearSelection,
 	selectNext: selectNext,
 	selectPrev: selectPrev,
 	setPosition: setPosition,

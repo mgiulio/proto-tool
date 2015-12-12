@@ -70,6 +70,12 @@ var AppActions = {
 		});
 	},
 	
+	clearSelection: function() {
+		AppDispatcher.dispatch({
+			actionType: appConstants.CLEAR_SELECTION
+		});
+	},
+	
 	selectNext: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.SELECT_NEXT
