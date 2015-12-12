@@ -2,6 +2,7 @@ var
 	React = require('react')
 	,SVGRectangle = require('./components/SVGRectangle')
 	,SVGBrowser = require('./components/SVGBrowser')
+	,SVGPicture = require('./components/SVGPicture')
 ;
 
 function svgRender(om, i) {
@@ -19,6 +20,13 @@ function svgRender(om, i) {
 			compo = <SVGBrowser
 				id={i} 
 				x={om.x} y={om.y} width={om.w} height={om.h} title={om.getTitle()} 
+				key={i} 
+			/>;
+			break;
+		case 'Picture':
+			compo = <SVGPicture 
+				id={i} 
+				x={om.x} y={om.y} width={om.w} height={om.h} 
 				key={i} 
 			/>;
 			break;

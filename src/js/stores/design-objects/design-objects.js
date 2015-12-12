@@ -3,9 +3,11 @@ var
 	,selected = null
 	,rectangle = require('./rectangle')
 	,browser = require('./browser')
+	,picture = require('./picture')
 	,designObjects = {
-		'Rectangle': rectangle,
-		'Browser': browser
+		'Rectangle': rectangle
+		,'Browser': browser
+		,'Picture': picture
 	}
 	,baseObject = require('./baseObject')
 	,canvasSize = [2000, 1000]

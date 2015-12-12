@@ -31,6 +31,8 @@ var Keyboard = React.createClass({
 	},
 	
 	onKeydown: function(e) {
+		//console.log(e.which);
+		
 		var xy;
 		
 		var speed;
@@ -82,6 +84,14 @@ var Keyboard = React.createClass({
 				xy = this.getClickPointCanvasSpace();
 				if (xy !== null) {
 					AppActions.addObject('Browser', xy[0], xy[1], 600, 300);
+					e.stopPropagation();
+					e.preventDefault();
+				}
+				break;
+			case 80: // 'p'
+				xy = this.getClickPointCanvasSpace();
+				if (xy !== null) {
+					AppActions.addObject('Picture', xy[0], xy[1], 70, 70);
 					e.stopPropagation();
 					e.preventDefault();
 				}
