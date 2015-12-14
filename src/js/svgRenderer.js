@@ -12,6 +12,7 @@ function svgRender(om, i) {
 		case 'Rectangle':
 			compo = <SVGRectangle 
 				id={i} 
+				className={om.selected ? 'selected' : null}
 				x={om.x} y={om.y} width={om.w} height={om.h} 
 				key={i} 
 			/>;
@@ -19,6 +20,7 @@ function svgRender(om, i) {
 		case 'Browser':
 			compo = <SVGBrowser
 				id={i} 
+				className={om.selected ? 'selected' : null}
 				x={om.x} y={om.y} width={om.w} height={om.h} title={om.getTitle()} 
 				key={i} 
 			/>;
@@ -26,6 +28,7 @@ function svgRender(om, i) {
 		case 'Picture':
 			compo = <SVGPicture 
 				id={i} 
+				className={om.selected ? 'selected' : null}
 				x={om.x} y={om.y} width={om.w} height={om.h} 
 				key={i} 
 			/>;

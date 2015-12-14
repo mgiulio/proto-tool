@@ -3,9 +3,13 @@ var
    ,AppActions = require('../actions/AppActions')
 ;
 
-var SVGRectangle = React.createClass({
+var SVGBrowser = React.createClass({
 	
 	render: function() {
+		var classes = ['object', 'browser'];
+		if (this.props.className)
+			classes.push(this.props.className);
+		
 		var
 			{x: x, y: y, width: width, height: height, title: title} = this.props,
 			titleBarH = 30,
@@ -24,7 +28,7 @@ var SVGRectangle = React.createClass({
 		return (
 			<g 
 				id={this.props.id} 
-				className="object browser" 
+				className={classes.join(' ')}
 				transform={`translate(${x}, ${y})`} 
 				onClick={this.onClick}
 			>
@@ -71,9 +75,12 @@ var SVGRectangle = React.createClass({
 	onClick: function(e) {
 		e.stopPropagation();
 		
-		AppActions.selectObject(this.props.id);
+		if (e.shiftKey)
+			AppActions.selection.toggle(this.props.id);
+		else
+			AppActions.selection.select(this.props.id);
 	}
 
 });
 
-module.exports = SVGRectangle;
+module.exports = SVGBrowser;

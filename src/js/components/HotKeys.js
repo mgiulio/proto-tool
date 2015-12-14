@@ -64,14 +64,6 @@ var Keyboard = React.createClass({
 				e.stopPropagation();
 				e.preventDefault();
 				break;
-			case 9: // TAB
-				if (e.shiftKey)
-					AppActions.selectNext();
-				else
-					AppActions.selectPrev();
-				e.stopPropagation();
-				e.preventDefault();
-				break;
 			case 82: // 'r'
 				xy = this.getClickPointCanvasSpace();
 				if (xy !== null) {
@@ -100,6 +92,14 @@ var Keyboard = React.createClass({
 				appActions.removeObject();
 				e.stopPropagation();
 				e.preventDefault();
+				break;
+			case 65: // 'a'
+				if (e.ctrlKey) {
+					appActions.selection.all();
+					
+					e.stopPropagation();
+					e.preventDefault();
+				}
 				break;
 			default:
 		}

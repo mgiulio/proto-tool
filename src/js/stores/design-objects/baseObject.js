@@ -7,6 +7,8 @@ var o = assign(Object.create(Object.prototype), {
 	
 	canvasSize: [null, null],
 	
+	selected: false,
+	
 	getType: function() {
 		return this.type;
 	},

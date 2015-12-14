@@ -3,10 +3,12 @@ var keyMirror = require('keymirror');
 module.exports = keyMirror({
 	ADD_OBJECT: null,
 	REMOVE_OBJECT: null,
-	SELECT_OBJECT: null,
+	
+	SELECTION_SELECT: null,
+	SELECTION_TOGGLE: null,
+	SELECTION_ALL: null,
 	CLEAR_SELECTION: null,
-	SELECT_NEXT: null,
-	SELECT_PREV: null,
+	
 	TRANSLATE: null,
 	SET_POSITION: null,
 	RESIZE_SIDE: null,

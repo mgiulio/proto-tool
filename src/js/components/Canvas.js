@@ -11,8 +11,7 @@ var Canvas = React.createClass({
 	getState: function() {
 		return {
 			designObjects: doStore.getObjects(),
-			selectedObject: doStore.getSelectedObject(),
-			selectedObjectIndex: doStore.getSelectedObjectIndex(),
+			selectionSet: doStore.getSelectionSet(),
 			canvasSize: doStore.getCanvasSize()
 		};
 	},
@@ -37,12 +36,14 @@ var Canvas = React.createClass({
 		var designObjectsRep = this.state.designObjects.map(svgRenderer);
 		
 		var selectionBox;
-		if (this.state.selectedObject) {
+		if (this.state.selectionSet.length > 0) {
+			/*
 			var 
 				aabb = this.state.selectedObject.getAABB(),
 				selBoxIndex = this.state.selectedObjectIndex + 1
 			;
 			designObjectsRep.splice(selBoxIndex, 0, <SelectionBox x={aabb.x} y={aabb.y} w={aabb.w} h={aabb.h} key='selbox' />);
+			*/
 		}
 		
 		return (

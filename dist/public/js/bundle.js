@@ -20571,28 +20571,31 @@ var AppActions = {
 		});
 	},
 	
-	selectObject: function(i) {
-		AppDispatcher.dispatch({
-			actionType: appConstants.SELECT_OBJECT,
-			index: i
-		});
+	selection: {
+		select: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_SELECT,
+				index: i
+			});
+		},
+		toggle: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_TOGGLE,
+				index: i
+			});
+		},
+		all: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_ALL,
+				index: i
+			});
+		},
+
 	},
-	
+		
 	clearSelection: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.CLEAR_SELECTION
-		});
-	},
-	
-	selectNext: function() {
-		AppDispatcher.dispatch({
-			actionType: appConstants.SELECT_NEXT
-		});
-	},
-	
-	selectPrev: function() {
-		AppDispatcher.dispatch({
-			actionType: appConstants.SELECT_PREV
 		});
 	},
 	
@@ -20955,8 +20958,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 	getState: function() {
 		return {
 			designObjects: doStore.getObjects(),
-			selectedObject: doStore.getSelectedObject(),
-			selectedObjectIndex: doStore.getSelectedObjectIndex(),
+			selectionSet: doStore.getSelectionSet(),
 			canvasSize: doStore.getCanvasSize()
 		};
 	},
@@ -20981,12 +20983,14 @@ var Canvas = React.createClass({displayName: "Canvas",
 		var designObjectsRep = this.state.designObjects.map(svgRenderer);
 		
 		var selectionBox;
-		if (this.state.selectedObject) {
+		if (this.state.selectionSet.length > 0) {
+			/*
 			var 
 				aabb = this.state.selectedObject.getAABB(),
 				selBoxIndex = this.state.selectedObjectIndex + 1
 			;
-			designObjectsRep.splice(selBoxIndex, 0, React.createElement(SelectionBox, {x: aabb.x, y: aabb.y, w: aabb.w, h: aabb.h, key: "selbox"}));
+			designObjectsRep.splice(selBoxIndex, 0, <SelectionBox x={aabb.x} y={aabb.y} w={aabb.w} h={aabb.h} key='selbox' />);
+			*/
 		}
 		
 		return (
@@ -21124,14 +21128,6 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 				e.stopPropagation();
 				e.preventDefault();
 				break;
-			case 9: // TAB
-				if (e.shiftKey)
-					AppActions.selectNext();
-				else
-					AppActions.selectPrev();
-				e.stopPropagation();
-				e.preventDefault();
-				break;
 			case 82: // 'r'
 				xy = this.getClickPointCanvasSpace();
 				if (xy !== null) {
@@ -21160,6 +21156,14 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 				appActions.removeObject();
 				e.stopPropagation();
 				e.preventDefault();
+				break;
+			case 65: // 'a'
+				if (e.ctrlKey) {
+					appActions.selection.all();
+					
+					e.stopPropagation();
+					e.preventDefault();
+				}
 				break;
 			default:
 		}
@@ -21454,9 +21458,13 @@ var
    ,AppActions = require('../actions/AppActions')
 ;
 
-var SVGRectangle = React.createClass({displayName: "SVGRectangle",
+var SVGBrowser = React.createClass({displayName: "SVGBrowser",
 	
 	render: function() {
+		var classes = ['object', 'browser'];
+		if (this.props.className)
+			classes.push(this.props.className);
+		
 		var
 			$__0=           this.props,x=$__0.x,y=$__0.y,width=$__0.width,height=$__0.height,title=$__0.title,
 			titleBarH = 30,
@@ -21475,7 +21483,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 		return (
 			React.createElement("g", {
 				id: this.props.id, 
-				className: "object browser", 
+				className: classes.join(' '), 
 				transform: ("translate(" + x + ", " + y + ")"), 
 				onClick: this.onClick
 			}, 
@@ -21522,12 +21530,15 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	onClick: function(e) {
 		e.stopPropagation();
 		
-		AppActions.selectObject(this.props.id);
+		if (e.shiftKey)
+			AppActions.selection.toggle(this.props.id);
+		else
+			AppActions.selection.select(this.props.id);
 	}
 
 });
 
-module.exports = SVGRectangle;
+module.exports = SVGBrowser;
 
 },{"../actions/AppActions":163,"react":162}],180:[function(require,module,exports){
 var
@@ -21538,6 +21549,10 @@ var
 var SVGPicture = React.createClass({displayName: "SVGPicture",
 	
 	render: function() {
+		var classes = ['object', 'picture'];
+		if (this.props.className)
+			classes.push(this.props.className);
+		
 		var
 			$__0=           this.props,x=$__0.x,y=$__0.y,width=$__0.width,height=$__0.height,title=$__0.title
 		;
@@ -21545,7 +21560,7 @@ var SVGPicture = React.createClass({displayName: "SVGPicture",
 		return (
 			React.createElement("g", {
 				id: this.props.id, 
-				className: "object picture", 
+				className: classes.join(' '), 
 				transform: ("translate(" + x + ", " + y + ")"), 
 				onClick: this.onClick
 			}, 
@@ -21559,7 +21574,10 @@ var SVGPicture = React.createClass({displayName: "SVGPicture",
 	onClick: function(e) {
 		e.stopPropagation();
 		
-		AppActions.selectObject(this.props.id);
+		if (e.shiftKey)
+			AppActions.selection.toggle(this.props.id);
+		else
+			AppActions.selection.select(this.props.id);
 	}
 
 });
@@ -21575,12 +21593,17 @@ var
 var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	
 	render: function() {
+		var classes = ['object', 'rectangle'];
+		if (this.props.className)
+			classes.push(this.props.className);
+		
 		return (
 			React.createElement("rect", {
-				id: this.props.id, className: "object", 
+				id: this.props.id, 
+				className: classes.join(' '), 
 				x: this.props.x, y: this.props.y, width: this.props.width, height: this.props.height, 
 				onClick: this.onClick, 
-				onMouseDown: this.onMouseDown}
+				onMouseDown: null/*this.onMouseDown*/}
 			)
 		);
 	},
@@ -21588,7 +21611,10 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	onClick: function(e) {
 		e.stopPropagation();
 		
-		AppActions.selectObject(this.props.id);
+		if (e.shiftKey)
+			AppActions.selection.toggle(this.props.id);
+		else
+			AppActions.selection.select(this.props.id);
 	},
 	
 	onMouseDown: function(e) {
@@ -21600,7 +21626,7 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 		document.addEventListener('mousemove', this.onMouseMove, false);
 		document.addEventListener('mouseup', this.onMouseUp, false);
 		
-		AppActions.selectObject(this.props.id);
+		AppActions.selection.select(this.props.id);
 	},
 	
 	onMouseMove: function(e) {
@@ -21898,10 +21924,12 @@ var keyMirror = require('keymirror');
 module.exports = keyMirror({
 	ADD_OBJECT: null,
 	REMOVE_OBJECT: null,
-	SELECT_OBJECT: null,
+	
+	SELECTION_SELECT: null,
+	SELECTION_TOGGLE: null,
+	SELECTION_ALL: null,
 	CLEAR_SELECTION: null,
-	SELECT_NEXT: null,
-	SELECT_PREV: null,
+	
 	TRANSLATE: null,
 	SET_POSITION: null,
 	RESIZE_SIDE: null,
@@ -21932,10 +21960,12 @@ var keyMirror = require('keymirror');
 module.exports = keyMirror({
 	ADD_OBJECT: null,
 	REMOVE_OBJECT: null,
-	SELECT_OBJECT: null,
+	
+	SELECTION_SELECT: null,
+	SELECTION_TOGGLE: null,
+	SELECTION_ALL: null,
 	CLEAR_SELECTION: null,
-	SELECT_NEXT: null,
-	SELECT_PREV: null,
+	
 	TRANSLATE: null,
 	SET_POSITION: null,
 	RESIZE_SIDE: null,
@@ -22053,6 +22083,8 @@ var
 var o = assign(Object.create(Object.prototype), {
 	
 	canvasSize: [null, null],
+	
+	selected: false,
 	
 	getType: function() {
 		return this.type;
@@ -22182,7 +22214,6 @@ module.exports = {
 },{"./baseObject":191,"object-assign":7}],193:[function(require,module,exports){
 var
 	objects = []
-	,selected = null
 	,rectangle = require('./rectangle')
 	,browser = require('./browser')
 	,picture = require('./picture')
@@ -22202,7 +22233,7 @@ function addObject(type, x, y, w, h, rest) {
 	var o = designObjects[type].create(x, y, w, h, rest);
 	
 	objects.push(o);
-	selected = objects.length - 1;
+	selection.select(objects.length - 1);
 }
 
 function removeObject() {
@@ -22212,24 +22243,32 @@ function removeObject() {
 	objects.splice(selected, 1);
 	selected = null;
 }
+
+var selection = {
 	
-function select(i) {
-	selected = i;
-}
+	select: function(i) {
+		objects.forEach(function(o)  {o.selected = false});
+		objects[i].selected = true;
+	},
+	
+	toggle: function(i) {
+		objects[i].selected = ! objects[i].selected;
+	},
+	
+	get: function() {
+		return objects.filter(function(o)  {return o.selected;});
+	},
+	
+	all: function() {
+		objects.forEach(function(o)  {o.selected = true});
+	}
+
+};
+	
 
 function clearSelection() {
 	console.log('clearSelection()');
 	selected = null;
-}
-	
-function selectNext() {
-	selected = (selected + 1) % objects.length;
-}
-
-function selectPrev() {
-	selected--;
-	if (selected < 0)
-		selected = objects.length - 1;
 }
 	
 function setPosition(x, y) {
@@ -22256,14 +22295,6 @@ function getObjects() {
 	return objects;
 }
 	
-function getSelectedObject() {
-	return objects[selected];
-}
-
-function getSelectedObjectIndex() {
-	return selected;
-}
-
 function getCanvasSize() {
 	return canvasSize;
 }
@@ -22309,18 +22340,17 @@ function moveDown() {
 module.exports = {
 	addObject: addObject,
 	removeObject: removeObject,
-	select: select,
-	clearSelection: clearSelection,
-	selectNext: selectNext,
-	selectPrev: selectPrev,
+	
 	setPosition: setPosition,
 	translate: translate,
 	resizeSide: resizeSide,
 	setWidth: setWidth,
 	setHeight: setHeight,
 	getObjects: getObjects,
-	getSelectedObject: getSelectedObject,
-	getSelectedObjectIndex: getSelectedObjectIndex,
+	
+	selection: selection,
+	clearSelection: clearSelection,
+	
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight
@@ -22405,8 +22435,18 @@ AppDispatcher.register(function(action) {
 		dos.removeObject();
 		designObjectStore.emitChange();
 		break;
-		case appConstants.SELECT_OBJECT:
-			dos.select(action.index);
+		
+		case appConstants.SELECTION_SELECT:
+			dos.selection.select(action.index);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SELECTION_TOGGLE:
+			dos.selection.toggle(action.index);
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.SELECTION_ALL:
+			dos.selection.all(action.index);
 			designObjectStore.emitChange();
 			break;
 		break;
@@ -22415,14 +22455,7 @@ AppDispatcher.register(function(action) {
 			designObjectStore.emitChange();
 			break;
 		break;
-		case appConstants.SELECT_NEXT:
-			dos.selectNext();
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SELECT_PREV:
-			dos.selectPrev();
-			designObjectStore.emitChange();
-			break;
+		
 		case appConstants.SET_POSITION:
 			dos.setPosition(action.x, action.y);
 			designObjectStore.emitChange();
@@ -22484,8 +22517,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	},
 	
 	getObjects: dos.getObjects.bind(dos),
-	getSelectedObject: dos.getSelectedObject.bind(dos),
-	getSelectedObjectIndex: dos.getSelectedObjectIndex.bind(dos),
+	getSelectionSet: dos.selection.get.bind(dos),
 	getCanvasSize: dos.getCanvasSize.bind(dos)
   
 });
@@ -22597,6 +22629,7 @@ function svgRender(om, i) {
 		case 'Rectangle':
 			compo = React.createElement(SVGRectangle, {
 				id: i, 
+				className: om.selected ? 'selected' : null, 
 				x: om.x, y: om.y, width: om.w, height: om.h, 
 				key: i}
 			);
@@ -22604,6 +22637,7 @@ function svgRender(om, i) {
 		case 'Browser':
 			compo = React.createElement(SVGBrowser, {
 				id: i, 
+				className: om.selected ? 'selected' : null, 
 				x: om.x, y: om.y, width: om.w, height: om.h, title: om.getTitle(), 
 				key: i}
 			);
@@ -22611,6 +22645,7 @@ function svgRender(om, i) {
 		case 'Picture':
 			compo = React.createElement(SVGPicture, {
 				id: i, 
+				className: om.selected ? 'selected' : null, 
 				x: om.x, y: om.y, width: om.w, height: om.h, 
 				key: i}
 			);

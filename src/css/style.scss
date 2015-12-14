@@ -21,6 +21,10 @@
 
 .object {
 	cursor: pointer;
+	
+	&.selected {
+		fill: #ff0000;
+	}
 }
 
 .selection-box {

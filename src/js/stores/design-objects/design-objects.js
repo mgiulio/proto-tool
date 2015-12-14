@@ -1,6 +1,5 @@
 var
 	objects = []
-	,selected = null
 	,rectangle = require('./rectangle')
 	,browser = require('./browser')
 	,picture = require('./picture')
@@ -20,7 +19,7 @@ function addObject(type, x, y, w, h, rest) {
 	var o = designObjects[type].create(x, y, w, h, rest);
 	
 	objects.push(o);
-	selected = objects.length - 1;
+	selection.select(objects.length - 1);
 }
 
 function removeObject() {
@@ -30,24 +29,32 @@ function removeObject() {
 	objects.splice(selected, 1);
 	selected = null;
 }
+
+var selection = {
 	
-function select(i) {
-	selected = i;
-}
+	select: function(i) {
+		objects.forEach(o => {o.selected = false});
+		objects[i].selected = true;
+	},
+	
+	toggle: function(i) {
+		objects[i].selected = ! objects[i].selected;
+	},
+	
+	get: function() {
+		return objects.filter(o => o.selected);
+	},
+	
+	all: function() {
+		objects.forEach(o => {o.selected = true});
+	}
+
+};
+	
 
 function clearSelection() {
 	console.log('clearSelection()');
 	selected = null;
-}
-	
-function selectNext() {
-	selected = (selected + 1) % objects.length;
-}
-
-function selectPrev() {
-	selected--;
-	if (selected < 0)
-		selected = objects.length - 1;
 }
 	
 function setPosition(x, y) {
@@ -74,14 +81,6 @@ function getObjects() {
 	return objects;
 }
 	
-function getSelectedObject() {
-	return objects[selected];
-}
-
-function getSelectedObjectIndex() {
-	return selected;
-}
-
 function getCanvasSize() {
 	return canvasSize;
 }
@@ -127,18 +126,17 @@ function moveDown() {
 module.exports = {
 	addObject: addObject,
 	removeObject: removeObject,
-	select: select,
-	clearSelection: clearSelection,
-	selectNext: selectNext,
-	selectPrev: selectPrev,
+	
 	setPosition: setPosition,
 	translate: translate,
 	resizeSide: resizeSide,
 	setWidth: setWidth,
 	setHeight: setHeight,
 	getObjects: getObjects,
-	getSelectedObject: getSelectedObject,
-	getSelectedObjectIndex: getSelectedObjectIndex,
+	
+	selection: selection,
+	clearSelection: clearSelection,
+	
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,
 	setCanvasHeight: setCanvasHeight

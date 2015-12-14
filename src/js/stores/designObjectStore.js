@@ -17,8 +17,18 @@ AppDispatcher.register(function(action) {
 		dos.removeObject();
 		designObjectStore.emitChange();
 		break;
-		case appConstants.SELECT_OBJECT:
-			dos.select(action.index);
+		
+		case appConstants.SELECTION_SELECT:
+			dos.selection.select(action.index);
+			designObjectStore.emitChange();
+			break;
+		case appConstants.SELECTION_TOGGLE:
+			dos.selection.toggle(action.index);
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.SELECTION_ALL:
+			dos.selection.all(action.index);
 			designObjectStore.emitChange();
 			break;
 		break;
@@ -27,14 +37,7 @@ AppDispatcher.register(function(action) {
 			designObjectStore.emitChange();
 			break;
 		break;
-		case appConstants.SELECT_NEXT:
-			dos.selectNext();
-			designObjectStore.emitChange();
-			break;
-		case appConstants.SELECT_PREV:
-			dos.selectPrev();
-			designObjectStore.emitChange();
-			break;
+		
 		case appConstants.SET_POSITION:
 			dos.setPosition(action.x, action.y);
 			designObjectStore.emitChange();
@@ -96,8 +99,7 @@ var designObjectStore = assign({}, EventEmitter.prototype, {
 	},
 	
 	getObjects: dos.getObjects.bind(dos),
-	getSelectedObject: dos.getSelectedObject.bind(dos),
-	getSelectedObjectIndex: dos.getSelectedObjectIndex.bind(dos),
+	getSelectionSet: dos.selection.get.bind(dos),
 	getCanvasSize: dos.getCanvasSize.bind(dos)
   
 });

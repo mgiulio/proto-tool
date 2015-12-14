@@ -63,28 +63,31 @@ var AppActions = {
 		});
 	},
 	
-	selectObject: function(i) {
-		AppDispatcher.dispatch({
-			actionType: appConstants.SELECT_OBJECT,
-			index: i
-		});
+	selection: {
+		select: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_SELECT,
+				index: i
+			});
+		},
+		toggle: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_TOGGLE,
+				index: i
+			});
+		},
+		all: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_ALL,
+				index: i
+			});
+		},
+
 	},
-	
+		
 	clearSelection: function() {
 		AppDispatcher.dispatch({
 			actionType: appConstants.CLEAR_SELECTION
-		});
-	},
-	
-	selectNext: function() {
-		AppDispatcher.dispatch({
-			actionType: appConstants.SELECT_NEXT
-		});
-	},
-	
-	selectPrev: function() {
-		AppDispatcher.dispatch({
-			actionType: appConstants.SELECT_PREV
 		});
 	},
 	
