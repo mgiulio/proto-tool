@@ -82,6 +82,13 @@ var AppActions = {
 				index: i
 			});
 		},
+		
+		invert: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_INVERT,
+				index: i
+			});
+		}
 
 	},
 		

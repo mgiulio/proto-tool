@@ -28,7 +28,12 @@ AppDispatcher.register(function(action) {
 			break;
 		break;
 		case appConstants.SELECTION_ALL:
-			dos.selection.all(action.index);
+			dos.selection.all();
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.SELECTION_INVERT:
+			dos.selection.invert();
 			designObjectStore.emitChange();
 			break;
 		break;

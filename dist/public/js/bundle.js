@@ -20590,6 +20590,13 @@ var AppActions = {
 				index: i
 			});
 		},
+		
+		invert: function(i) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_INVERT,
+				index: i
+			});
+		}
 
 	},
 		
@@ -21160,6 +21167,14 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 			case 65: // 'a'
 				if (e.ctrlKey) {
 					appActions.selection.all();
+					
+					e.stopPropagation();
+					e.preventDefault();
+				}
+				break;
+			case 73: // 'i'
+				if (e.ctrlKey) {
+					appActions.selection.invert();
 					
 					e.stopPropagation();
 					e.preventDefault();
@@ -21928,6 +21943,7 @@ module.exports = keyMirror({
 	SELECTION_SELECT: null,
 	SELECTION_TOGGLE: null,
 	SELECTION_ALL: null,
+	SELECTION_INVERT: null,
 	CLEAR_SELECTION: null,
 	
 	TRANSLATE: null,
@@ -21964,6 +21980,7 @@ module.exports = keyMirror({
 	SELECTION_SELECT: null,
 	SELECTION_TOGGLE: null,
 	SELECTION_ALL: null,
+	SELECTION_INVERT: null,
 	CLEAR_SELECTION: null,
 	
 	TRANSLATE: null,
@@ -22261,7 +22278,12 @@ var selection = {
 	
 	all: function() {
 		objects.forEach(function(o)  {o.selected = true});
-	}
+	},
+	
+	invert: function() {
+		objects.forEach(function(o)  {o.selected = ! o.selected});
+	},
+	
 
 };
 	
@@ -22446,7 +22468,12 @@ AppDispatcher.register(function(action) {
 			break;
 		break;
 		case appConstants.SELECTION_ALL:
-			dos.selection.all(action.index);
+			dos.selection.all();
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.SELECTION_INVERT:
+			dos.selection.invert();
 			designObjectStore.emitChange();
 			break;
 		break;

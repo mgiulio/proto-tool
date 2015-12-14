@@ -47,7 +47,12 @@ var selection = {
 	
 	all: function() {
 		objects.forEach(o => {o.selected = true});
-	}
+	},
+	
+	invert: function() {
+		objects.forEach(o => {o.selected = ! o.selected});
+	},
+	
 
 };
 	

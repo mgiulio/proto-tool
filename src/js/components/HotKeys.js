@@ -101,6 +101,14 @@ var Keyboard = React.createClass({
 					e.preventDefault();
 				}
 				break;
+			case 73: // 'i'
+				if (e.ctrlKey) {
+					appActions.selection.invert();
+					
+					e.stopPropagation();
+					e.preventDefault();
+				}
+				break;
 			default:
 		}
 	},
