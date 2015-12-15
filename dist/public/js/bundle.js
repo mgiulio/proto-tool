@@ -22310,7 +22310,7 @@ function setHeight(h) {
 }
 
 function translate(x, y) {
-	objects[selected].translate(x, y);
+	selection.get().forEach(function(o)  { o.translate(x, y); });
 }
 
 function resizeSide(side, amount) {
