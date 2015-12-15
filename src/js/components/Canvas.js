@@ -51,7 +51,7 @@ var Canvas = React.createClass({
 				className="canvas" 
 				width={this.state.canvasSize[0]} 
 				height={this.state.canvasSize[1]}
-				onClick={null/*this.onClick*/}
+				onClick={this.onClick}
 			>
 				{designObjectsRep}
 			</svg>
@@ -61,7 +61,7 @@ var Canvas = React.createClass({
 	onClick: function(e) {
 		e.stopPropagation();
 		
-		appActions.clearSelection();
+		appActions.selection.clear();
 	}
 
 });

@@ -88,14 +88,14 @@ var AppActions = {
 				actionType: appConstants.SELECTION_INVERT,
 				index: i
 			});
-		}
-
-	},
+		},
 		
-	clearSelection: function() {
-		AppDispatcher.dispatch({
-			actionType: appConstants.CLEAR_SELECTION
-		});
+		clear: function() {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_CLEAR
+			});
+		},
+
 	},
 	
 	translate: translate,

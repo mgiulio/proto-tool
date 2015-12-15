@@ -53,15 +53,12 @@ var selection = {
 		objects.forEach(o => {o.selected = ! o.selected});
 	},
 	
+	clear: function () {
+		objects.forEach(o => {o.selected = false});
+	}
 
 };
-	
-
-function clearSelection() {
-	console.log('clearSelection()');
-	selected = null;
-}
-	
+		
 function setPosition(x, y) {
 	objects[selected].setPosition(x, y);
 }
@@ -140,7 +137,6 @@ module.exports = {
 	getObjects: getObjects,
 	
 	selection: selection,
-	clearSelection: clearSelection,
 	
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,

@@ -109,6 +109,12 @@ var Keyboard = React.createClass({
 					e.preventDefault();
 				}
 				break;
+			case 27: // ESC
+				appActions.selection.clear();
+					
+				e.stopPropagation();
+				e.preventDefault();
+				break;
 			default:
 		}
 	},

@@ -20596,14 +20596,14 @@ var AppActions = {
 				actionType: appConstants.SELECTION_INVERT,
 				index: i
 			});
-		}
-
-	},
+		},
 		
-	clearSelection: function() {
-		AppDispatcher.dispatch({
-			actionType: appConstants.CLEAR_SELECTION
-		});
+		clear: function() {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_CLEAR
+			});
+		},
+
 	},
 	
 	translate: translate,
@@ -21005,7 +21005,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 				className: "canvas", 
 				width: this.state.canvasSize[0], 
 				height: this.state.canvasSize[1], 
-				onClick: null/*this.onClick*/
+				onClick: this.onClick
 			}, 
 				designObjectsRep
 			)
@@ -21015,7 +21015,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 	onClick: function(e) {
 		e.stopPropagation();
 		
-		appActions.clearSelection();
+		appActions.selection.clear();
 	}
 
 });
@@ -21179,6 +21179,12 @@ var Keyboard = React.createClass({displayName: "Keyboard",
 					e.stopPropagation();
 					e.preventDefault();
 				}
+				break;
+			case 27: // ESC
+				appActions.selection.clear();
+					
+				e.stopPropagation();
+				e.preventDefault();
 				break;
 			default:
 		}
@@ -21944,7 +21950,7 @@ module.exports = keyMirror({
 	SELECTION_TOGGLE: null,
 	SELECTION_ALL: null,
 	SELECTION_INVERT: null,
-	CLEAR_SELECTION: null,
+	SELECTION_CLEAR: null,
 	
 	TRANSLATE: null,
 	SET_POSITION: null,
@@ -21981,7 +21987,7 @@ module.exports = keyMirror({
 	SELECTION_TOGGLE: null,
 	SELECTION_ALL: null,
 	SELECTION_INVERT: null,
-	CLEAR_SELECTION: null,
+	SELECTION_CLEAR: null,
 	
 	TRANSLATE: null,
 	SET_POSITION: null,
@@ -22284,15 +22290,12 @@ var selection = {
 		objects.forEach(function(o)  {o.selected = ! o.selected});
 	},
 	
+	clear: function () {
+		objects.forEach(function(o)  {o.selected = false});
+	}
 
 };
-	
-
-function clearSelection() {
-	console.log('clearSelection()');
-	selected = null;
-}
-	
+		
 function setPosition(x, y) {
 	objects[selected].setPosition(x, y);
 }
@@ -22371,7 +22374,6 @@ module.exports = {
 	getObjects: getObjects,
 	
 	selection: selection,
-	clearSelection: clearSelection,
 	
 	getCanvasSize: getCanvasSize,
 	setCanvasWidth: setCanvasWidth,
@@ -22477,8 +22479,8 @@ AppDispatcher.register(function(action) {
 			designObjectStore.emitChange();
 			break;
 		break;
-		case appConstants.CLEAR_SELECTION:
-			dos.clearSelection();
+		case appConstants.SELECTION_CLEAR:
+			dos.selection.clear();
 			designObjectStore.emitChange();
 			break;
 		break;

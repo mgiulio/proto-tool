@@ -37,8 +37,8 @@ AppDispatcher.register(function(action) {
 			designObjectStore.emitChange();
 			break;
 		break;
-		case appConstants.CLEAR_SELECTION:
-			dos.clearSelection();
+		case appConstants.SELECTION_CLEAR:
+			dos.selection.clear();
 			designObjectStore.emitChange();
 			break;
 		break;
