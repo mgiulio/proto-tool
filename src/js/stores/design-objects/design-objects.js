@@ -61,15 +61,15 @@ var selection = {
 };
 		
 function setPosition(x, y) {
-	objects[selected].setPosition(x, y);
+	selection.get().forEach(o => { o.setPosition(x, y); });
 }
 
 function setWidth(w) {
-	objects[selected].setWidth(w);
+	selection.get().forEach(o => { o.setWidth(w); });
 }
 
 function setHeight(h) {
-	objects[selected].setHeight(h);
+	selection.get().forEach(o => { o.setHeight(h); });
 }
 
 function translate(x, y) {
@@ -77,30 +77,14 @@ function translate(x, y) {
 }
 
 function resizeSide(side, amount) {
-	objects[selected].resizeSide(side, amount);
-}
-
-function getObjects() {
-	return objects;
-}
-	
-function getCanvasSize() {
-	return canvasSize;
-}
-
-function setCanvasWidth(w) {
-	canvasSize[0] = w;
-	
-	baseObject.canvasSize[0] = w;
-}
-
-function setCanvasHeight(h) {
-	canvasSize[1] = h;
-	
-	baseObject.canvasSize[1] = h;
+	selection.get().forEach(o => { o.resizeSide(side, amount); });
 }
 
 function moveUp() {
+	var s = selection.get();
+	if (s.length !== 1)
+		return;
+	
 	var newPos = selected + 1;
 	
 	if (newPos === objects.length)
@@ -124,6 +108,26 @@ function moveDown() {
 	objects[selected] = tmp;
 	
 	selected = newPos;
+}
+
+function getObjects() {
+	return objects;
+}
+	
+function getCanvasSize() {
+	return canvasSize;
+}
+
+function setCanvasWidth(w) {
+	canvasSize[0] = w;
+	
+	baseObject.canvasSize[0] = w;
+}
+
+function setCanvasHeight(h) {
+	canvasSize[1] = h;
+	
+	baseObject.canvasSize[1] = h;
 }
 
 module.exports = {
