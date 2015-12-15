@@ -23,11 +23,12 @@ function addObject(type, x, y, w, h, rest) {
 }
 
 function removeObject() {
-	if (selected === null)
-		return;
-	
-	objects.splice(selected, 1);
-	selected = null;
+	var i = 0;
+	while (i < objects.length)
+		if (objects[i].selected)
+			objects.splice(i, 1);
+		else
+			i++;
 }
 
 var selection = {
