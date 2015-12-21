@@ -15,22 +15,35 @@ var SVGRectangle = React.createClass({
 				id={this.props.id} 
 				className={classes.join(' ')}
 				x={this.props.x} y={this.props.y} width={this.props.width} height={this.props.height} 
+				onMouseDown={this.onMouseDown}
 				onClick={this.onClick} 
-				onMouseDown={null/*this.onMouseDown*/}
 			/>
 		);
 	},
 	
+	componentDidMount: function() {
+		this.dragged = false;
+	},
+	
 	onClick: function(e) {
+		console.log('rect click');
 		e.stopPropagation();
 		
-		if (e.shiftKey)
+		if (this.dragged) {
+			return;
+		}
+		
+		if (e.shiftKey) {
+			console.log('toggle');
 			AppActions.selection.toggle(this.props.id);
+		}
 		else
 			AppActions.selection.select(this.props.id);
 	},
 	
 	onMouseDown: function(e) {
+		this.dragged = false;
+		
 		e.stopPropagation();
 		
 		this.mouseX = e.clientX;
@@ -43,6 +56,9 @@ var SVGRectangle = React.createClass({
 	},
 	
 	onMouseMove: function(e) {
+		console.log('rect: mousemove');
+		this.dragged = true;
+		
 		e.stopPropagation();
 		
 		var dx = e.clientX - this.mouseX;

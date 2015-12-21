@@ -23,7 +23,7 @@ var SelectionBox = React.createClass({
 			<g className="selection-box" transform={`translate(${x}, ${y})`} >
 				<rect 
 					x="0" y="0" width={w} height={h} 
-					onMouseDown={this.onMouseDown}
+					onMouseDown={null/*this.onMouseDown*/}
 				/>
 				{handles}
 			</g>

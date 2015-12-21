@@ -20963,9 +20963,14 @@ var
 var Canvas = React.createClass({displayName: "Canvas",
 	
 	getState: function() {
+		var 
+			selectionSet = doStore.getSelectionSet(),
+			selectionAABB = selectionSet.length > 0 ? this.selectionAABB(selectionSet) : null
+		;
+		
 		return {
 			designObjects: doStore.getObjects(),
-			selectionSet: doStore.getSelectionSet(),
+			selectionAABB: selectionAABB,
 			canvasSize: doStore.getCanvasSize()
 		};
 	},
@@ -20987,17 +20992,15 @@ var Canvas = React.createClass({displayName: "Canvas",
 	},
 	
 	render: function() {
+		console.log(this.state);
 		var designObjectsRep = this.state.designObjects.map(svgRenderer);
 		
-		var selectionBox;
-		if (this.state.selectionSet.length > 0) {
-			/*
+		if (this.state.selectionAABB !== null) {
 			var 
-				aabb = this.state.selectedObject.getAABB(),
-				selBoxIndex = this.state.selectedObjectIndex + 1
+				b = this.state.selectionAABB,
+				selectionBox = React.createElement(SelectionBox, {x: b.x, y: b.y, w: b.w, h: b.h, key: "selbox"})
 			;
-			designObjectsRep.splice(selBoxIndex, 0, <SelectionBox x={aabb.x} y={aabb.y} w={aabb.w} h={aabb.h} key='selbox' />);
-			*/
+			designObjectsRep.push(selectionBox);
 		}
 		
 		return (
@@ -21005,6 +21008,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 				className: "canvas", 
 				width: this.state.canvasSize[0], 
 				height: this.state.canvasSize[1], 
+				onMouseDown: null, /*this.onMouseDown*/
 				onClick: this.onClick
 			}, 
 				designObjectsRep
@@ -21012,10 +21016,93 @@ var Canvas = React.createClass({displayName: "Canvas",
 		);
 	},
 	
+	onMouseDown: function(e) {
+		e.stopPropagation();
+		
+		// Is user dragging the selection box?
+		if (this.state.selectionAABB !== null) {
+			var xy = this.getMousePosInCanvasSpace(e);
+			if (this.isPointInSelectionBox(xy)) {
+				console.log(xy);
+				
+				this.mouseX = e.clientX;
+				this.mouseY = e.clientY;
+				
+				document.addEventListener('mousemove', this.onMouseMove, false);
+				document.addEventListener('mouseup', this.onMouseUp, false);
+			}
+		}
+	},
+	
+	onMouseMove: function(e) {
+		e.stopPropagation();
+		
+		var dx = e.clientX - this.mouseX;
+		var dy = e.clientY - this.mouseY;
+		this.mouseX = e.clientX;
+		this.mouseY = e.clientY;
+		
+		appActions.translate(dx, dy);
+	},
+	
+	onMouseUp: function(e) {
+		e.stopPropagation();
+		
+		document.removeEventListener('mousemove', this.onMouseMove, false);
+		document.removeEventListener('mouseup', this.onMouseUp, false);
+	},
+	
 	onClick: function(e) {
+		console.log('onClick');
 		e.stopPropagation();
 		
 		appActions.selection.clear();
+	},
+	
+	selectionAABB: function(sel) {
+		var 
+			xmin = this.state.canvasSize[0], xmax = -1,
+			ymin = this.state.canvasSize[1], ymax = -1
+		;
+		
+		sel.forEach(function(o)  {
+			var 
+				aabb = o.getAABB(),
+				x1 = aabb.x,
+				y1 = aabb.y,
+				x2 = x1 + aabb.w - 1,
+				y2 = y1 + aabb.h - 1
+			;
+			
+			if (x1 < xmin)
+				xmin = x1;
+			
+			if (x2 > xmax)
+				xmax = x2;
+			
+			if (y1 < ymin)
+				ymin = y1;
+			
+			if (y2 > ymax)
+				ymax = y2;
+		});
+		
+		return {
+			x: xmin,
+			y: ymin,
+			w: xmax - xmin + 1,
+			h: ymax - ymin + 1
+		};
+	},
+	
+	getMousePosInCanvasSpace: function(e) {
+		return [e.clientX, e.clientY - 40];
+	},
+	
+	isPointInSelectionBox: function(xy) {
+		var b = this.state.selectionAABB;
+		
+		return b.x <= xy[0] && xy[0] < b.x + b.w && b.y <= xy[1] && xy[1] < b.y + b.h;
 	}
 
 });
@@ -21623,22 +21710,35 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 				id: this.props.id, 
 				className: classes.join(' '), 
 				x: this.props.x, y: this.props.y, width: this.props.width, height: this.props.height, 
-				onClick: this.onClick, 
-				onMouseDown: null/*this.onMouseDown*/}
+				onMouseDown: this.onMouseDown, 
+				onClick: this.onClick}
 			)
 		);
 	},
 	
+	componentDidMount: function() {
+		this.dragged = false;
+	},
+	
 	onClick: function(e) {
+		console.log('rect click');
 		e.stopPropagation();
 		
-		if (e.shiftKey)
+		if (this.dragged) {
+			return;
+		}
+		
+		if (e.shiftKey) {
+			console.log('toggle');
 			AppActions.selection.toggle(this.props.id);
+		}
 		else
 			AppActions.selection.select(this.props.id);
 	},
 	
 	onMouseDown: function(e) {
+		this.dragged = false;
+		
 		e.stopPropagation();
 		
 		this.mouseX = e.clientX;
@@ -21651,6 +21751,9 @@ var SVGRectangle = React.createClass({displayName: "SVGRectangle",
 	},
 	
 	onMouseMove: function(e) {
+		console.log('rect: mousemove');
+		this.dragged = true;
+		
 		e.stopPropagation();
 		
 		var dx = e.clientX - this.mouseX;
@@ -21725,7 +21828,7 @@ var SelectionBox = React.createClass({displayName: "SelectionBox",
 			React.createElement("g", {className: "selection-box", transform: ("translate(" + x + ", " + y + ")")}, 
 				React.createElement("rect", {
 					x: "0", y: "0", width: w, height: h, 
-					onMouseDown: this.onMouseDown}
+					onMouseDown: null/*this.onMouseDown*/}
 				), 
 				handles
 			)
@@ -22271,11 +22374,13 @@ function removeObject() {
 var selection = {
 	
 	select: function(i) {
+		console.log('selection.select()');
 		objects.forEach(function(o)  {o.selected = false});
 		objects[i].selected = true;
 	},
 	
 	toggle: function(i) {
+		console.log('toggle: ', i)
 		objects[i].selected = ! objects[i].selected;
 	},
 	
