@@ -31,10 +31,15 @@ var Canvas = React.createClass({
 		this.root = this.getDOMNode();
 		this.root.addEventListener('click', this.onClick, false);
 		this.root.addEventListener('mousedown', this.onMouseDown, false);
+		
+		this.dragged = false;
 	},
 	
 	componentWillUnmount: function() {
 		doStore.removeChangeListener(this._onChange);
+		
+		this.root.removeEventListener('click', this.onClick, false);
+		this.root.removeEventListener('mousedown', this.onMouseDown, false);
 	},
 	
 	_onChange: function() {
@@ -68,20 +73,17 @@ var Canvas = React.createClass({
 		
 		this.dragged = false;
 		
-		if (e.shiftKey)
+		if (e.shiftKey) // This is not the beginning of a drag
 			return;
 	
 		var target = this.findTarget(e.target);
 		
 		if (target.classList.contains('object')) {
-			console.log('start drag');
-		
-
-			this.mouseX = e.clientX;
-			this.mouseY = e.clientY;
-				
 			this.root.addEventListener('mousemove', this.onMouseMove, false);
 			this.root.addEventListener('mouseup', this.onMouseUp, false);
+			
+			this.mouseX = e.clientX;
+			this.mouseY = e.clientY;
 			
 			if (!target.classList.contains('selected'))
 				appActions.selection.select(target.id);
@@ -89,9 +91,9 @@ var Canvas = React.createClass({
 	},
 	
 	onMouseMove: function(e) {
-		this.dragged = true;
-		
 		e.stopPropagation();
+		
+		this.dragged = true;
 		
 		var dx = e.clientX - this.mouseX;
 		var dy = e.clientY - this.mouseY;
@@ -108,19 +110,11 @@ var Canvas = React.createClass({
 		this.root.removeEventListener('mouseup', this.onMouseUp, false);
 	},
 	
-	findTarget: function(n) {
-		while (!n.classList.contains('object') && !n.classList.contains('canvas'))
-			n = n.parentElement;
-		return  n;
-	},
-	
 	onClick: function(e) {
+		e.stopPropagation();
+		
 		if (this.dragged)
 			return;
-		
-		console.log('onClick');
-		
-		e.stopPropagation();
 		
 		var target = this.findTarget(e.target);
 		
@@ -131,6 +125,12 @@ var Canvas = React.createClass({
 				appActions.selection.toggle(target.id);
 			else
 				appActions.selection.select(target.id);
+	},
+	
+	findTarget: function(n) {
+		while (!n.classList.contains('object') && !n.classList.contains('canvas'))
+			n = n.parentElement;
+		return  n;
 	},
 	
 	selectionAABB: function(sel) {
@@ -167,16 +167,6 @@ var Canvas = React.createClass({
 			w: xmax - xmin + 1,
 			h: ymax - ymin + 1
 		};
-	},
-	
-	getMousePosInCanvasSpace: function(e) {
-		return [e.clientX, e.clientY - 40];
-	},
-	
-	isPointInSelectionBox: function(xy) {
-		var b = this.state.selectionAABB;
-		
-		return b.x <= xy[0] && xy[0] < b.x + b.w && b.y <= xy[1] && xy[1] < b.y + b.h;
 	}
 
 });

@@ -23,7 +23,6 @@ var SelectionBox = React.createClass({
 			<g className="selection-box" transform={`translate(${x}, ${y})`} >
 				<rect 
 					x="0" y="0" width={w} height={h} 
-					onMouseDown={null/*this.onMouseDown*/}
 				/>
 				{handles}
 			</g>
@@ -46,34 +45,6 @@ var SelectionBox = React.createClass({
 				break;
 			default:
 		}
-	},
-	
-	onMouseDown: function(e) {
-		e.stopPropagation();
-		
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		document.addEventListener('mousemove', this.onMouseMove, false);
-		document.addEventListener('mouseup', this.onMouseUp, false);
-	},
-	
-	onMouseMove: function(e) {
-		e.stopPropagation();
-		
-		var dx = e.clientX - this.mouseX;
-		var dy = e.clientY - this.mouseY;
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		appActions.translate(dx, dy);
-	},
-	
-	onMouseUp: function(e) {
-		e.stopPropagation();
-		
-		document.removeEventListener('mousemove', this.onMouseMove, false);
-		document.removeEventListener('mouseup', this.onMouseUp, false);
 	}
 
 });
