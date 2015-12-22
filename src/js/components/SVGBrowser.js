@@ -30,7 +30,6 @@ var SVGBrowser = React.createClass({
 				id={this.props.id} 
 				className={classes.join(' ')}
 				transform={`translate(${x}, ${y})`} 
-				onClick={this.onClick}
 			>
 				<rect x={0} y={0} width={width} height={height} />
 				<rect x={0} y={0} width={width} height={headerH} />
@@ -70,17 +69,8 @@ var SVGBrowser = React.createClass({
 				{/* <rect x="0" y={height - statusBarHeight} width={width} height={statusBarHeight} /> */}
 			</g>
 		);
-	},
-	
-	onClick: function(e) {
-		e.stopPropagation();
-		
-		if (e.shiftKey)
-			AppActions.selection.toggle(this.props.id);
-		else
-			AppActions.selection.select(this.props.id);
 	}
-
+	
 });
 
 module.exports = SVGBrowser;

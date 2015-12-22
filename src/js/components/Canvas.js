@@ -27,6 +27,10 @@ var Canvas = React.createClass({
 	
 	componentDidMount: function() {
 		doStore.addChangeListener(this._onChange);
+		
+		this.root = this.getDOMNode();
+		this.root.addEventListener('click', this.onClick, false);
+		this.root.addEventListener('mousedown', this.onMouseDown, false);
 	},
 	
 	componentWillUnmount: function() {
@@ -38,7 +42,6 @@ var Canvas = React.createClass({
 	},
 	
 	render: function() {
-		console.log(this.state);
 		var designObjectsRep = this.state.designObjects.map(svgRenderer);
 		
 		if (this.state.selectionAABB !== null) {
@@ -54,8 +57,6 @@ var Canvas = React.createClass({
 				className="canvas" 
 				width={this.state.canvasSize[0]} 
 				height={this.state.canvasSize[1]}
-				onMouseDown={null/*this.onMouseDown*/}
-				onClick={this.onClick}
 			>
 				{designObjectsRep}
 			</svg>
@@ -65,22 +66,31 @@ var Canvas = React.createClass({
 	onMouseDown: function(e) {
 		e.stopPropagation();
 		
-		// Is user dragging the selection box?
-		if (this.state.selectionAABB !== null) {
-			var xy = this.getMousePosInCanvasSpace(e);
-			if (this.isPointInSelectionBox(xy)) {
-				console.log(xy);
+		this.dragged = false;
+		
+		if (e.shiftKey)
+			return;
+	
+		var target = this.findTarget(e.target);
+		
+		if (target.classList.contains('object')) {
+			console.log('start drag');
+		
+
+			this.mouseX = e.clientX;
+			this.mouseY = e.clientY;
 				
-				this.mouseX = e.clientX;
-				this.mouseY = e.clientY;
-				
-				document.addEventListener('mousemove', this.onMouseMove, false);
-				document.addEventListener('mouseup', this.onMouseUp, false);
-			}
+			this.root.addEventListener('mousemove', this.onMouseMove, false);
+			this.root.addEventListener('mouseup', this.onMouseUp, false);
+			
+			if (!target.classList.contains('selected'))
+				appActions.selection.select(target.id);
 		}
 	},
 	
 	onMouseMove: function(e) {
+		this.dragged = true;
+		
 		e.stopPropagation();
 		
 		var dx = e.clientX - this.mouseX;
@@ -94,15 +104,33 @@ var Canvas = React.createClass({
 	onMouseUp: function(e) {
 		e.stopPropagation();
 		
-		document.removeEventListener('mousemove', this.onMouseMove, false);
-		document.removeEventListener('mouseup', this.onMouseUp, false);
+		this.root.removeEventListener('mousemove', this.onMouseMove, false);
+		this.root.removeEventListener('mouseup', this.onMouseUp, false);
+	},
+	
+	findTarget: function(n) {
+		while (!n.classList.contains('object') && !n.classList.contains('canvas'))
+			n = n.parentElement;
+		return  n;
 	},
 	
 	onClick: function(e) {
+		if (this.dragged)
+			return;
+		
 		console.log('onClick');
+		
 		e.stopPropagation();
 		
-		appActions.selection.clear();
+		var target = this.findTarget(e.target);
+		
+		if (target === this.root) // clicked on canvas(bg)
+			appActions.selection.clear();
+		else //clicked on an object
+			if (e.shiftKey)
+				appActions.selection.toggle(target.id);
+			else
+				appActions.selection.select(target.id);
 	},
 	
 	selectionAABB: function(sel) {

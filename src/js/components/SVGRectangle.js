@@ -15,8 +15,8 @@ var SVGRectangle = React.createClass({
 				id={this.props.id} 
 				className={classes.join(' ')}
 				x={this.props.x} y={this.props.y} width={this.props.width} height={this.props.height} 
-				onMouseDown={this.onMouseDown}
-				onClick={this.onClick} 
+				onMouseDown={null/*this.onMouseDown*/}
+				onClick={null/*this.onClick*/} 
 			/>
 		);
 	},

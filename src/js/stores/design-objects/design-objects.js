@@ -34,13 +34,11 @@ function removeObject() {
 var selection = {
 	
 	select: function(i) {
-		console.log('selection.select()');
 		objects.forEach(o => {o.selected = false});
 		objects[i].selected = true;
 	},
 	
 	toggle: function(i) {
-		console.log('toggle: ', i)
 		objects[i].selected = ! objects[i].selected;
 	},
 	
