@@ -81,8 +81,6 @@ var selection = {
 			rymax = start[1];
 		}
 		
-		console.log(add);
-			
 		objects.forEach(o => {
 			var 
 				b = o.getAABB(),

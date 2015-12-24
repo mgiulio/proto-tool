@@ -34,6 +34,8 @@ var Canvas = React.createClass({
 		this.root.addEventListener('mousedown', this.onMouseDown, false);
 		
 		this.dragged = false;
+		
+		this.cvp = document.querySelector('.canvas-viewport');
 	},
 	
 	componentWillUnmount: function() {
@@ -106,17 +108,11 @@ var Canvas = React.createClass({
 			this.root.addEventListener('mousemove', this.onMouseMoveSelRect, false);
 			this.root.addEventListener('mouseup', this.onMouseUpSelRect, false);
 			
-			var 
-				x = e.clientX,
-				y = e.clientY
-			;
-			//transform it in canvas space
-			y -= 40;
-			
 			if (e.shiftKey)
 				this.addToSelection = true;
-	
-			this.setState({selRect: {startVertex: [x,y], endVertex: [x,y]}});
+			
+			var xy = this.clientSpaceToCanvasSpace(e.clientX, e.clientY);
+			this.setState({selRect: {startVertex: xy, endVertex: xy}});
 		}
 	},
 	
@@ -145,14 +141,8 @@ var Canvas = React.createClass({
 		
 		this.dragged = true;
 		
-		var 
-			x = e.clientX,
-			y = e.clientY
-		;
-		//transform it in canvas space
-		y -= 40;
-		
-		this.setState({selRect: {startVertex: this.state.selRect.startVertex, endVertex: [x,y]}});
+		var xy = this.clientSpaceToCanvasSpace(e.clientX, e.clientY);
+		this.setState({selRect: {startVertex: this.state.selRect.startVertex, endVertex: xy}});
 	},
 	
 	onMouseUpSelRect: function(e) {
@@ -227,6 +217,14 @@ var Canvas = React.createClass({
 			w: xmax - xmin + 1,
 			h: ymax - ymin + 1
 		};
+	},
+	
+	clientSpaceToCanvasSpace: function(x, y) {
+		var cvpcr = this.cvp.getBoundingClientRect();
+		return [
+			x - cvpcr.left + this.cvp.scrollLeft,
+			y - cvpcr.top  + this.cvp.scrollTop
+		];
 	}
 
 });
