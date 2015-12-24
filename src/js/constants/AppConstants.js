@@ -9,6 +9,7 @@ module.exports = keyMirror({
 	SELECTION_ALL: null,
 	SELECTION_INVERT: null,
 	SELECTION_CLEAR: null,
+	SELECTION_IN_RECT: null,
 	
 	TRANSLATE: null,
 	SET_POSITION: null,

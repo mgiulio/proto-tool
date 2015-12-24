@@ -17,7 +17,8 @@ var Canvas = React.createClass({
 		return {
 			designObjects: doStore.getObjects(),
 			selectionAABB: selectionAABB,
-			canvasSize: doStore.getCanvasSize()
+			canvasSize: doStore.getCanvasSize(),
+			selRect: null
 		};
 	},
 	
@@ -57,6 +58,19 @@ var Canvas = React.createClass({
 			designObjectsRep.push(selectionBox);
 		}
 		
+		var selRect;
+		if (this.state.selRect !== null/*'selRect' in this.state*/) {
+			var
+				s = this.state.selRect.startVertex,
+				e = this.state.selRect.endVertex,
+				x = s[0] <= e[0] ? s[0] : e[0],
+				y = s[1] <= e[1] ? s[1] : e[1],
+				w = Math.abs(e[0] - s[0]),
+				h = Math.abs(e[1] - s[1])
+			;
+			selRect = <rect className="selrect" x={x} y={y} width={w} height={h} />
+		}
+		
 		return (
 			<svg 
 				className="canvas" 
@@ -64,6 +78,7 @@ var Canvas = React.createClass({
 				height={this.state.canvasSize[1]}
 			>
 				{designObjectsRep}
+				{selRect}
 			</svg>
 		);
 	},
@@ -88,6 +103,19 @@ var Canvas = React.createClass({
 			if (!target.classList.contains('selected'))
 				appActions.selection.select(target.id);
 		}
+		else { // Dragging on canvas
+			this.root.addEventListener('mousemove', this.onMouseMoveSelRect, false);
+			this.root.addEventListener('mouseup', this.onMouseUpSelRect, false);
+			
+			var 
+				x = e.clientX,
+				y = e.clientY
+			;
+			//transform it in canvas space
+			y -= 40;
+			
+			this.setState({selRect: {startVertex: [x,y], endVertex: [x,y]}});
+		}
 	},
 	
 	onMouseMove: function(e) {
@@ -109,6 +137,35 @@ var Canvas = React.createClass({
 		this.root.removeEventListener('mousemove', this.onMouseMove, false);
 		this.root.removeEventListener('mouseup', this.onMouseUp, false);
 	},
+	
+	onMouseMoveSelRect: function(e) {
+		e.stopPropagation();
+		
+		this.dragged = true;
+		
+		var 
+			x = e.clientX,
+			y = e.clientY
+		;
+		//transform it in canvas space
+		y -= 40;
+		
+		this.setState({selRect: {startVertex: this.state.selRect.startVertex, endVertex: [x,y]}});
+	},
+	
+	onMouseUpSelRect: function(e) {
+		e.stopPropagation();
+		
+		this.root.removeEventListener('mousemove', this.onMouseMoveSelRect, false);
+		this.root.removeEventListener('mouseup', this.onMouseUpSelRect, false);
+		
+		if (this.dragged) {
+			var selRect = this.state.selRect;
+			this.setState({selRect: null});
+			appActions.selection.inRect(selRect.startVertex, selRect.endVertex);
+		}
+	},
+	
 	
 	onClick: function(e) {
 		e.stopPropagation();

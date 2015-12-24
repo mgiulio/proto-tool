@@ -95,6 +95,14 @@ var AppActions = {
 				actionType: appConstants.SELECTION_CLEAR
 			});
 		},
+		
+		inRect: function(p0, p1) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_IN_RECT,
+				start: p0,
+				end: p1
+			});
+		}
 
 	},
 	

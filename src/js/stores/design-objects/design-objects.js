@@ -56,9 +56,44 @@ var selection = {
 	
 	clear: function () {
 		objects.forEach(o => {o.selected = false});
+	},
+	inRect: function(start, end) {
+		var
+			rxmin,
+			rxmax,
+			rymin,
+			rymax
+		;
+		if (start[0] < end[0]) {
+			rxmin = start[0];
+			rxmax = end[0];
+		}
+		else {
+			rxmin = end[0];
+			rxmax = start[0];
+		}
+		if (start[1] < end[1]) {
+			rymin = start[1];
+			rymax = end[1];
+		}
+		else {
+			rymin = end[1];
+			rymax = start[1];
+		}
+			
+		objects.forEach(o => {
+			var 
+				b = o.getAABB(),
+				xmin = b.x,
+				xmax = b.x + b.w,
+				ymin = b.y,
+				ymax = b.y + b.h
+			;
+			o.selected = xmin >= rxmin && xmax <= rxmax && ymin >= rymin && ymax <= rymax ? true : false;
+		});
 	}
 
-};
+};2
 		
 function setPosition(x, y) {
 	selection.get().forEach(o => { o.setPosition(x, y); });

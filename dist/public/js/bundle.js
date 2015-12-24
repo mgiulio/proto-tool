@@ -20603,6 +20603,14 @@ var AppActions = {
 				actionType: appConstants.SELECTION_CLEAR
 			});
 		},
+		
+		inRect: function(p0, p1) {
+			AppDispatcher.dispatch({
+				actionType: appConstants.SELECTION_IN_RECT,
+				start: p0,
+				end: p1
+			});
+		}
 
 	},
 	
@@ -20971,7 +20979,8 @@ var Canvas = React.createClass({displayName: "Canvas",
 		return {
 			designObjects: doStore.getObjects(),
 			selectionAABB: selectionAABB,
-			canvasSize: doStore.getCanvasSize()
+			canvasSize: doStore.getCanvasSize(),
+			selRect: null
 		};
 	},
 	
@@ -21011,13 +21020,27 @@ var Canvas = React.createClass({displayName: "Canvas",
 			designObjectsRep.push(selectionBox);
 		}
 		
+		var selRect;
+		if (this.state.selRect !== null/*'selRect' in this.state*/) {
+			var
+				s = this.state.selRect.startVertex,
+				e = this.state.selRect.endVertex,
+				x = s[0] <= e[0] ? s[0] : e[0],
+				y = s[1] <= e[1] ? s[1] : e[1],
+				w = Math.abs(e[0] - s[0]),
+				h = Math.abs(e[1] - s[1])
+			;
+			selRect = React.createElement("rect", {className: "selrect", x: x, y: y, width: w, height: h})
+		}
+		
 		return (
 			React.createElement("svg", {
 				className: "canvas", 
 				width: this.state.canvasSize[0], 
 				height: this.state.canvasSize[1]
 			}, 
-				designObjectsRep
+				designObjectsRep, 
+				selRect
 			)
 		);
 	},
@@ -21042,6 +21065,19 @@ var Canvas = React.createClass({displayName: "Canvas",
 			if (!target.classList.contains('selected'))
 				appActions.selection.select(target.id);
 		}
+		else { // Dragging on canvas
+			this.root.addEventListener('mousemove', this.onMouseMoveSelRect, false);
+			this.root.addEventListener('mouseup', this.onMouseUpSelRect, false);
+			
+			var 
+				x = e.clientX,
+				y = e.clientY
+			;
+			//transform it in canvas space
+			y -= 40;
+			
+			this.setState({selRect: {startVertex: [x,y], endVertex: [x,y]}});
+		}
 	},
 	
 	onMouseMove: function(e) {
@@ -21063,6 +21099,35 @@ var Canvas = React.createClass({displayName: "Canvas",
 		this.root.removeEventListener('mousemove', this.onMouseMove, false);
 		this.root.removeEventListener('mouseup', this.onMouseUp, false);
 	},
+	
+	onMouseMoveSelRect: function(e) {
+		e.stopPropagation();
+		
+		this.dragged = true;
+		
+		var 
+			x = e.clientX,
+			y = e.clientY
+		;
+		//transform it in canvas space
+		y -= 40;
+		
+		this.setState({selRect: {startVertex: this.state.selRect.startVertex, endVertex: [x,y]}});
+	},
+	
+	onMouseUpSelRect: function(e) {
+		e.stopPropagation();
+		
+		this.root.removeEventListener('mousemove', this.onMouseMoveSelRect, false);
+		this.root.removeEventListener('mouseup', this.onMouseUpSelRect, false);
+		
+		if (this.dragged) {
+			var selRect = this.state.selRect;
+			this.setState({selRect: null});
+			appActions.selection.inRect(selRect.startVertex, selRect.endVertex);
+		}
+	},
+	
 	
 	onClick: function(e) {
 		e.stopPropagation();
@@ -21966,6 +22031,7 @@ module.exports = keyMirror({
 	SELECTION_ALL: null,
 	SELECTION_INVERT: null,
 	SELECTION_CLEAR: null,
+	SELECTION_IN_RECT: null,
 	
 	TRANSLATE: null,
 	SET_POSITION: null,
@@ -22003,6 +22069,7 @@ module.exports = keyMirror({
 	SELECTION_ALL: null,
 	SELECTION_INVERT: null,
 	SELECTION_CLEAR: null,
+	SELECTION_IN_RECT: null,
 	
 	TRANSLATE: null,
 	SET_POSITION: null,
@@ -22308,9 +22375,44 @@ var selection = {
 	
 	clear: function () {
 		objects.forEach(function(o)  {o.selected = false});
+	},
+	inRect: function(start, end) {
+		var
+			rxmin,
+			rxmax,
+			rymin,
+			rymax
+		;
+		if (start[0] < end[0]) {
+			rxmin = start[0];
+			rxmax = end[0];
+		}
+		else {
+			rxmin = end[0];
+			rxmax = start[0];
+		}
+		if (start[1] < end[1]) {
+			rymin = start[1];
+			rymax = end[1];
+		}
+		else {
+			rymin = end[1];
+			rymax = start[1];
+		}
+			
+		objects.forEach(function(o)  {
+			var 
+				b = o.getAABB(),
+				xmin = b.x,
+				xmax = b.x + b.w,
+				ymin = b.y,
+				ymax = b.y + b.h
+			;
+			o.selected = xmin >= rxmin && xmax <= rxmax && ymin >= rymin && ymax <= rymax ? true : false;
+		});
 	}
 
-};
+};2
 		
 function setPosition(x, y) {
 	selection.get().forEach(function(o)  { o.setPosition(x, y); });
@@ -22501,6 +22603,11 @@ AppDispatcher.register(function(action) {
 		break;
 		case appConstants.SELECTION_CLEAR:
 			dos.selection.clear();
+			designObjectStore.emitChange();
+			break;
+		break;
+		case appConstants.SELECTION_IN_RECT:
+			dos.selection.inRect(action.start, action.end);
 			designObjectStore.emitChange();
 			break;
 		break;
