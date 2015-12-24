@@ -96,11 +96,12 @@ var AppActions = {
 			});
 		},
 		
-		inRect: function(p0, p1) {
+		inRect: function(p0, p1, add) {
 			AppDispatcher.dispatch({
 				actionType: appConstants.SELECTION_IN_RECT,
 				start: p0,
-				end: p1
+				end: p1,
+				add: add
 			});
 		}
 

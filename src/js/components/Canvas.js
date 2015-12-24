@@ -88,20 +88,19 @@ var Canvas = React.createClass({
 		
 		this.dragged = false;
 		
-		if (e.shiftKey) // This is not the beginning of a drag
-			return;
-	
 		var target = this.findTarget(e.target);
 		
 		if (target.classList.contains('object')) {
-			this.root.addEventListener('mousemove', this.onMouseMove, false);
-			this.root.addEventListener('mouseup', this.onMouseUp, false);
-			
-			this.mouseX = e.clientX;
-			this.mouseY = e.clientY;
-			
-			if (!target.classList.contains('selected'))
-				appActions.selection.select(target.id);
+			if (!e.shiftKey) {
+				this.root.addEventListener('mousemove', this.onMouseMove, false);
+				this.root.addEventListener('mouseup', this.onMouseUp, false);
+				
+				this.mouseX = e.clientX;
+				this.mouseY = e.clientY;
+				
+				if (!target.classList.contains('selected'))
+					appActions.selection.select(target.id);
+			}
 		}
 		else { // Dragging on canvas
 			this.root.addEventListener('mousemove', this.onMouseMoveSelRect, false);
@@ -114,6 +113,9 @@ var Canvas = React.createClass({
 			//transform it in canvas space
 			y -= 40;
 			
+			if (e.shiftKey)
+				this.addToSelection = true;
+	
 			this.setState({selRect: {startVertex: [x,y], endVertex: [x,y]}});
 		}
 	},
@@ -162,7 +164,8 @@ var Canvas = React.createClass({
 		if (this.dragged) {
 			var selRect = this.state.selRect;
 			this.setState({selRect: null});
-			appActions.selection.inRect(selRect.startVertex, selRect.endVertex);
+			appActions.selection.inRect(selRect.startVertex, selRect.endVertex, this.addToSelection);
+			this.addToSelection = false;
 		}
 	},
 	

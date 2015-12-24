@@ -57,7 +57,7 @@ var selection = {
 	clear: function () {
 		objects.forEach(o => {o.selected = false});
 	},
-	inRect: function(start, end) {
+	inRect: function(start, end, add) {
 		var
 			rxmin,
 			rxmax,
@@ -80,6 +80,8 @@ var selection = {
 			rymin = end[1];
 			rymax = start[1];
 		}
+		
+		console.log(add);
 			
 		objects.forEach(o => {
 			var 
@@ -89,7 +91,10 @@ var selection = {
 				ymin = b.y,
 				ymax = b.y + b.h
 			;
-			o.selected = xmin >= rxmin && xmax <= rxmax && ymin >= rymin && ymax <= rymax ? true : false;
+			if (xmin >= rxmin && xmax <= rxmax && ymin >= rymin && ymax <= rymax)
+				o.selected = true;
+			else if (!add)
+				o.selected = false;
 		});
 	}
 

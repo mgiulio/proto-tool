@@ -43,7 +43,7 @@ AppDispatcher.register(function(action) {
 			break;
 		break;
 		case appConstants.SELECTION_IN_RECT:
-			dos.selection.inRect(action.start, action.end);
+			dos.selection.inRect(action.start, action.end, action.add);
 			designObjectStore.emitChange();
 			break;
 		break;

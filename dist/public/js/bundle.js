@@ -20604,11 +20604,12 @@ var AppActions = {
 			});
 		},
 		
-		inRect: function(p0, p1) {
+		inRect: function(p0, p1, add) {
 			AppDispatcher.dispatch({
 				actionType: appConstants.SELECTION_IN_RECT,
 				start: p0,
-				end: p1
+				end: p1,
+				add: add
 			});
 		}
 
@@ -21050,20 +21051,19 @@ var Canvas = React.createClass({displayName: "Canvas",
 		
 		this.dragged = false;
 		
-		if (e.shiftKey) // This is not the beginning of a drag
-			return;
-	
 		var target = this.findTarget(e.target);
 		
 		if (target.classList.contains('object')) {
-			this.root.addEventListener('mousemove', this.onMouseMove, false);
-			this.root.addEventListener('mouseup', this.onMouseUp, false);
-			
-			this.mouseX = e.clientX;
-			this.mouseY = e.clientY;
-			
-			if (!target.classList.contains('selected'))
-				appActions.selection.select(target.id);
+			if (!e.shiftKey) {
+				this.root.addEventListener('mousemove', this.onMouseMove, false);
+				this.root.addEventListener('mouseup', this.onMouseUp, false);
+				
+				this.mouseX = e.clientX;
+				this.mouseY = e.clientY;
+				
+				if (!target.classList.contains('selected'))
+					appActions.selection.select(target.id);
+			}
 		}
 		else { // Dragging on canvas
 			this.root.addEventListener('mousemove', this.onMouseMoveSelRect, false);
@@ -21076,6 +21076,9 @@ var Canvas = React.createClass({displayName: "Canvas",
 			//transform it in canvas space
 			y -= 40;
 			
+			if (e.shiftKey)
+				this.addToSelection = true;
+	
 			this.setState({selRect: {startVertex: [x,y], endVertex: [x,y]}});
 		}
 	},
@@ -21124,7 +21127,8 @@ var Canvas = React.createClass({displayName: "Canvas",
 		if (this.dragged) {
 			var selRect = this.state.selRect;
 			this.setState({selRect: null});
-			appActions.selection.inRect(selRect.startVertex, selRect.endVertex);
+			appActions.selection.inRect(selRect.startVertex, selRect.endVertex, this.addToSelection);
+			this.addToSelection = false;
 		}
 	},
 	
@@ -22376,7 +22380,7 @@ var selection = {
 	clear: function () {
 		objects.forEach(function(o)  {o.selected = false});
 	},
-	inRect: function(start, end) {
+	inRect: function(start, end, add) {
 		var
 			rxmin,
 			rxmax,
@@ -22399,6 +22403,8 @@ var selection = {
 			rymin = end[1];
 			rymax = start[1];
 		}
+		
+		console.log(add);
 			
 		objects.forEach(function(o)  {
 			var 
@@ -22408,7 +22414,10 @@ var selection = {
 				ymin = b.y,
 				ymax = b.y + b.h
 			;
-			o.selected = xmin >= rxmin && xmax <= rxmax && ymin >= rymin && ymax <= rymax ? true : false;
+			if (xmin >= rxmin && xmax <= rxmax && ymin >= rymin && ymax <= rymax)
+				o.selected = true;
+			else if (!add)
+				o.selected = false;
 		});
 	}
 
@@ -22607,7 +22616,7 @@ AppDispatcher.register(function(action) {
 			break;
 		break;
 		case appConstants.SELECTION_IN_RECT:
-			dos.selection.inRect(action.start, action.end);
+			dos.selection.inRect(action.start, action.end, action.add);
 			designObjectStore.emitChange();
 			break;
 		break;
