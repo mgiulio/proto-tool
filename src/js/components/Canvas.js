@@ -4,6 +4,7 @@ var
    ,svgRenderer = require('../svgRenderer')
    ,SelectionBox = require('./SelectionBox')
    ,appActions = require('../actions/AppActions')
+   ,compose = require('../lib/func').compose
 ;
 
 var Canvas = React.createClass({
@@ -104,6 +105,22 @@ var Canvas = React.createClass({
 					appActions.selection.select(target.id);
 			}
 		}
+		else if (target.classList.contains('handle')) {
+			this.root.addEventListener('mousemove', this.dragHandle, false);
+			this.root.addEventListener('mouseup', this.dragHandleEnd, false);
+				
+			this.mouseX = e.clientX;
+			this.mouseY = e.clientY;
+			
+			if (target.classList.contains('top'))
+				this.resizeSide = compose(appActions.resizeTop, function(dx, dy) { return - dy; });
+			else if (target.classList.contains('right'))
+				this.resizeSide = compose(appActions.resizeRight, function(dx, dy) { return dx; });
+			else if (target.classList.contains('bottom'))
+				this.resizeSide = compose(appActions.resizeBottom, function(dx, dy) { return dy; });
+			else if (target.classList.contains('left'))
+				this.resizeSide = compose(appActions.resizeLeft, function(dx, dy) { return - dx; });
+		}
 		else { // Dragging on canvas
 			this.root.addEventListener('mousemove', this.onMouseMoveSelRect, false);
 			this.root.addEventListener('mouseup', this.onMouseUpSelRect, false);
@@ -159,6 +176,26 @@ var Canvas = React.createClass({
 		}
 	},
 	
+	dragHandle: function(e) {
+		e.stopPropagation();
+		
+		this.dragged = true;
+		
+		var dx = e.clientX - this.mouseX;
+		var dy = e.clientY - this.mouseY;
+		this.mouseX = e.clientX;
+		this.mouseY = e.clientY;
+		
+		this.resizeSide(dx, dy);
+	},
+	
+	dragHandleEnd: function(e) {
+		e.stopPropagation();
+		
+		this.root.removeEventListener('mousemove', this.dragHandle, false);
+		this.root.removeEventListener('mouseup', this.dragHandleEnd, false);
+	},
+	
 	
 	onClick: function(e) {
 		e.stopPropagation();
@@ -178,7 +215,7 @@ var Canvas = React.createClass({
 	},
 	
 	findTarget: function(n) {
-		while (!n.classList.contains('object') && !n.classList.contains('canvas'))
+		while (!n.classList.contains('object') && !n.classList.contains('handle') && !n.classList.contains('canvas'))
 			n = n.parentElement;
 		return  n;
 	},

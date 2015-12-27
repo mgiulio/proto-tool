@@ -12,10 +12,10 @@ var SelectionBox = React.createClass({
 			hw = w / 2,
 			hh = h / 2,
 			handles = [
-				<Handle className="top"    x={hw} y={0}  onDrag={this.onDragHandle.bind(this, appConstants.TOP)}    key={0} />,
-				<Handle className="right"  x={w}  y={hh} onDrag={this.onDragHandle.bind(this, appConstants.RIGHT)}  key={1} />,
-				<Handle className="bottom" x={hw} y={h}  onDrag={this.onDragHandle.bind(this, appConstants.BOTTOM)} key={2} />,
-				<Handle className="left"   x={0}  y={hh} onDrag={this.onDragHandle.bind(this, appConstants.LEFT)}   key={3} />,
+				<Handle className="top"    x={hw} y={0}  key={0} />,
+				<Handle className="right"  x={w}  y={hh} key={1} />,
+				<Handle className="bottom" x={hw} y={h}  key={2} />,
+				<Handle className="left"   x={0}  y={hh} key={3} />,
 			]
 		;
 		
@@ -27,24 +27,6 @@ var SelectionBox = React.createClass({
 				{handles}
 			</g>
 		);
-	},
-	
-	onDragHandle: function(side, dx, dy) {
-		switch (side) {
-			case appConstants.TOP:
-				appActions.resizeTop(-dy);
-				break;
-			case appConstants.RIGHT:
-				appActions.resizeRight(dx);
-				break;
-			case appConstants.BOTTOM:
-				appActions.resizeBottom(dy);
-				break;
-			case appConstants.LEFT:
-				appActions.resizeLeft(-dx);
-				break;
-			default:
-		}
 	}
 
 });
@@ -62,37 +44,8 @@ var Handle = React.createClass({
 			<rect 
 				className={`handle ${this.props.className}`} 
 				x={x - hs} y={y - hs} width={size} height={size} 
-				onMouseDown={this.onMouseDown}
 			/>
 		);
-	},
-	
-	onMouseDown: function(e) {
-		e.stopPropagation();
-		
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		document.addEventListener('mousemove', this.onMouseMove, false);
-		document.addEventListener('mouseup', this.onMouseUp, false);
-	},
-	
-	onMouseMove: function(e) {
-		e.stopPropagation();
-		
-		var dx = e.clientX - this.mouseX;
-		var dy = e.clientY - this.mouseY;
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		this.props.onDrag(dx, dy);
-	},
-	
-	onMouseUp: function(e) {
-		e.stopPropagation();
-		
-		document.removeEventListener('mousemove', this.onMouseMove, false);
-		document.removeEventListener('mouseup', this.onMouseUp, false);
 	}
 	
 });

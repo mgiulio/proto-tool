@@ -20967,6 +20967,7 @@ var
    ,svgRenderer = require('../svgRenderer')
    ,SelectionBox = require('./SelectionBox')
    ,appActions = require('../actions/AppActions')
+   ,compose = require('../lib/func').compose
 ;
 
 var Canvas = React.createClass({displayName: "Canvas",
@@ -21067,6 +21068,22 @@ var Canvas = React.createClass({displayName: "Canvas",
 					appActions.selection.select(target.id);
 			}
 		}
+		else if (target.classList.contains('handle')) {
+			this.root.addEventListener('mousemove', this.dragHandle, false);
+			this.root.addEventListener('mouseup', this.dragHandleEnd, false);
+				
+			this.mouseX = e.clientX;
+			this.mouseY = e.clientY;
+			
+			if (target.classList.contains('top'))
+				this.resizeSide = compose(appActions.resizeTop, function(dx, dy) { return - dy; });
+			else if (target.classList.contains('right'))
+				this.resizeSide = compose(appActions.resizeRight, function(dx, dy) { return dx; });
+			else if (target.classList.contains('bottom'))
+				this.resizeSide = compose(appActions.resizeBottom, function(dx, dy) { return dy; });
+			else if (target.classList.contains('left'))
+				this.resizeSide = compose(appActions.resizeLeft, function(dx, dy) { return - dx; });
+		}
 		else { // Dragging on canvas
 			this.root.addEventListener('mousemove', this.onMouseMoveSelRect, false);
 			this.root.addEventListener('mouseup', this.onMouseUpSelRect, false);
@@ -21122,6 +21139,26 @@ var Canvas = React.createClass({displayName: "Canvas",
 		}
 	},
 	
+	dragHandle: function(e) {
+		e.stopPropagation();
+		
+		this.dragged = true;
+		
+		var dx = e.clientX - this.mouseX;
+		var dy = e.clientY - this.mouseY;
+		this.mouseX = e.clientX;
+		this.mouseY = e.clientY;
+		
+		this.resizeSide(dx, dy);
+	},
+	
+	dragHandleEnd: function(e) {
+		e.stopPropagation();
+		
+		this.root.removeEventListener('mousemove', this.dragHandle, false);
+		this.root.removeEventListener('mouseup', this.dragHandleEnd, false);
+	},
+	
 	
 	onClick: function(e) {
 		e.stopPropagation();
@@ -21141,7 +21178,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 	},
 	
 	findTarget: function(n) {
-		while (!n.classList.contains('object') && !n.classList.contains('canvas'))
+		while (!n.classList.contains('object') && !n.classList.contains('handle') && !n.classList.contains('canvas'))
 			n = n.parentElement;
 		return  n;
 	},
@@ -21194,7 +21231,7 @@ var Canvas = React.createClass({displayName: "Canvas",
 
 module.exports = Canvas;
 
-},{"../actions/AppActions":163,"../stores/designObjectStore":196,"../svgRenderer":198,"./SelectionBox":183,"react":162}],169:[function(require,module,exports){
+},{"../actions/AppActions":163,"../lib/func":190,"../stores/designObjectStore":196,"../svgRenderer":198,"./SelectionBox":183,"react":162}],169:[function(require,module,exports){
 var
    React = require('react')
    ,Canvas = require('./Canvas')
@@ -21825,10 +21862,10 @@ var SelectionBox = React.createClass({displayName: "SelectionBox",
 			hw = w / 2,
 			hh = h / 2,
 			handles = [
-				React.createElement(Handle, {className: "top", x: hw, y: 0, onDrag: this.onDragHandle.bind(this, appConstants.TOP), key: 0}),
-				React.createElement(Handle, {className: "right", x: w, y: hh, onDrag: this.onDragHandle.bind(this, appConstants.RIGHT), key: 1}),
-				React.createElement(Handle, {className: "bottom", x: hw, y: h, onDrag: this.onDragHandle.bind(this, appConstants.BOTTOM), key: 2}),
-				React.createElement(Handle, {className: "left", x: 0, y: hh, onDrag: this.onDragHandle.bind(this, appConstants.LEFT), key: 3}),
+				React.createElement(Handle, {className: "top", x: hw, y: 0, key: 0}),
+				React.createElement(Handle, {className: "right", x: w, y: hh, key: 1}),
+				React.createElement(Handle, {className: "bottom", x: hw, y: h, key: 2}),
+				React.createElement(Handle, {className: "left", x: 0, y: hh, key: 3}),
 			]
 		;
 		
@@ -21840,24 +21877,6 @@ var SelectionBox = React.createClass({displayName: "SelectionBox",
 				handles
 			)
 		);
-	},
-	
-	onDragHandle: function(side, dx, dy) {
-		switch (side) {
-			case appConstants.TOP:
-				appActions.resizeTop(-dy);
-				break;
-			case appConstants.RIGHT:
-				appActions.resizeRight(dx);
-				break;
-			case appConstants.BOTTOM:
-				appActions.resizeBottom(dy);
-				break;
-			case appConstants.LEFT:
-				appActions.resizeLeft(-dx);
-				break;
-			default:
-		}
 	}
 
 });
@@ -21874,38 +21893,9 @@ var Handle = React.createClass({displayName: "Handle",
 		return (
 			React.createElement("rect", {
 				className: ("handle " + this.props.className), 
-				x: x - hs, y: y - hs, width: size, height: size, 
-				onMouseDown: this.onMouseDown}
+				x: x - hs, y: y - hs, width: size, height: size}
 			)
 		);
-	},
-	
-	onMouseDown: function(e) {
-		e.stopPropagation();
-		
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		document.addEventListener('mousemove', this.onMouseMove, false);
-		document.addEventListener('mouseup', this.onMouseUp, false);
-	},
-	
-	onMouseMove: function(e) {
-		e.stopPropagation();
-		
-		var dx = e.clientX - this.mouseX;
-		var dy = e.clientY - this.mouseY;
-		this.mouseX = e.clientX;
-		this.mouseY = e.clientY;
-		
-		this.props.onDrag(dx, dy);
-	},
-	
-	onMouseUp: function(e) {
-		e.stopPropagation();
-		
-		document.removeEventListener('mousemove', this.onMouseMove, false);
-		document.removeEventListener('mouseup', this.onMouseUp, false);
 	}
 	
 });
